@@ -1,6 +1,10 @@
-- [ ] DataDog implementation
+- [X] DataDog implementation
 - [ ] Set file and config to run as JSON
 - [ ] Make fields parameterizable using JSON path
 - [ ] Fix cloudwatch
-- [ ] Add sequence support
+- [X] Add sequence support
+- [ ] Make parallelization simpler
+- [ ] Turn batch runner into a class
+- [ ] Create evaluator class
 - [ ] Where to put client-specific input files?
+- [ ] update example.env
