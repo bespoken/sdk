@@ -1,10 +1,16 @@
-- [X] DataDog implementation
+## Critical
+- [ ] Where to put client-specific input files?
+- [ ] update example.env
+- [ ] Demonstrate voice-id variation tests
 - [ ] Set file and config to run as JSON
 - [ ] Make fields parameterizable using JSON path
 - [ ] Fix cloudwatch
-- [X] Add sequence support
+
+## Nice-to-have
 - [ ] Make parallelization simpler
-- [ ] Turn batch runner into a class
-- [ ] Create evaluator class
-- [ ] Where to put client-specific input files?
-- [ ] update example.env
+
+## Done
+- [X] DataDog implementation
+- [X] Add sequence support
+- [X] Turn batch runner into a class
+- [X] Create evaluator class
