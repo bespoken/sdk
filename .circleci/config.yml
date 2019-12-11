@@ -1,0 +1,42 @@
+version: 2
+jobs:
+  test-utterances:
+    docker:
+      - image: node:10
+    steps:
+      - checkout
+      - run: npm install
+      - run: npm run utterances
+      - store_artifacts:
+          path: utterance-results.csv
+workflows:
+  version: 2
+  schedule:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *" # Run once a day at midnight
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - test-e2e
+      - test-utterances:
+          requires:
+            - test-e2e # Only run these tests after the first set of tests finishes
+  manual: # Workflow to allow for manually triggering builds - for testing the tests :-)
+    jobs:
+      - test-e2e:
+          filters:
+            tags:
+              only: /manual.*/
+            branches: # Have to add this branches ignore, or else it will build with every push to master (or any other branch)
+              ignore: /.*/
+      - test-utterances:
+          filters:
+            tags:
+              only: /manual.*/
+            branches:
+              ignore: /.*/
+          requires:
+            - test-e2e

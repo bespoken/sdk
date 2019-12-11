@@ -1,0 +1,29 @@
+{
+  "name": "long-form-audio-example",
+  "version": "1.0.0",
+  "description": "Here is a project with a basic test verifying some stations on Alexa.\r To use this example:",
+  "main": "lib/batch-runner.js",
+  "dependencies": {
+    "aws-sdk": "^2.579.0",
+    "bespoken-tools": "^2.4.10",
+    "csv": "^5.1.3",
+    "dotenv": "^8.2.0",
+    "lodash": "^4.17.15",
+    "momentjs": "^2.0.0",
+    "standard": "^14.3.1"
+  },
+  "scripts": {
+    "standard": "standard --fix",
+    "utterances": "node lib/batch-runner.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jkelvie/long-form-audio-example.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/emersonsklar/siriusXM/issues"
+  },
+  "homepage": "https://github.com/emersonsklar/siriusXM#readme"
+}

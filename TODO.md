@@ -1,0 +1,6 @@
+- [ ] DataDog implementation
+- [ ] Set file and config to run as JSON
+- [ ] Make fields parameterizable using JSON path
+- [ ] Fix cloudwatch
+- [ ] Add sequence support
+- [ ] Where to put client-specific input files?
