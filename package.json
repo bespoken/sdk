@@ -15,7 +15,7 @@
   },
   "scripts": {
     "standard": "standard --fix",
-    "utterances": "node lib/batch-runner.js"
+    "utterances": "node lib/batch-runner.js utterances.csv"
   },
   "repository": {
     "type": "git",

@@ -5,7 +5,7 @@
 - [ ] Demonstrate voice-id variation tests
 - [ ] Set file and config to run as JSON
 - [ ] Fix cloudwatch
-- [ ] Figure out how to save file on gitlab
+- [ ] Cleanup readme
 
 ## Nice-to-have
 - [ ] Make parallelization simpler
