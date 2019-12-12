@@ -4,11 +4,13 @@ cache:
   paths:
   - node_modules/
 
+# We have two stages to force the jobs to run sequentially
 stages:
-  - test
+  - show-tests
+  - launch-tests
 
 show-tests:
-  stage: test
+  stage: show-tests
   script:
    - npm install
    - npm run show-tests
@@ -18,7 +20,7 @@ show-tests:
     expire_in: 1 week
 
 launch-tests:
-  stage: test
+  stage: launch-tests
   script:
    - npm install
    - npm run launch-tests
