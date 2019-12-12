@@ -7,12 +7,22 @@ cache:
 stages:
   - test
 
-test:
+show-tests:
   stage: test
   script:
    - npm install
-   - npm run utterances
+   - npm run show-tests
   artifacts:
     paths:
-    - utterance-results.csv
+    - results.csv
+    expire_in: 1 week
+
+launch-tests:
+  stage: test
+  script:
+   - npm install
+   - npm run launch-tests
+  artifacts:
+    paths:
+    - results.csv
     expire_in: 1 week

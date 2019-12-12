@@ -14,8 +14,9 @@
     "momentjs": "^2.0.0"
   },
   "scripts": {
+    "launch-tests": "node lib/batch-runner.js input/launch-tests.json input/launch-tests.csv",
     "standard": "standard --fix",
-    "utterances": "node lib/batch-runner.js input/utterances.csv"
+    "show-tests": "node lib/batch-runner.js input/show-tests.json input/show-tests.csv"
   },
   "repository": {
     "type": "git",

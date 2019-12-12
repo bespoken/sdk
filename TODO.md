@@ -1,9 +1,7 @@
 ## Critical
-- [X] Change to batch message call
-- [ ] update example.env
 - [ ] Demonstrate voice-id variation tests
 - [ ] Fix cloudwatch
-- [ ] Cleanup readme
+- [ ] Fix section of readme that explains the CSV
 
 ## Nice-to-have
 - [X] Make parallelization simpler
@@ -15,3 +13,6 @@
 - [X] Create evaluator class
 - [X] Create config.json file? Or env hierarchy?
 - [X] Make fields parameterizable using JSON path
+- [X] Cleanup readme
+- [X] Change to batch message call
+- [X] update example.env
