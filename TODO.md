@@ -1,11 +1,11 @@
 ## Critical
 - [ ] Where to put client-specific input files?
 - [ ] update example.env
-- [ ] Create config.json file? Or env hierarchy?
+- [ ] Change to batch message call
 - [ ] Demonstrate voice-id variation tests
 - [ ] Set file and config to run as JSON
-- [ ] Make fields parameterizable using JSON path
 - [ ] Fix cloudwatch
+- [ ] Figure out how to save file on gitlab
 
 ## Nice-to-have
 - [ ] Make parallelization simpler
@@ -15,3 +15,5 @@
 - [X] Add sequence support
 - [X] Turn batch runner into a class
 - [X] Create evaluator class
+- [X] Create config.json file? Or env hierarchy?
+- [X] Make fields parameterizable using JSON path

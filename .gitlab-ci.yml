@@ -12,3 +12,7 @@ test:
   script:
    - npm install
    - npm run utterances
+  artifacts:
+    paths:
+    - utterance-results.csv
+    expire_in: 1 week
