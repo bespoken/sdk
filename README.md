@@ -1,55 +1,60 @@
-# Recipe Testing Example
-This project provides a ready-to-use template for doing in-depth testing on a domain, such as recipes.
+# Long Form Audio Testing
+This project provides a ready-to-use template for doing in-depth testing on long-form audio.
 
-We have two primary types of tests:
-* Utterance Tests - for testing speech recognition accuracy
-* E2E Tests - for testing entire user functional workflows
-
-The Utterances tests are defined via a CSV file.
-
-The E2E tests are defined using our easy-to-maintain YAML scripts.
+We store the utterances that we want to test in the file `input/utterances.csv`.
 
 ## Getting Setup
+### Environment Management
+We use dotenv when running locally, which takes environment variables from a local `.env` file.
+
+To set this up, just make a copy of `example.env` and name it `.env`. Replace the values inside there with the correct values for your configuration.
+
+For running with continuous integration (such as Jenkins, Circle CI or Gitlab), these values should instead come from actual environment variables.
+
+### Configuration
+The environment variables store sensitive credentials.
+
+Our `config.json` file stores information particular to how the tests should run, but of a non-sensitive nature.
+
+An example file:
+```json
+{
+  "fields": {
+    "imageURL": "$.raw.messageBody.directives[1].payload.content.art.sources[0].url"
+  },
+  "metrics": "datadog",
+  "sequence": ["open my audio player"]
+}
+```
+
+Each of the pieces is explained below:
+#### fields
+Each field represents a column in the CSV file.
+
+By default, we take these columns and treat them as expected fields in the response output from the Virtual Device.
+
+However, in some cases, these fields are rather complicated. In that case, we can have a field with a simple name, like `imageURL`, but then we specify a JSON path expression which is used to resolve that expression on the response payload.
+
+This way we can perform complex verification on our utterances with a nice, clean CSV file.
+
+#### metrics
+Valid values for this are `datadog`, `cloudwatch` or `none`.
+
+This dictates where metrics on the results of the tests are sent.
+
+#### sequence
+For tests in which there are multiple steps required before we do the "official" utterance that is being tested, we can specify them here.
+
+Typically, this would involve launching a skill before saying the specific utterance we want to test, but more complex sequences are possible.
+
 ### Virtual Device Setup
-Create a virtual device with our [easy-to-follow guide here](https://read.bespoken.io/end-to-end/setup/#creating-a-virtual-device).
+* Create a virtual device with our [easy-to-follow guide here](https://read.bespoken.io/end-to-end/setup/#creating-a-virtual-device).
+* Add the newly created token to the `.env` file
 
-Take the token for the virtual device you just created and add it to the testing.json file as the `virtualDeviceToken`.
-
-### AWS CloudWatch Configuration
-To publish test results to CloudWatch, you must configure the AWS credentials as environment variables.
-
-The environment variables that must be set are `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
-
-These either be set in a .env file at the root level or as typical environment variables. To use the .env file approach:
-* Take the file `example.env`
-* Rename it to `.env`
-* Put in the correct values for the access key and secret access key values for your AWS environment
-
-The AWS Credentials used should have full access to read and write within CloudWatch Logs.
-
-### Configuring the CloudWatch Log Group
-The code publishes results to a Log Group labeled `/demo/Discovery`. This can be changed to any name you like - the code is here:  
-https://github.com/jkelvie/DiscoveryDemo/blob/master/lib/publisher.js#L10
-
-The Log Group should be created in AWS first:  
-<p align="center"><img src="images/CloudWatchLogGroupNew.png" width="500" /></p>
-
-Once the log group is created and the credentials are defined, running the tests will automatically send data to CloudWatch logs!
-
-## Running E2E, multi-step recipe tests
-Navigate to the directory were this project is cloned.
-
-install the NPM packages:
-```
-npm install
-```
-
-To run the easy-to-read YAML tests, enter this command:
-```
-npm run e2e
-```
-
-This will run the tests defined under recipes.test.yml. These are tests that work through
+### DataDog Configuration
+* Create a DataDog account.
+* Take the API key from the Integrations -> API section
+* Add it to the `.env` file
 
 ## Running utterance resolution tests
 These tests check whether or not the utterance names are being understood correctly by Alexa.
@@ -63,7 +68,7 @@ This will test each utterance defined in the utterances.csv file. The CSV file c
 
 | Column | Description |
 | --- | --- |
-| utterance | The utterace to be said to Alexa
+| utterance | The utterance to be said to Alexa
 | expectedResponses | One-to-many expected responses - each one is separated by a comma
 
 For the initial entries, we are typically just looking for the name of the recipe in the response. When the tests are run, here is what will happen:  
@@ -73,57 +78,38 @@ For the initial entries, we are typically just looking for the name of the recip
 
 This test will pass because the actual response contains the expected response from our CSV file.
 
-## Continuous Integration Configuration
-This project makes use of Circle CI. To get access to the environment, sign up with Circle CI, then send your username to jpk@bespoken.io.
+## Gitlab Configuration
+The gitlab configuration is defined by the file `.gitlab-ci.yml`. The file looks like this:
+```yaml
+image: node:10
 
-We have configured our two jobs - the utterances testing and the e2e testing - to run every 30 minutes with Circle CI.
+cache:
+  paths:
+  - node_modules/
 
-This is controlled via the [.circleci/config.yml](https://github.com/jkelvie/DiscoveryDemo/blob/master/.circleci/config.yml) file.
+stages:
+  - test
 
-The schedule is configured like so:
+test:
+  stage: test
+  script:
+   - npm install
+   - npm run utterances
+  artifacts:
+    paths:
+    - utterance-results.csv
+    expire_in: 1 week
 ```
-workflows:
-  twice-hourly:
-    triggers:
-      - schedule:
-          cron: "0,30 * * * *" # Run every thirty minutes
-          filters:
-            branches:
-              only:
-                - master
-    jobs:
-      - test-e2e
-      - test-utterances
-```
 
-We also added workflow labeled `manual`. This allows for manual builds to be kicked off at any time.
-
-To leverage them, just add a release in Github that starts with `manual`, such as `manual-1`. This will trigger the CircleCI process to run.
-
-We used Circle CI because it is *fairly* easy-to-use (we think much easier thank Jenkins) while also being quite powerful and having more advanced CI features.
-
-### Configuring A New Circle CI environment
-Alternatively, you can create your own Circle CI environment.
-
-To set it up, fork this repo, and signup for you own account on Circle CI at https://circleci.com.
-
-Once you have an account, select "Add Projects" on the left-hand side, then select "Setup Project" next to the project you want to build:  
-<p align="center"><img src="images/CircleCIAddProjects.png" width="500" /></p>
-
-The Circle Configuration file is already part of this repo, so on the next screen, choose "Start Building".
-
-You will need to add your environment variables for the AWS Credentials. They go here:  
-<p align="center"><img src="images/CircleCIEnvironment.png" width="500" /></p>
-
-Once that is all set, the project will be automatically running all the tests every 30 minutes.
+This build script runs the utterances and saves of the resulting CSV file.
 
 ## Test Reporting
 We have setup this project to make use of a few different types of reporting to show off what is possible.
 
 The reporting comes in these forms:
 * CSV File that summarizes results of utterance tests
-* Reporting via Circle CI
 * Reporting via AWS Cloudwatch
+* Reporting via DataDog
 
 Each is discussed in more detail below.
 
@@ -137,78 +123,20 @@ The CSV File contains the following output:
 | success | Whether or not the test was successful
 | expectedResponses | The possible expected response back from the utterance
 
-### Circle CI
-Circle CI provides pretty formatting of Jest test results created by our end-to-end tests.
+### DataDog
+DataDog captures metrics related to how all the tests have performed.
 
-It also provides a convenient storage place for our utterance CSV results.
+The metrics can be easily reported on.
 
-For each run, these artifacts are saved off.
-* [Example Utterance Results](https://app.circleci.com/jobs/github/jkelvie/DiscoveryDemo/8/artifacts)
-* [Example E2E Test Results](https://app.circleci.com/jobs/github/jkelvie/DiscoveryDemo/7/tests)
+They also can be used to setup notifcations when certain conditions are triggered.
 
-### Configuring CloudWatch Metrics
-CloudWatch is great for reporting on time series data, as well as setting up alerts and notifications.
-
-To view the test results as nice reports, we make use of CloudWatch metrics. These filters turn the raw logs we send to CloudWatch into data that can be cleanly shown in graphs and used in alerts.
-
-We set these up by going to the CloudWatch Log Groups screen, like so:  
-<p align="center"><img src="images/CloudWatchLogGroups.png" width="500" /></p>
-
-Click on the column that says `x filters` (our screen says `4 filters`, yours will say `0 filters`).
-
-You can then setup various metrics - they should look like this:  
-<p align="center"><img src="images/MetricFilters.png" width="500" /></p>
-
-Select add Metric Filter - the screen will look like this:  
-<p align="center"><img src="images/MetricFilterNew.png" width="500" /></p>
-
-Fill out the details of the metric and select assign:  
-<p align="center"><img src="images/MetricFilterAssign.png" width="500" /></p>
-
-Make sure to set the Default Value to 0 on the Assign Metric screen.
-
-The four metric filters we want to setup are:
-
-| Metric | Description | Pattern |
-| --- | --- | --- |
-| UtterancePassed | Did the utterance test succeed | `{ $.success IS TRUE && $.test NOT EXISTS }`
-| UtteranceFailed | Did the utterance test fail | `{ $.success IS FALSE && $.test NOT EXISTS }`
-| E2E Test Passed | Did the E2E test pass | `{ $.success IS TRUE && $.name = "e2e }`
-| E2E Test Failed | Did the E2E test pass | `{ $.success IS TRUE && $.name = "e2e }`
-
-These filters will provide aggregate data around successes and failures for our two types of tests, which we can easily then graph and alert on.
-
-### Viewing The Metrics in A Report
-Once we have setup our metrics, we can create custom reports and graphs via the Metrics section of CloudWatch.
-
-BEFORE TRYING THIS, make sure to run the tests at least once. Otherwise, there will be no data available to report on.
-
-We add new graphs like so:  
-<p align="center"><img src="images/MetricGraph.png" width="500" /></p>
-
-We go to the Metrics section, select a Metric from the "All metrics" tab and add it to our graph.
-
-Once added, we can change the period and the statistical function applied to the metric. We recommend using a period of 1 hour and the statistic of "Sum", like so:  
-<p align="center"><img src="images/GraphedMetrics.png" width="500" /></p>
-
-Once created, you can save the graph, incorporating it into Dashboards with other metrics and slicing and dicing the data as needed.
+### Creating A Dashboard
+DataDog makes it easy to create a Dashboard.
 
 ### Creating Alarms
-One last step with CloudWatch - creating an alarm. We do this both for our integration with PagerDuty and to create standalone alarms.
+DataDog makes it easy to setup alarms.
 
-To do this, just follow this guide from AWS:
-https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ConsoleAlarms.html
-
-## Notifications
-We are using PagerDuty for notifications. Email jpk@bespoken.io to get an invite.
-
-We set up PagerDuty to work with CloudWatch using these instructions:  
-https://support.pagerduty.com/docs/aws-cloudwatch-integration-guide
-
-You can view the incidents related to the testing here:  
-https://bespoken.pagerduty.com/incidents
-
-Additionally, there is a helpful incident status page here:  
-https://bespoken.pagerduty.com/status-dashboard
-
-This can be shared with high-level stakeholders who are not necessarily involved in the day-to-day but are interested in what is happening.
+## Additional Topics
+* Working With Circle CI - TBC
+* Working With CloudWatch - TBC
+* Working With PagerDuty - TBC

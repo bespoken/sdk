@@ -1,14 +1,12 @@
 ## Critical
-- [ ] Where to put client-specific input files?
+- [X] Change to batch message call
 - [ ] update example.env
-- [ ] Change to batch message call
 - [ ] Demonstrate voice-id variation tests
-- [ ] Set file and config to run as JSON
 - [ ] Fix cloudwatch
 - [ ] Cleanup readme
 
 ## Nice-to-have
-- [ ] Make parallelization simpler
+- [X] Make parallelization simpler
 
 ## Done
 - [X] DataDog implementation
