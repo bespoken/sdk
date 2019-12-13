@@ -18,7 +18,9 @@ show-tests:
     paths:
     - results.csv
     expire_in: 1 week
-
+  only: 
+    - schedules
+    
 launch-tests:
   stage: launch-tests
   script:
@@ -28,3 +30,5 @@ launch-tests:
     paths:
     - results.csv
     expire_in: 1 week
+  only: 
+    - schedules
