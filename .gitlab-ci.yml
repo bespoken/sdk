@@ -20,7 +20,8 @@ show-tests:
     expire_in: 1 week
   only: 
     - schedules
-    
+    - web
+
 launch-tests:
   stage: launch-tests
   script:
@@ -32,3 +33,4 @@ launch-tests:
     expire_in: 1 week
   only: 
     - schedules
+    - web
