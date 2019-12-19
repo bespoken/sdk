@@ -1,9 +1,6 @@
 const _ = require('lodash')
 const AWS = require('aws-sdk')
 
-require('dotenv').config()
-AWS.config.update({ region: 'us-east-1' })
-
 class CloudWatchMetrics {
   constructor (name) {
     this.logGroup = '/demo/Discovery'

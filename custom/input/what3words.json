@@ -3,6 +3,8 @@
     "imageURL": "$.raw.messageBody.directives[1].payload.content.art.sources[0].url",
     "title": "$.raw.messageBody.directives[1].payload.content.title"
   },
-  "metrics": "datadog",
-  "sequence": ["open pinna audio"]
+  "job": "show-tests",
+  "metrics": "datadog-metrics",
+  "source": "s3-source",
+  "sourceBucket": "bespoken-audio"
 }

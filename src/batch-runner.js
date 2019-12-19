@@ -2,17 +2,15 @@ const _ = require('lodash')
 const Config = require('./config')
 const DevicePool = require('./device').DevicePool
 const Evaluator = require('./evaluator')
-const fs = require('fs')
 const Metrics = require('./metrics')
-const parse = require('csv-parse/lib/sync')
 const path = require('path')
+const Source = require('./source')
 const util = require('./util')
 
 class BatchRunner {
-  constructor (configFile, inputFile) {
+  constructor (configFile) {
     this._configFile = configFile
     this._devicePool = new DevicePool() // Manages virtual devices
-    this._inputFile = inputFile
     this._expectedFields = [] // The array of expected fields used for testing the results
     this._results = [] // Results from the batch runner
   }
@@ -61,7 +59,7 @@ class BatchRunner {
     // Create a publish class to send results to metrics service (DataDog or CloudWatch)
     // The run name uniquely tags metrics created by this process
     // We use the input file name for this - e.g., for C:/Users/bespoken/test/inputs.csv it will be inputs
-    const runName = path.parse(this._inputFile).name
+    const runName = path.parse(Config.get('job', undefined, true)).name
     this._metrics = Metrics.instance(runName)
     return this._metrics.initialize()
   }
@@ -119,16 +117,9 @@ class BatchRunner {
     await this._metrics.publish(result)
   }
 
-  _read () {
-    const utteranceData = fs.readFileSync(this._inputFile)
-
-    this._records = parse(utteranceData, {
-      columns: true,
-      ltrim: true,
-      relax_column_count: true,
-      relax_column_count_more: true,
-      skip_empty_lines: true
-    })
+  async _read () {
+    const source = Source.instance()
+    this._records = await source.load()
   }
 
   _print () {
@@ -138,10 +129,9 @@ class BatchRunner {
 }
 
 const configFile = _.nth(process.argv, 2)
-const inputFile = _.nth(process.argv, 3)
 
-if (inputFile && configFile) {
-  const runner = new BatchRunner(configFile, inputFile)
+if (configFile) {
+  const runner = new BatchRunner(configFile)
   runner.process(() => {
     console.log('RUNNER DONE!')
   })

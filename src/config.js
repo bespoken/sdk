@@ -1,4 +1,5 @@
 const _ = require('lodash')
+const AWS = require('aws-sdk')
 const fs = require('fs')
 
 require('dotenv').config()
@@ -8,6 +9,11 @@ class Config {
     if (Config.config) {
       return
     }
+
+    // Do core AWS stuff
+    require('dotenv').config()
+    AWS.config.update({ region: 'us-east-1' })
+
     const configString = fs.readFileSync(file)
     Config.config = JSON.parse(configString)
     return Config.config
@@ -26,16 +32,37 @@ class Config {
     return value
   }
 
-  static get (key, allowedValues) {
+  static get (key, allowedValues, required = false) {
     const value = _.get(Config.config, key)
     if (value && allowedValues) {
       Config._checkValues(key, value, allowedValues)
+    }
+
+    if (required && !value) {
+      console.log('Config: ' + Config.config[key])
+      console.error(`${key} is required in configuration but is not set. Exiting.`)
+      process.exit(1)
     }
     return value
   }
 
   static has (key) {
     return _.get(Config.config, key) !== undefined
+  }
+
+  static instance (key, values, defaultClass, required) {
+    let className = Config.get(key, values, required)
+    if (!className) {
+      console.log(`No ${key} provider specified - using default.`)
+      className = defaultClass
+    }
+
+    if (!className.startsWith('.')) {
+      className = './' + className
+    }
+
+    const Class = require(className)
+    return new Class()
   }
 
   static _checkValues (key, value, allowedValues) {
