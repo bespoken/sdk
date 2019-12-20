@@ -13,8 +13,7 @@
     "dotenv": "^8.2.0",
     "jsonpath": "^1.0.2",
     "lodash": "^4.17.15",
-    "momentjs": "^2.0.0",
-    "what3words": "^1.0.1"
+    "momentjs": "^2.0.0"
   },
   "scripts": {
     "process": "node src/batch-runner.js",

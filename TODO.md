@@ -1,22 +1,26 @@
 ## Critical
 - [X] Add source interface
-- [ ] Add filter
-  - [ ] On source
-  - [ ] On results
-- [ ] Add http support
+- [X] Add filter
+  - [X] On source
+  - [X] On results
+- [X] Add http support
 - [ ] Concatenate audio
-- [ ] Use jsdoc on source.js
+- [ ] Update datadog key
+- [ ] Load audio into S3
+- [ ] Get the real interaction model
+f
+## Nice-to-have
+- [ ] Use jsdoc on source.js and evaluator
 - [ ] make sure expiry on s3 URL is long enough
+- [ ] update package.json info
 - [ ] Add locale support
 - [ ] Where to store custom files?
   - [ ] https://stackoverflow.com/questions/53391229/clone-another-gitlab-repository-in-gitlab-ci-script
 - [ ] Fix cloudwatch
 - [ ] Fix section of readme that explains the CSV
 
-## Nice-to-have
-- [X] Make parallelization simpler
-
 ## Done
+- [X] Make parallelization simpler
 - [X] Demonstrate voice-id variation tests
 - [X] DataDog implementation
 - [X] Add sequence support
