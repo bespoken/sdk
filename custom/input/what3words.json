@@ -3,8 +3,10 @@
     "imageURL": "$.raw.messageBody.directives[1].payload.content.art.sources[0].url",
     "title": "$.raw.messageBody.directives[1].payload.content.title"
   },
+  "interceptor": "../custom/src/what3words-interceptor",
   "job": "show-tests",
   "metrics": "datadog-metrics",
+  "sequence": ["open three slot"],
   "source": "s3-source",
-  "sourceBucket": "bespoken-audio"
+  "sourceBucket": "what3words-samples"
 }

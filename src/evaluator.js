@@ -4,17 +4,16 @@ const Config = require('./config')
 // Logic for evaluating whether or not a particular test passed
 class Evaluator {
   // Runs through all the fields defined in the CSV record and compares them to actuals
-  static evaluate (utterance, record, response) {
+  static evaluate (utterance, record, expectedFields, response) {
     const result = {
       success: true
     }
 
-    for (const field in record) {
-      if (field !== 'utterance') {
-        const fieldResult = Evaluator.evaluateField(field, record, response)
-        result[field] = fieldResult
-        result.success = fieldResult.success && result.success
-      }
+    for (const field in expectedFields) {
+      // Skip utterance and meta as protected fields
+      const fieldResult = Evaluator.evaluateField(field, record, response)
+      result[field] = fieldResult
+      result.success = fieldResult.success && result.success
     }
     return result
   }

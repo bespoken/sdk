@@ -19,9 +19,17 @@ class Device {
     try {
       const messagesArray = []
       messages.forEach(message => {
-        messagesArray.push({
-          text: message
-        })
+        const messageObject = {}
+        if (message.startsWith('http')) {
+          messageObject.audio = {
+            audioURL: message,
+            frameRate: 16000,
+            channels: 1
+          }
+        } else {
+          messageObject.text = message
+        }
+        messagesArray.push(messageObject)
       })
       return await virtualDevice.batchMessage(messagesArray)
     } catch (e) {

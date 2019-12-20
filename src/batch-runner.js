@@ -2,6 +2,7 @@ const _ = require('lodash')
 const Config = require('./config')
 const DevicePool = require('./device').DevicePool
 const Evaluator = require('./evaluator')
+const Interceptor = require('./interceptor')
 const Metrics = require('./metrics')
 const path = require('path')
 const Source = require('./source')
@@ -29,7 +30,7 @@ class BatchRunner {
 
     // Use the first record to derive the expected fields
     for (const field in this._records[0]) {
-      if (field !== 'utterance') {
+      if (field !== 'utterance' && field !== 'meta') {
         this._expectedFields.push(field)
       }
     }
@@ -65,6 +66,11 @@ class BatchRunner {
   }
 
   async _processRecord (device, record) {
+    // Skip a record if the interceptor returns false
+    if (Interceptor.instance().interceptRecord(record) === false) {
+      return
+    }
+
     // If we have several voices configured, run through each one
     if (Config.has('voices')) {
       for (const voice of Config.get('voices')) {
@@ -89,11 +95,12 @@ class BatchRunner {
     messages.push(utterance)
 
     const responses = await device.message(voiceId, messages)
+    console.log('RESPONSE FULL: ' + JSON.stringify(responses, null, 2))
     responses.forEach(response => console.log(`RUNNER MESSAGE: ${response.message} TRANSCRIPT: ${response.transcript}`))
 
     const lastResponse = _.nth(responses, -1)
     // Test the spoken response from Alexa
-    const evaluation = Evaluator.evaluate(utterance, record, lastResponse)
+    const evaluation = Evaluator.evaluate(utterance, record, this._expectedFields, lastResponse)
     console.log('RUNNER VALIDATE: ' + evaluation.success)
 
     const result = {

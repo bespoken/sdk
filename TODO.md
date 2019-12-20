@@ -4,6 +4,9 @@
   - [ ] On source
   - [ ] On results
 - [ ] Add http support
+- [ ] Concatenate audio
+- [ ] Use jsdoc on source.js
+- [ ] make sure expiry on s3 URL is long enough
 - [ ] Add locale support
 - [ ] Where to store custom files?
   - [ ] https://stackoverflow.com/questions/53391229/clone-another-gitlab-repository-in-gitlab-ci-script

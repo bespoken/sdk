@@ -5,12 +5,12 @@ class Interceptor {
     return Config.instance('interceptor', undefined, 'interceptor', false)
   }
 
-  interceptRecord (record) {
-
+  async interceptRecord (record) {
+    return true
   }
 
-  interceptResult (record, result) {
-
+  async interceptResult (record, result) {
+    return true
   }
 }
 

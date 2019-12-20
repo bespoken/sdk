@@ -61,8 +61,15 @@ class Config {
       className = './' + className
     }
 
-    const Class = require(className)
-    return new Class()
+    try {
+      const Class = require(className)
+      return new Class()
+    } catch (e) {
+      console.error(`Could not resolve ${className} for ${key}. Exiting.`)
+      console.error(`FullError: ${e}`)
+      console.error(`${e.stack}`)
+      process.exit(1)
+    }
   }
 
   static _checkValues (key, value, allowedValues) {

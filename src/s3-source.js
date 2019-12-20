@@ -25,11 +25,16 @@ class S3Source extends Source {
     }
 
     const records = contents.map(content => {
-      console.log('Key: ' + content.Key)
-      const url = `https://${bucket}.s3.amazonaws.com/${content.Key}`
+      // const url = `https://${bucket}.s3.amazonaws.com/${content.Key}`
+      const signedUrl = s3.getSignedUrl('getObject', {
+        Bucket: bucket,
+        Key: content.Key
+      })
+      console.log('Key: ' + content.Key + ' Signed URL: ' + signedUrl)
+
       return {
-        utterance: url,
-        info: content
+        utterance: signedUrl,
+        meta: content
       }
     })
     return records
