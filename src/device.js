@@ -26,6 +26,12 @@ class Device {
             frameRate: 16000,
             channels: 1
           }
+        } else if (message.endsWith('.raw')) {
+          messageObject.audio = {
+            audioPath: message,
+            frameRate: 16000,
+            channels: 1
+          }
         } else {
           messageObject.text = message
         }

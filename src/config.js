@@ -5,17 +5,21 @@ const fs = require('fs')
 require('dotenv').config()
 
 class Config {
-  static load (file) {
+  static loadFromFile (file) {
+    const configString = fs.readFileSync(file)
+    Config.loadFromJSON(JSON.parse(configString))
+  }
+
+  static loadFromJSON (json) {
     if (Config.config) {
       return
     }
+    require('dotenv').config()
 
     // Do core AWS stuff
-    require('dotenv').config()
     AWS.config.update({ region: 'us-east-1' })
 
-    const configString = fs.readFileSync(file)
-    Config.config = JSON.parse(configString)
+    Config.config = json
     return Config.config
   }
 

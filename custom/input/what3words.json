@@ -5,7 +5,7 @@
   },
   "interceptor": "../custom/src/what3words-interceptor",
   "job": "show-tests",
-  "metrics": "datadog-metrics",
+  "metrics": "metrics",
   "sequence": ["open three slot"],
   "source": "s3-source",
   "sourceBucket": "what3words-samples"

@@ -4,8 +4,16 @@ const Source = require('./source')
 
 class S3Source extends Source {
   async load () {
-    const bucket = Config.get('sourceBucket', undefined, true)
+    const bucket = this.sourceBucket
     return this._listObjects(bucket)
+  }
+
+  static urlForKey (bucket, key) {
+    const s3 = new AWS.S3()
+    return s3.getSignedUrl('getObject', {
+      Bucket: bucket,
+      Key: key
+    })
   }
 
   async _listObjects (bucket, token) {
@@ -26,10 +34,7 @@ class S3Source extends Source {
 
     const records = contents.map(content => {
       // const url = `https://${bucket}.s3.amazonaws.com/${content.Key}`
-      const signedUrl = s3.getSignedUrl('getObject', {
-        Bucket: bucket,
-        Key: content.Key
-      })
+      const signedUrl = S3Source.urlForKey(bucket, content.Key)
       console.log('Key: ' + content.Key + ' Signed URL: ' + signedUrl)
 
       return {
@@ -38,6 +43,10 @@ class S3Source extends Source {
       }
     })
     return records
+  }
+
+  get sourceBucket () {
+    return Config.get('sourceBucket', undefined, true)
   }
 }
 

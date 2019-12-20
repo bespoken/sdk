@@ -16,7 +16,7 @@ class Metrics {
   }
 
   async publish (result) {
-    return this._publishJSON(result)
+    return Promise.resolve()
   }
 
   get job () {

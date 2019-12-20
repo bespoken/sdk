@@ -17,7 +17,8 @@
   },
   "scripts": {
     "process": "node src/batch-runner.js",
-    "standard": "standard --fix"
+    "standard": "standard --fix",
+    "test": "jest custom/test"
   },
   "repository": {
     "type": "git",

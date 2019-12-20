@@ -56,7 +56,7 @@ class BatchRunner {
   }
 
   async _initialize () {
-    Config.load(this._configFile)
+    Config.loadFromFile(this._configFile)
     // Create a publish class to send results to metrics service (DataDog or CloudWatch)
     // The run name uniquely tags metrics created by this process
     // We use the input file name for this - e.g., for C:/Users/bespoken/test/inputs.csv it will be inputs
@@ -67,7 +67,7 @@ class BatchRunner {
 
   async _processRecord (device, record) {
     // Skip a record if the interceptor returns false
-    if (Interceptor.instance().interceptRecord(record) === false) {
+    if (await Interceptor.instance().interceptRecord(record) === false) {
       return
     }
 
@@ -109,6 +109,8 @@ class BatchRunner {
       evaluation,
       lastResponse
     }
+    await Interceptor.instance().interceptResult(record, result)
+
     this._results.push(result)
 
     if (Config.has('postSequence')) {
