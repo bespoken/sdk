@@ -3,15 +3,15 @@ const fs = require('fs')
 const stringify = require('csv-stringify/lib/sync')
 
 class Printer {
-  print (results, expectedFields) {
+  print (job) {
     let successCount = 0
     let ignoreCount = 0
     const outputHeaders = ['utterance']
-    expectedFields.forEach(h => outputHeaders.push('ACTUAL ' + h.toUpperCase()))
-    expectedFields.forEach(h => outputHeaders.push('EXPECTED ' + h.toUpperCase()))
+    job.expectedFields.forEach(h => outputHeaders.push('ACTUAL ' + h.toUpperCase()))
+    job.expectedFields.forEach(h => outputHeaders.push('EXPECTED ' + h.toUpperCase()))
 
     const resultsArray = [outputHeaders]
-    results.forEach(async (result) => {
+    job.results.forEach(async (result) => {
       const ignore = (_.get(result, 'response.error', '').length > 0)
       result.success = false
       if (ignore) {
@@ -27,12 +27,12 @@ class Printer {
       // Then the expected values
       const resultArray = [result.utterance]
 
-      for (const fieldName of expectedFields) {
+      for (const fieldName of job.expectedFields) {
         const field = result.evaluation[fieldName]
         resultArray.push(field.actual)
       }
       resultArray.push(result.evaluation.success)
-      for (const fieldName of expectedFields) {
+      for (const fieldName of job.expectedFields) {
         const field = result.evaluation[fieldName]
         resultArray.push(field.expected)
       }

@@ -2,11 +2,11 @@ const Metrics = require('./metrics')
 const datadog = require('datadog-metrics')
 
 class DataDogMetrics extends Metrics {
-  async publish (result) {
+  async publish (job, result) {
     datadog.init({
       defaultTags: [
-        `job:${this.job}`,
-        `run:${this.run}`,
+        `job:${job.name}`,
+        `run:${job.run}`,
         `utterance:${result.utterance}`,
         `voiceId:${result.voiceId}`
       ]

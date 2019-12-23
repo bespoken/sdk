@@ -3,17 +3,17 @@ const Config = require('./config')
 const DevicePool = require('./device').DevicePool
 const Evaluator = require('./evaluator')
 const Interceptor = require('./interceptor')
+const Job = require('./job')
 const Metrics = require('./metrics')
-const path = require('path')
 const Source = require('./source')
+const Store = require('./store')
 const util = require('./util')
 
 class BatchRunner {
   constructor (configFile) {
     this._configFile = configFile
     this._devicePool = new DevicePool() // Manages virtual devices
-    this._expectedFields = [] // The array of expected fields used for testing the results
-    this._results = [] // Results from the batch runner
+    this.job
   }
 
   async process () {
@@ -31,7 +31,7 @@ class BatchRunner {
     // Use the first record to derive the expected fields
     for (const field in this._records[0]) {
       if (field !== 'utterance' && field !== 'meta') {
-        this._expectedFields.push(field)
+        this.job.expectedFields.push(field)
       }
     }
 
@@ -57,11 +57,10 @@ class BatchRunner {
 
   async _initialize () {
     Config.loadFromFile(this._configFile)
-    // Create a publish class to send results to metrics service (DataDog or CloudWatch)
-    // The run name uniquely tags metrics created by this process
-    // We use the input file name for this - e.g., for C:/Users/bespoken/test/inputs.csv it will be inputs
-    const runName = path.parse(Config.get('job', undefined, true)).name
-    this._metrics = Metrics.instance(runName)
+    const jobName = Config.get('job', undefined, true)
+    this.job = new Job(jobName, undefined, Config.config)
+
+    this._metrics = Metrics.instance()
     return this._metrics.initialize()
   }
 
@@ -100,7 +99,7 @@ class BatchRunner {
 
     const lastResponse = _.nth(responses, -1)
     // Test the spoken response from Alexa
-    const evaluation = Evaluator.evaluate(utterance, record, this._expectedFields, lastResponse)
+    const evaluation = Evaluator.evaluate(utterance, record, this.job.expectedFields, lastResponse)
     console.log('RUNNER VALIDATE: ' + evaluation.success)
 
     const result = {
@@ -111,7 +110,7 @@ class BatchRunner {
     }
     await Interceptor.instance().interceptResult(record, result)
 
-    this._results.push(result)
+    this.job.addResult(result)
 
     if (Config.has('postSequence')) {
       const commands = Config.get('postSequence')
@@ -123,7 +122,10 @@ class BatchRunner {
     }
 
     // Publish to cloudwatch
-    await this._metrics.publish(result)
+    await this._metrics.publish(this.job, result)
+
+    // Save off the current job info
+    Store.instance().save(this.job)
   }
 
   async _read () {
@@ -133,7 +135,7 @@ class BatchRunner {
 
   _print () {
     const Printer = require('./printer')
-    new Printer().print(this._results, this._expectedFields)
+    new Printer().print(this.job)
   }
 }
 

@@ -4,11 +4,15 @@
   - [X] On source
   - [X] On results
 - [X] Add http support
-- [ ] Concatenate audio
+- [X] Concatenate audio
 - [ ] Update datadog key
-- [ ] Load audio into S3
-- [ ] Get the real interaction model
-f
+- [ ] Save as we go along
+  - [ ] Allow for resume
+  - [ ] Label each job uniquely
+- [ ] Get stuff from What3Words
+  - [ ] Load audio into S3
+  - [ ] Get the real interaction model
+
 ## Nice-to-have
 - [ ] Use jsdoc on source.js and evaluator
 - [ ] make sure expiry on s3 URL is long enough
