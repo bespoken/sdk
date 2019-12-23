@@ -13,10 +13,16 @@ module.exports = class Job {
     // Initializes other fields
     this._expectedFields = []
     this._results = []
+    this._processedCount = 0
+    this.totalCount = 0
   }
 
   addResult (result) {
     this.results.push(result)
+  }
+
+  addProcessedCount (count = 1) {
+    this._processedCount++
   }
 
   get config () {
@@ -29,6 +35,10 @@ module.exports = class Job {
 
   get name () {
     return this._name
+  }
+
+  get processedCount () {
+    return this._processedCount
   }
 
   get results () {

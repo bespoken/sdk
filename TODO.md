@@ -6,12 +6,13 @@
 - [X] Add http support
 - [X] Concatenate audio
 - [ ] Update datadog key
-- [ ] Save as we go along
-  - [ ] Allow for resume
-  - [ ] Label each job uniquely
+- [X] Save as we go along
+  - [X] Allow for resume
+  - [X] Label each job uniquely
 - [ ] Get stuff from What3Words
   - [ ] Load audio into S3
   - [ ] Get the real interaction model
+- [ ] Add locking logic on saving data
 
 ## Nice-to-have
 - [ ] Use jsdoc on source.js and evaluator

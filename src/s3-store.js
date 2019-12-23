@@ -10,12 +10,15 @@ class S3Store extends Store {
       Key: S3Store.key(run)
     }).promise()
 
-    const jobData = response.Data
+    // console.log('S3 JOB KEY: ' + S3Store.key(run) + ' RESPONSE: ' + JSON.stringify(response.Body, null, 2))
+    const jobData = response.Body
     if (!jobData) {
       return undefined
     }
-    const job = new Job()
-    Object.assign(jobData, job)
+
+    const jobJSON = JSON.parse(jobData)
+    let job = new Job()
+    job = Object.assign(job, jobJSON)
     return job
   }
 

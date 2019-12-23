@@ -13,7 +13,7 @@ class BatchRunner {
   constructor (configFile) {
     this._configFile = configFile
     this._devicePool = new DevicePool() // Manages virtual devices
-    this.job
+    this._startIndex = 0
   }
 
   async process () {
@@ -28,6 +28,8 @@ class BatchRunner {
       process.exit(1)
     }
 
+    this.job.totalCount = this._records.length
+
     // Use the first record to derive the expected fields
     for (const field in this._records[0]) {
       if (field !== 'utterance' && field !== 'meta') {
@@ -35,30 +37,43 @@ class BatchRunner {
       }
     }
 
-    let recordsProcessed = 0
-    this._records.forEach(async (record) => {
+    for (let i = this._startIndex; i < this._records.length; i++) {
+      const record = this._records[i]
       // This runner can operate concurrently
       // It will run as many records simultaneously as there are tokens available
       const device = await this._devicePool.lock()
+
+      console.log(`PROCESS RECORD - index: ${i} say: ${record.utterance} `)
 
       await this._processRecord(device, record)
 
       // Free the device once we are done with it
       this._devicePool.free(device)
 
-      recordsProcessed++
+      this.job.addProcessedCount()
+
+      // Save the results after each record is done
+      Store.instance().save(this.job)
 
       // When we have processed all the records, print out the results
-      if (recordsProcessed === this._records.length) {
+      if (this.job.processedCount === this.job.totalCount) {
         this._print()
       }
-    })
+    }
   }
 
   async _initialize () {
     Config.loadFromFile(this._configFile)
     const jobName = Config.get('job', undefined, true)
     this.job = new Job(jobName, undefined, Config.config)
+
+    // Check if we are resuming
+    if (process.env.RUN_NAME) {
+      const run = process.env.RUN_NAME
+      this.job = await Store.instance().fetch(run)
+      this._startIndex = this.job.processedCount
+      console.log(`RESUMING JOB - starting at: ${this._startIndex}`)
+    }
 
     this._metrics = Metrics.instance()
     return this._metrics.initialize()
@@ -94,7 +109,7 @@ class BatchRunner {
     messages.push(utterance)
 
     const responses = await device.message(voiceId, messages)
-    console.log('RESPONSE FULL: ' + JSON.stringify(responses, null, 2))
+    // console.log('RESPONSE FULL: ' + JSON.stringify(responses, null, 2))
     responses.forEach(response => console.log(`RUNNER MESSAGE: ${response.message} TRANSCRIPT: ${response.transcript}`))
 
     const lastResponse = _.nth(responses, -1)
@@ -123,9 +138,6 @@ class BatchRunner {
 
     // Publish to cloudwatch
     await this._metrics.publish(this.job, result)
-
-    // Save off the current job info
-    Store.instance().save(this.job)
   }
 
   async _read () {
