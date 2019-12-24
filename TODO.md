@@ -9,9 +9,9 @@
 - [X] Save as we go along
   - [X] Allow for resume
   - [X] Label each job uniquely
-- [ ] Get stuff from What3Words
-  - [ ] Load audio into S3
-  - [ ] Get the real interaction model
+- [X] Get stuff from What3Words
+  - [X] Load audio into S3
+  - [X] Get the real interaction model
 - [ ] Add locking logic on saving data
 
 ## Nice-to-have

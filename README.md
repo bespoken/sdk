@@ -22,7 +22,8 @@ An example file:
   "fields": {
     "imageURL": "$.raw.messageBody.directives[1].payload.content.art.sources[0].url"
   },
-  "metrics": "datadog",
+  "job": "utterance-tester",
+  "metrics": "datadog-metrics",
   "sequence": ["open my audio player"]
 }
 ```
