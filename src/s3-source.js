@@ -3,14 +3,27 @@ const Config = require('./config')
 const Source = require('./source')
 
 class S3Source extends Source {
+  static connection () {
+    if (!S3Source.s3) {
+      S3Source.s3 = new AWS.S3()
+    }
+    return S3Source.s3
+  }
+
   async load () {
     const bucket = this.sourceBucket
-    return this._listObjects(bucket)
+    const contents = await this._listObjects(bucket)
+    const records = contents.map(content => {
+      return {
+        utterance: content.Key,
+        meta: content
+      }
+    })
+    return records
   }
 
   static urlForKey (bucket, key) {
-    const s3 = new AWS.S3()
-    return s3.getSignedUrl('getObject', {
+    return S3Source.connection().getSignedUrl('getObject', {
       Bucket: bucket,
       Key: key
     })
@@ -27,22 +40,15 @@ class S3Source extends Source {
 
     const s3 = new AWS.S3()
     const response = await s3.listObjectsV2(params).promise()
+    console.log(`S3Source Token: ${token} List: ${response.Contents.length}`)
+
     let contents = response.Contents
     if (response.NextContinuationToken) {
-      contents = contents.concat(this._listObjects(bucket, response.NextContinuationToken))
+      const moreObjects = await this._listObjects(bucket, response.NextContinuationToken)
+      contents = contents.concat(moreObjects)
     }
 
-    const records = contents.map(content => {
-      // const url = `https://${bucket}.s3.amazonaws.com/${content.Key}`
-      const signedUrl = S3Source.urlForKey(bucket, content.Key)
-      console.log('Key: ' + content.Key + ' Signed URL: ' + signedUrl)
-
-      return {
-        utterance: signedUrl,
-        meta: content
-      }
-    })
-    return records
+    return contents
   }
 
   get sourceBucket () {

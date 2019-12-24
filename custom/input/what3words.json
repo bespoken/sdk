@@ -1,12 +1,11 @@
 {
-  "fields": {
-    "imageURL": "$.raw.messageBody.directives[1].payload.content.art.sources[0].url",
-    "title": "$.raw.messageBody.directives[1].payload.content.title"
-  },
   "interceptor": "../custom/src/what3words-interceptor",
-  "job": "show-tests",
-  "metrics": "metrics",
+  "job": "address-tests",
+  "printer": "../custom/src/what3words-printer",
+  "metrics": "datadog-metrics",
   "sequence": ["open three slot"],
   "source": "s3-source",
-  "sourceBucket": "what3words-samples"
+  "sourceBucket": "what3words-samples",
+  "store": "s3-store",
+  "transcript": false
 }

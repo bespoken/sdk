@@ -16,7 +16,7 @@ utterance-tests:
    - npm run process custom/input/what3words.json
   artifacts:
     paths:
-    - utterance-results.csv
+    - results.csv
     expire_in: 1 week
   only: 
     - schedules

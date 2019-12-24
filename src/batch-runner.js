@@ -12,7 +12,6 @@ const util = require('./util')
 class BatchRunner {
   constructor (configFile) {
     this._configFile = configFile
-    this._devicePool = new DevicePool() // Manages virtual devices
     this._startIndex = 0
   }
 
@@ -55,10 +54,7 @@ class BatchRunner {
       // Save the results after each record is done
       Store.instance().save(this.job)
 
-      // When we have processed all the records, print out the results
-      if (this.job.processedCount === this.job.totalCount) {
-        this._print()
-      }
+      this._print()
     }
   }
 
@@ -75,13 +71,16 @@ class BatchRunner {
       console.log(`RESUMING JOB - starting at: ${this._startIndex}`)
     }
 
+    this._devicePool = new DevicePool() // Manages virtual devices
+
     this._metrics = Metrics.instance()
     return this._metrics.initialize()
   }
 
   async _processRecord (device, record) {
     // Skip a record if the interceptor returns false
-    if (await Interceptor.instance().interceptRecord(record) === false) {
+    const process = await Interceptor.instance().interceptRecord(record)
+    if (process === false) {
       return
     }
 
@@ -98,7 +97,6 @@ class BatchRunner {
   async _processVariation (device, record, voiceId = 'en-US-Wavenet-D') {
     const utterance = record.utterance
 
-    console.log('RUNNER ' + utterance + ' WITH ' + device.token)
     const messages = []
     // If there is a sequence, run through the commands
     if (Config.has('sequence')) {
@@ -123,8 +121,13 @@ class BatchRunner {
       evaluation,
       lastResponse
     }
-    await Interceptor.instance().interceptResult(record, result)
-
+    try {
+      await Interceptor.instance().interceptResult(record, result)
+    } catch (e) {
+      console.error(`ERROR ${e} SKIPPING RECORD`)
+      console.error(e.stack)
+      return
+    }
     this.job.addResult(result)
 
     if (Config.has('postSequence')) {
@@ -147,7 +150,7 @@ class BatchRunner {
 
   _print () {
     const Printer = require('./printer')
-    new Printer().print(this.job)
+    Printer.instance().print(this.job)
   }
 }
 
@@ -162,3 +165,8 @@ if (configFile) {
   console.error('BatchRunner requires two arguments - the config file and the CSV file to process')
   process.exit(1)
 }
+
+process.on('unhandledRejection', (e) => {
+  console.error('UNHANDLED: ' + e)
+  console.error(e.stack)
+})

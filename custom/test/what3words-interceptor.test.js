@@ -25,7 +25,7 @@ describe('what3words test', () => {
     expect(record.utterance).toEqual('sample.raw')
   })
 
-  test('correctly handles result that is correct by autosuggest', async () => {
+  test.only('correctly handles result that is corrected by autosuggest', async () => {
     const interceptor = new Interceptor()
     const alexaResponse = 'navigate|secondWord|double|double|ALEXA|thirdWord|improving|improving|ALEXA|firstWord|launched|launched|ALEXA'
     const record = {

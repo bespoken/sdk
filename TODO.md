@@ -13,8 +13,11 @@
   - [X] Load audio into S3
   - [X] Get the real interaction model
 - [ ] Add locking logic on saving data
+- [ ] Make source/printer more extensible - output only fields, expected field definitions
 
 ## Nice-to-have
+- [ ] Make skip STT configurable
+- [ ] Merge config and job - get properties of json file from job
 - [ ] Use jsdoc on source.js and evaluator
 - [ ] update package.json info
 - [ ] Add locale support

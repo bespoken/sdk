@@ -30,6 +30,7 @@ class Evaluator {
     const key = `fields.${field}`
     if (Config.has(key)) {
       const expression = Config.get(key)
+
       try {
         actual = jsonpath.value(response, expression)
         console.log(`EVAL VALUE: ${actual} JSON-PATH: ${expression}`)

@@ -1,5 +1,5 @@
-const _ = require('lodash')
 const axios = require('axios')
+const Config = require('../../src/config')
 const fs = require('fs')
 const Interceptor = require('../../src/interceptor')
 const S3Source = require('../../src/s3-source')
@@ -8,7 +8,7 @@ const w3w = require('@what3words/api')
 class What3WordsInterceptor extends Interceptor {
   static initialize () {
     var options = {
-      key: '5X0A8UKF',
+      key: Config.env('WHAT3WORDS_API_KEY'),
       lang: 'en',
       display: 'terse'
     }
@@ -17,15 +17,8 @@ class What3WordsInterceptor extends Interceptor {
   }
 
   async interceptRecord (record) {
-    const key = record.meta.Key
-
-    // Parse the w3w address from the file
-    const address = this._w3wFromKey(key)
-    console.log(`${key} is ${address} `)
-
     // Get the S3 url for this file
     const url = S3Source.urlForKey('what3words-samples', record.meta.Key)
-    console.log(`URL: ${url}`)
 
     // Get the file data from S3
     const response = await axios.get(url, { responseType: 'arraybuffer' })
@@ -43,21 +36,23 @@ class What3WordsInterceptor extends Interceptor {
 
   async interceptResult (record, result) {
     const key = record.meta.Key
-    const address = this._w3wFromKey(key)
-    const addressInfo = await w3w.convertToCoordinates(address)
+    const metaData = this._metaFromKey(key)
+    const addressInfo = await w3w.convertToCoordinates(metaData.address)
     const encodedAlexaRequest = result.lastResponse.card.textField
 
     // We get back the raw request Alexa sent to the skill - parse it into an address
     const recognizedAddress = this._cardTextToAddress(encodedAlexaRequest)
-    console.log(`Recognized address by Alexa: ${recognizedAddress}`)
+    console.log(`WHAT3WORDS Recognized: ${recognizedAddress} Expected: ${metaData.address}`)
     let success = false
-    if (address === recognizedAddress) {
+    let suggestedAddress
+    if (!recognizedAddress) {
+      console.log(`WHAT3WORDS Expected: ${metaData.address} Raw: ${result.lastResponse.card.textField}`)
+    } else if (metaData.address === recognizedAddress) {
       success = true
     } else {
       // Adjust our location
       const newLat = parseFloat(addressInfo.coordinates.lat) - 0.1
-      const clipTo = `${newLat},${addressInfo.coordinates.lng},15`
-      console.log('NewLocation: ' + clipTo)
+
       // Now lookup the suggested address for this location
       // We use the clip to keep the recommendation within 15K of the user
       try {
@@ -71,17 +66,33 @@ class What3WordsInterceptor extends Interceptor {
           }
         })
 
-        // console.log('Suggested: ' + JSON.stringify(suggestedAddress, null, 2))
-        const suggestedAddress = suggestedAddressResponse.suggestions[0].words
-        console.log(`Suggested Address: ${suggestedAddress}`)
-        if (suggestedAddress === address) {
-          success = true
+        console.log('WHAT3WORDS Suggested Payload: ' + JSON.stringify(suggestedAddressResponse, null, 2))
+        if (suggestedAddressResponse.suggestions && suggestedAddressResponse.suggestions.length > 0) {
+          suggestedAddress = suggestedAddressResponse.suggestions[0].words
+          console.log(`WHAT3WORDS Suggested: ${suggestedAddress} Expected: ${metaData.address}`)
+          if (suggestedAddress === metaData.address) {
+            success = true
+          }
         }
       } catch (e) {
         console.error(e)
       }
     }
+
+    // Set all the stuff we need on the records
+    record.utterance = record.meta.Key
+    result.expectedAddress = metaData.address
+    result.recognizedAddress = recognizedAddress
+    result.suggestedAddress = suggestedAddress
     result.evaluation.success = success
+    result.raw = result.lastResponse.card.textField
+
+    // Add in custom tags
+    result.tags = [
+      `address:${metaData.address}`,
+      `gender:${metaData.gender}`,
+      `speaker:${metaData.speaker}`
+    ]
   }
 
   _cardTextToAddress (encodedAlexaRequest) {
@@ -103,9 +114,15 @@ class What3WordsInterceptor extends Interceptor {
     return `${parts.firstWord}.${parts.secondWord}.${parts.thirdWord}`
   }
 
-  _w3wFromKey (key) {
-    console.log('key: ' + key)
-    return _.nth(key.match(/\[.*\] \[.*\] \[(.*)\] \[.*\].wav/), 1)
+  _metaFromKey (key) {
+    const metaData = key.match(/\[(.*)\] \[(.*)\] \[(.*)\] \[.*\].wav/).slice(1)
+    if (metaData.length === 3) {
+      return {
+        address: metaData[2],
+        gender: metaData[1],
+        speaker: metaData[0]
+      }
+    }
   }
 }
 

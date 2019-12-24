@@ -1,15 +1,18 @@
 const _ = require('lodash')
+const Config = require('./config')
 const util = require('./util')
 const vdk = require('virtual-device-sdk')
 
 class Device {
-  constructor (token) {
+  constructor (token, skipSTT = false) {
     this._token = token
+    this._skipSTT = skipSTT
   }
 
   async message (voiceId, messages, attempt = 1) {
     const virtualDevice = new vdk.VirtualDevice({
       debug: true,
+      skipSTT: this._skipSTT,
       token: this._token,
       voiceID: voiceId
     })
@@ -66,8 +69,16 @@ class DevicePool {
   constructor () {
     const tokens = process.env.VIRTUAL_DEVICE_TOKEN.split(',') // The virtual device token(s) used for processing
     this._devices = []
+
+    let skipSTT = false
+    if (Config.has('transcript')) {
+      skipSTT = Config.get('transcript') === false
+    }
     // Create a device for each token
-    tokens.forEach(token => this._devices.push(new Device(token)))
+    tokens.forEach(token => {
+      console.log(`DEVICE create token: ${token} skipSTT: ${skipSTT}`)
+      this._devices.push(new Device(token, skipSTT))
+    })
 
     // Create an array to track the devices currently in use
     this._devicesInUse = []
@@ -77,7 +88,7 @@ class DevicePool {
     // Check if a free token is available
     console.log('LOCK ATTEMPT - DEVICES AVAILABLE: ' + this._freeCount())
     while (this._freeCount() === 0) {
-      await util.sleep(5000)
+      await util.sleep(1000)
     }
 
     // If there is a free token, add to our list of tokens in use so no one else can use it
