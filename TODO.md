@@ -14,6 +14,7 @@
   - [X] Get the real interaction model
 - [ ] Add locking logic on saving data
 - [ ] Make source/printer more extensible - output only fields, expected field definitions
+- [ ] Skip unit tests on web runs
 
 ## Nice-to-have
 - [ ] Make skip STT configurable

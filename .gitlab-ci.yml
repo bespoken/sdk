@@ -27,3 +27,6 @@ project-tests:
   script:
    - npm install
    - npm test
+  only:
+    - pushes
+    - merge_requests
