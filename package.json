@@ -1,8 +1,8 @@
 {
-  "name": "long-form-audio-example",
+  "name": "batch-tester",
   "version": "1.0.0",
-  "description": "Here is a project with a basic test verifying some stations on Alexa.\r To use this example:",
-  "main": "lib/batch-runner.js",
+  "description": "This project tests utterances in batch - supporting a variety of data sources and reporting formats",
+  "main": "src/batch-runner.js",
   "dependencies": {
     "@what3words/api": "^3.1.0",
     "aws-sdk": "^2.579.0",
@@ -20,17 +20,10 @@
     "standard": "standard --fix",
     "test": "jest custom/test"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jkelvie/long-form-audio-example.git"
-  },
   "standard": {},
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/emersonsklar/siriusXM/issues"
-  },
-  "homepage": "https://github.com/emersonsklar/siriusXM#readme",
+  "homepage": "https://gitlab.com/bespoken/batch-tester.git",
   "devDependencies": {
     "jest": "^24.9.0",
     "standard": "^14.3.1"

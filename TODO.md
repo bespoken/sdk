@@ -16,7 +16,6 @@
 
 ## Nice-to-have
 - [ ] Use jsdoc on source.js and evaluator
-- [ ] make sure expiry on s3 URL is long enough
 - [ ] update package.json info
 - [ ] Add locale support
 - [ ] Where to store custom files?
