@@ -47,3 +47,4 @@ pages:
   only:
     - pushes
     - merge_requests
+    - master

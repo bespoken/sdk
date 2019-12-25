@@ -1,4 +1,6 @@
 ## Critical
+- [ ] Create core bespoken version of the batch-tester
+  - [ ] Rename to batch-testing-framework
 - [ ] More documentation
   - [ ] More jsdocs - metrics, store
   - [ ] Update README
@@ -12,17 +14,13 @@
 - [ ] Track errors
 - [ ] Look into incrementally create test-reports
 - [ ] Create an npm package
+- [ ] Add more unit-tests
+  - [ ] Enable code coverage in Gitlab
 
 ## Nice-to-have
 - [ ] Merge config and job - get properties of json file from job
-- [ ] Use jsdoc on source.js and evaluator
-- [ ] update package.json info
 - [ ] Add locale support
-- [ ] Where to store custom files?
-  - [ ] https://stackoverflow.com/questions/53391229/clone-another-gitlab-repository-in-gitlab-ci-script
 - [ ] Fix cloudwatch
-- [ ] Fix section of readme that explains the CSV
-- [ ] Create Junit test reports - to show in gitlab?
 - [ ] Look into using AWS gitlab runners? Or via Kubernetes on GCP?
 
 ## Done

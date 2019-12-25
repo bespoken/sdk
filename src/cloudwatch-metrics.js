@@ -3,7 +3,7 @@ const AWS = require('aws-sdk')
 
 class CloudWatchMetrics {
   constructor (name) {
-    this.logGroup = '/demo/Discovery'
+    this.logGroup = '/demo/make-this-configurable'
     this._name = name
   }
 
@@ -75,15 +75,3 @@ class CloudWatchMetrics {
 }
 
 module.exports = CloudWatchMetrics
-
-if (_.nth(process.argv, 2) === 'publish') {
-  const publish = new Publisher('/demo/Discovery', 'test-stream')
-  publish.initialize().then(() => {
-    publish.publishUtteranceResults({ test: 'testValue' }).then(() => {
-      console.log('Sequence: ' + publish._sequenceToken)
-      return publish.publishUtteranceResults({ test: 'testValue' })
-    }).then(() => {
-      console.log('Sequence: ' + publish._sequenceToken)
-    })
-  })
-}
