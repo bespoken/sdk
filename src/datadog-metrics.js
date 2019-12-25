@@ -20,9 +20,7 @@ class DataDogMetrics extends Metrics {
 
     if (result.evaluation.success) {
       datadog.increment('utterance.success', 1)
-      datadog.increment('utterance.failure', 0)
     } else {
-      datadog.increment('utterance.success', 0)
       datadog.increment('utterance.failure', 1)
     }
 

@@ -1,8 +1,6 @@
 {
-  "name": "batch-tester",
-  "version": "1.0.0",
+  "author": "",
   "description": "This project tests utterances in batch - supporting a variety of data sources and reporting formats",
-  "main": "src/batch-runner.js",
   "dependencies": {
     "@what3words/api": "^3.1.0",
     "aws-sdk": "^2.579.0",
@@ -15,17 +13,23 @@
     "lodash": "^4.17.15",
     "momentjs": "^2.0.0"
   },
+  "devDependencies": {
+    "jest": "^24.9.0",
+    "jest-junit-reporter": "^1.1.0",
+    "standard": "^14.3.1"
+  },
+  "homepage": "https://gitlab.com/bespoken/batch-tester.git",
+  "license": "ISC",
+  "jest": {
+    "testResultsProcessor": "./node_modules/jest-junit-reporter"
+  },
+  "main": "src/batch-runner.js",
+  "name": "batch-tester",
   "scripts": {
     "process": "node src/batch-runner.js",
     "standard": "standard --fix",
     "test": "jest custom/test"
   },
   "standard": {},
-  "author": "",
-  "license": "ISC",
-  "homepage": "https://gitlab.com/bespoken/batch-tester.git",
-  "devDependencies": {
-    "jest": "^24.9.0",
-    "standard": "^14.3.1"
-  }
+  "version": "1.0.0"
 }

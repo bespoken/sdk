@@ -12,9 +12,7 @@
 - [X] Get stuff from What3Words
   - [X] Load audio into S3
   - [X] Get the real interaction model
-- [ ] Add locking logic on saving data
 - [ ] Make source/printer more extensible - output only fields, expected field definitions
-- [ ] Skip unit tests on web runs
 - [ ] Print out job name regularly
 - [ ] Remove 0 points from datadog publishing
 - [ ] Identify long-term approach for managing accounts with regular runs
@@ -26,9 +24,9 @@
 - [] Fix this bug: ERROR TypeError: Cannot read property 'textField' of null SKIPPING RECORD
       1015 TypeError: Cannot read property 'textField' of null
       1016     at What3WordsInterceptor.interceptResult (/builds/what3words/batch-tester/custom/src/what3words-interceptor.js:41:58)
-1017     at process._tickCallback (internal/process/next_tick.js:68:7)
+- [ ] Track errors
+
 ## Nice-to-have
-- [X] Make skip STT configurable
 - [ ] Merge config and job - get properties of json file from job
 - [ ] Use jsdoc on source.js and evaluator
 - [ ] update package.json info
@@ -52,3 +50,5 @@
 - [X] Cleanup readme
 - [X] Change to batch message call
 - [X] update example.env
+- [X] Make skip STT configurable
+- [X] Skip unit tests on web runs

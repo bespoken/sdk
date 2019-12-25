@@ -16,8 +16,8 @@ utterance-tests:
    - npm run process custom/input/what3words.json
   artifacts:
     paths:
-    - results.csv
-    expire_in: 1 week
+      - results.csv
+    expire_in: 30 days
   only: 
     - schedules
     - web
@@ -27,6 +27,12 @@ project-tests:
   script:
    - npm install
    - npm test
+  artifacts:
+    paths:
+      - test-results.xml
+    reports:
+      junit: test-results.xml
+    expire_in: 30 days
   only:
     - pushes
     - merge_requests
