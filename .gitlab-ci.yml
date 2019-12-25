@@ -27,14 +27,23 @@ project-tests:
   script:
    - npm install
    - npm test
-   - npm run docs
   artifacts:
     paths:
       - test-report.xml
-      - docs/
     reports:
       junit: test-report.xml
     expire_in: 30 days
+  only:
+    - pushes
+    - merge_requests
+
+pages:
+  stage: project-tests
+  script:
+  - npm run docs
+  artifacts:
+    paths:
+    - docs
   only:
     - pushes
     - merge_requests
