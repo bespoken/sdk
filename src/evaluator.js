@@ -1,18 +1,25 @@
 const jsonpath = require('jsonpath')
 const Config = require('./config')
+const Record = require('./source').Record
+const Result = require('./Job').Result
 
-// Logic for evaluating whether or not a particular test passed
+/**
+ * The evaluator class encapsulates logic to determine if a particular record passed its tests
+ */
 class Evaluator {
-  // Runs through all the fields defined in the CSV record and compares them to actuals
-  static evaluate (utterance, record, expectedFields, response) {
-    const result = {
-      success: true
-    }
+  /**
+   * Runs through all the fields defined in the CSV record and compares them to actual
+   * @param {Record} record
+   * @param {Result} result
+   * @param {Object} response
+   */
+  static evaluate (record, result, response) {
+    result.success = true
 
-    for (const field in expectedFields) {
+    for (const field in record.expectedFields) {
       // Skip utterance and meta as protected fields
       const fieldResult = Evaluator.evaluateField(field, record, response)
-      result[field] = fieldResult
+      result.addActualField(field, fieldResult.actual)
       result.success = fieldResult.success && result.success
     }
     return result

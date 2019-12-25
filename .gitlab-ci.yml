@@ -27,9 +27,11 @@ project-tests:
   script:
    - npm install
    - npm test
+   - npm run docs
   artifacts:
     paths:
       - test-results.xml
+      - docs/
     reports:
       junit: test-results.xml
     expire_in: 30 days

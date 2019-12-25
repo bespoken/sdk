@@ -1,3 +1,4 @@
+const _ = require('lodash')
 const axios = require('axios')
 const Config = require('../../src/config')
 const fs = require('fs')
@@ -38,7 +39,10 @@ class What3WordsInterceptor extends Interceptor {
     const key = record.meta.Key
     const metaData = this._metaFromKey(key)
     const addressInfo = await w3w.convertToCoordinates(metaData.address)
-    const encodedAlexaRequest = result.lastResponse.card.textField
+    const encodedAlexaRequest = _.get(result, 'lastResponse.card.textField')
+    if (!encodedAlexaRequest) {
+      return false
+    }
 
     // We get back the raw request Alexa sent to the skill - parse it into an address
     const recognizedAddress = this._cardTextToAddress(encodedAlexaRequest)
@@ -81,18 +85,16 @@ class What3WordsInterceptor extends Interceptor {
 
     // Set all the stuff we need on the records
     record.utterance = record.meta.Key
-    result.expectedAddress = metaData.address
-    result.recognizedAddress = recognizedAddress
-    result.suggestedAddress = suggestedAddress
-    result.evaluation.success = success
-    result.raw = result.lastResponse.card.textField
+    result.addOutputField('address', metaData.address)
+    result.addOutputField('recognizedAddress', recognizedAddress)
+    result.addOutputField('suggestedAddress', suggestedAddress)
+    result.addOutputField('raw', _.get(result, 'lastResponse.card.textField'))
+    result.success = success
 
     // Add in custom tags
-    result.tags = [
-      `address:${metaData.address}`,
-      `gender:${metaData.gender}`,
-      `speaker:${metaData.speaker}`
-    ]
+    result.addTag('address', metaData.address)
+    result.addTag('gender', metaData.gender)
+    result.addTag('speaker', metaData.speaker)
   }
 
   _cardTextToAddress (encodedAlexaRequest) {

@@ -1,7 +1,6 @@
 {
   "interceptor": "../custom/src/what3words-interceptor",
   "job": "address-tests",
-  "printer": "../custom/src/what3words-printer",
   "metrics": "datadog-metrics",
   "sequence": ["open three slot"],
   "source": "s3-source",

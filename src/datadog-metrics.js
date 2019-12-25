@@ -3,7 +3,7 @@ const datadog = require('datadog-metrics')
 
 class DataDogMetrics extends Metrics {
   async publish (job, result) {
-    let tags = [
+    const tags = [
       `job:${job.name}`,
       `run:${job.run}`,
       `utterance:${result.utterance}`,
@@ -11,14 +11,17 @@ class DataDogMetrics extends Metrics {
     ]
 
     if (result.tags) {
-      tags = tags.concat(result.tags)
+      for (const key of Object.keys(result.tags)) {
+        const value = result.tags[key]
+        tags.push(`${key}:${value}`)
+      }
     }
 
     datadog.init({
       defaultTags: tags
     })
 
-    if (result.evaluation.success) {
+    if (result.success) {
       datadog.increment('utterance.success', 1)
     } else {
       datadog.increment('utterance.failure', 1)

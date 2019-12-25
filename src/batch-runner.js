@@ -3,9 +3,11 @@ const Config = require('./config')
 const DevicePool = require('./device').DevicePool
 const Evaluator = require('./evaluator')
 const Interceptor = require('./interceptor')
-const Job = require('./job')
+const Job = require('./job').Job
 const Metrics = require('./metrics')
-const Source = require('./source')
+const Record = require('./source').Record
+const Result = require('./job').Result
+const Source = require('./source').Source
 const Store = require('./store')
 const util = require('./util')
 
@@ -22,22 +24,15 @@ class BatchRunner {
     // Read in the CSV input records
     await this._read()
 
-    if (this._records.length === 0) {
+    if (this.job.records.length === 0) {
       console.error('No records to process in input file')
       process.exit(1)
     }
 
-    this.job.totalCount = this._records.length
+    this.job.totalCount = this.job.records.length
 
-    // Use the first record to derive the expected fields
-    for (const field in this._records[0]) {
-      if (field !== 'utterance' && field !== 'meta') {
-        this.job.expectedFields.push(field)
-      }
-    }
-
-    for (let i = this._startIndex; i < this._records.length; i++) {
-      const record = this._records[i]
+    for (let i = this._startIndex; i < this.job.records.length; i++) {
+      const record = this.job.records[i]
       // This runner can operate concurrently
       // It will run as many records simultaneously as there are tokens available
       const device = await this._devicePool.lock()
@@ -114,18 +109,21 @@ class BatchRunner {
     responses.forEach(response => console.log(`RUNNER MESSAGE: ${response.message} TRANSCRIPT: ${response.transcript}`))
 
     const lastResponse = _.nth(responses, -1)
+    const result = new Result(
+      record,
+      voiceId,
+      lastResponse
+    )
+
     // Test the spoken response from Alexa
-    const evaluation = Evaluator.evaluate(utterance, record, this.job.expectedFields, lastResponse)
+    const evaluation = Evaluator.evaluate(record, result, lastResponse)
     console.log('RUNNER VALIDATE: ' + evaluation.success)
 
-    const result = {
-      utterance,
-      voiceId,
-      evaluation,
-      lastResponse
-    }
     try {
-      await Interceptor.instance().interceptResult(record, result)
+      const include = await Interceptor.instance().interceptResult(record, result)
+      if (include === false) {
+        return
+      }
     } catch (e) {
       console.error(`ERROR ${e} SKIPPING RECORD`)
       console.error(e.stack)
@@ -148,7 +146,7 @@ class BatchRunner {
 
   async _read () {
     const source = Source.instance()
-    this._records = await source.load()
+    this.job.records = await source.load()
   }
 
   _print () {

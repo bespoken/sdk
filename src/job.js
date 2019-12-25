@@ -1,6 +1,10 @@
+const Record = require('./source').Record
 const moment = require('moment')
 
-module.exports = class Job {
+/**
+ * Class that manages info and execution of a particular job
+ */
+class Job {
   constructor (name, run, config) {
     this._name = name
     if (run) {
@@ -10,27 +14,59 @@ module.exports = class Job {
     }
     this._config = config
 
-    // Initializes other fields
-    this._expectedFields = []
+    this._records = []
     this._results = []
     this._processedCount = 0
     this.totalCount = 0
   }
 
+  /**
+   * Captures a result of a record being processed
+   * @param {Result} result
+   */
   addResult (result) {
     this.results.push(result)
   }
 
+  /**
+   * Increments the number of records being processed
+   * @param {number} [count] Defaults to 1
+   */
   addProcessedCount (count = 1) {
     this._processedCount++
   }
 
-  get config () {
-    return this._config
+  /**
+   * Iterates across all the results to see all the expected field values
+   * @returns {string[]} Return the list of expected field names
+   */
+  expectedFieldNames () {
+    const fields = this._uniqueFields(this._records, 'expectedFields')
+    console.log(`JOB expectedFields: ${fields}`)
+    return fields
   }
 
-  get expectedFields () {
-    return this._expectedFields
+  outputFieldNames () {
+    const fields = this._uniqueFields(this._results, 'outputFields')
+    console.log(`JOB ouputFields: ${fields}`)
+    return fields
+  }
+
+  _uniqueFields (recordArray, resultProperty) {
+    const fields = []
+    recordArray.forEach(result => {
+      // console.log(`RESULT ${resultProperty}: ${result[resultProperty]}`)
+      Object.keys(result[resultProperty]).forEach(field => {
+        if (fields.indexOf(field) === -1) {
+          fields.push(field)
+        }
+      })
+    })
+    return fields
+  }
+
+  get config () {
+    return this._config
   }
 
   get name () {
@@ -41,6 +77,20 @@ module.exports = class Job {
     return this._processedCount
   }
 
+  /**
+   * @returns {Record[]} The results for the job
+   */
+  get records () {
+    return this._records
+  }
+
+  set records (records) {
+    this._records = records
+  }
+
+  /**
+   * @returns {Result[]} The results for the job
+   */
   get results () {
     return this._results
   }
@@ -49,3 +99,78 @@ module.exports = class Job {
     return this._run
   }
 }
+
+/**
+ * The result for a particular record
+ */
+class Result {
+  /**
+   *
+   * @param {Record} record
+   * @param {string} [voiceId]
+   * @param {Object} lastResponse
+   */
+  constructor (record, voiceId, lastResponse) {
+    this._record = record
+    this._voiceId = voiceId
+    this._lastResponse = lastResponse
+    this._actualFields = {}
+    this._outputFields = {}
+    this._tags = {}
+  }
+
+  /**
+   * Adds the actual value for an expected field to the result
+   * @param {string} field The name of the field
+   * @param {string} value The value of the field
+   */
+  addActualField (field, value) {
+    this._actualFields[field] = value
+  }
+
+  /**
+   * Adds a field to the output results - these are fields that are not expected or actual but are helpful info about the record
+   * @param {string} field The name of the field
+   * @param {string} value The value of the field
+   */
+  addOutputField (field, value) {
+    this._outputFields[field] = value
+  }
+
+  addTag (key, value) {
+    this._tags[key] = value
+  }
+
+  get actualFields () {
+    return this._actualFields
+  }
+
+  get lastResponse () {
+    return this._lastResponse
+  }
+
+  get outputFields () {
+    return this._outputFields
+  }
+
+  get record () {
+    return this._record
+  }
+
+  /**
+   * @returns {boolean}
+   */
+  get success () {
+    return this._success
+  }
+
+  set success (success) {
+    this._success = success
+  }
+
+  get tags () {
+    return this._tags
+  }
+}
+
+module.exports = { Job, Result }

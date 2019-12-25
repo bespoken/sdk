@@ -16,6 +16,7 @@
   "devDependencies": {
     "jest": "^24.9.0",
     "jest-junit-reporter": "^1.1.0",
+    "jsdoc": "^3.6.3",
     "standard": "^14.3.1"
   },
   "homepage": "https://gitlab.com/bespoken/batch-tester.git",
@@ -26,6 +27,7 @@
   "main": "src/batch-runner.js",
   "name": "batch-tester",
   "scripts": {
+    "docs": "jsdoc -d docs src/source.js src/job.js src/interceptor.js src/evaluator.js src/printer.js",
     "process": "node src/batch-runner.js",
     "standard": "standard --fix",
     "test": "jest custom/test"

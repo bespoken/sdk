@@ -1,6 +1,7 @@
 const AWS = require('aws-sdk')
 const Config = require('./config')
-const Source = require('./source')
+const Record = require('./source').Record
+const Source = require('./source').Source
 
 class S3Source extends Source {
   static connection () {
@@ -14,10 +15,7 @@ class S3Source extends Source {
     const bucket = this.sourceBucket
     const contents = await this._listObjects(bucket)
     const records = contents.map(content => {
-      return {
-        utterance: content.Key,
-        meta: content
-      }
+      return new Record(content.Key, {}, content)
     })
     return records
   }
