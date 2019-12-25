@@ -27,7 +27,7 @@
   "main": "src/batch-runner.js",
   "name": "batch-tester",
   "scripts": {
-    "docs": "jsdoc -d docs src/source.js src/job.js src/interceptor.js src/evaluator.js src/printer.js",
+    "docs": "jsdoc -d public src/source.js src/job.js src/interceptor.js src/evaluator.js src/printer.js",
     "process": "node src/batch-runner.js",
     "standard": "standard --fix",
     "test": "jest custom/test"

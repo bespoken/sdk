@@ -43,7 +43,7 @@ pages:
   - npm run docs
   artifacts:
     paths:
-    - docs
+    - public
   only:
     - pushes
     - merge_requests

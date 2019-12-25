@@ -8,5 +8,6 @@ node_modules
 junit.xml
 results.csv
 docs/
+public/
 sample.raw
 #test-report.xml

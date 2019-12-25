@@ -1,6 +1,6 @@
 ## Critical
 - [ ] More documentation
-  - [ ] More jsdocs
+  - [ ] More jsdocs - metrics, store
   - [ ] Update README
   - [ ] Figure out hosting of docs
 - [ ] Identify long-term approach for managing accounts with regular runs
@@ -11,6 +11,7 @@
   - [ ] Document accounts - names, passwords, etc.
 - [ ] Track errors
 - [ ] Look into incrementally create test-reports
+- [ ] Create an npm package
 
 ## Nice-to-have
 - [ ] Merge config and job - get properties of json file from job
