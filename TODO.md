@@ -15,9 +15,20 @@
 - [ ] Add locking logic on saving data
 - [ ] Make source/printer more extensible - output only fields, expected field definitions
 - [ ] Skip unit tests on web runs
-
+- [ ] Print out job name regularly
+- [ ] Remove 0 points from datadog publishing
+- [ ] Identify long-term approach for managing accounts with regular runs
+  - [ ] Setup dedicated amazon accounts
+  - [ ] Create tokens
+  - [ ] Dedicated test skill [optional]
+  - [ ] Enable skill for testing
+  - [ ] Document accounts - names, passwords, etc.
+- [] Fix this bug: ERROR TypeError: Cannot read property 'textField' of null SKIPPING RECORD
+      1015 TypeError: Cannot read property 'textField' of null
+      1016     at What3WordsInterceptor.interceptResult (/builds/what3words/batch-tester/custom/src/what3words-interceptor.js:41:58)
+1017     at process._tickCallback (internal/process/next_tick.js:68:7)
 ## Nice-to-have
-- [ ] Make skip STT configurable
+- [X] Make skip STT configurable
 - [ ] Merge config and job - get properties of json file from job
 - [ ] Use jsdoc on source.js and evaluator
 - [ ] update package.json info
@@ -26,6 +37,8 @@
   - [ ] https://stackoverflow.com/questions/53391229/clone-another-gitlab-repository-in-gitlab-ci-script
 - [ ] Fix cloudwatch
 - [ ] Fix section of readme that explains the CSV
+- [ ] Create Junit test reports - to show in gitlab?
+- [ ] Look into using AWS gitlab runners? Or via Kubernetes on GCP?
 
 ## Done
 - [X] Make parallelization simpler

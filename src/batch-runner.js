@@ -107,6 +107,9 @@ class BatchRunner {
     messages.push(utterance)
 
     const responses = await device.message(voiceId, messages)
+    if (responses === undefined) {
+      return
+    }
     // console.log('RESPONSE FULL: ' + JSON.stringify(responses, null, 2))
     responses.forEach(response => console.log(`RUNNER MESSAGE: ${response.message} TRANSCRIPT: ${response.transcript}`))
 
