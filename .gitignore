@@ -9,4 +9,4 @@ junit.xml
 results.csv
 docs/
 sample.raw
-test-report.xml
+#test-report.xml
