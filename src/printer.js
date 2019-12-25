@@ -29,7 +29,6 @@ class Printer {
     const resultsArray = [outputHeaders]
     job.results.forEach(async (result) => {
       const ignore = (_.get(result, 'response.error', '').length > 0)
-      result.success = false
       if (ignore) {
         ignoreCount++
       } else if (result.success) {
@@ -62,7 +61,7 @@ class Printer {
       }
 
       resultsArray.push(resultArray)
-      console.log(`Record: ${result.utterance} Success: ${result.success} Count: ${successCount} Ignore: ${ignoreCount}`)
+      console.log(`Record: ${result.record.utterance} Success: ${result.success} Count: ${successCount} Ignore: ${ignoreCount}`)
     })
 
     const resultsOutput = stringify(resultsArray, {

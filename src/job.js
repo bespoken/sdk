@@ -25,7 +25,7 @@ class Job {
    * @param {Result} result
    */
   addResult (result) {
-    this.results.push(result)
+    this._results.push(result)
   }
 
   /**
@@ -42,13 +42,13 @@ class Job {
    */
   expectedFieldNames () {
     const fields = this._uniqueFields(this._records, 'expectedFields')
-    console.log(`JOB expectedFields: ${fields}`)
+    // console.log(`JOB expectedFields: ${fields}`)
     return fields
   }
 
   outputFieldNames () {
     const fields = this._uniqueFields(this._results, 'outputFields')
-    console.log(`JOB ouputFields: ${fields}`)
+    // console.log(`JOB ouputFields: ${fields}`)
     return fields
   }
 

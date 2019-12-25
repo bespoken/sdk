@@ -37,7 +37,7 @@ class BatchRunner {
       // It will run as many records simultaneously as there are tokens available
       const device = await this._devicePool.lock()
 
-      console.log(`PROCESS RECORD - index: ${i} say: ${record.utterance} `)
+      console.log(`PROCESS RECORD job: ${this.job.run} index: ${i} say: ${record.utterance} `)
 
       await this._processRecord(device, record)
 
@@ -116,8 +116,7 @@ class BatchRunner {
     )
 
     // Test the spoken response from Alexa
-    const evaluation = Evaluator.evaluate(record, result, lastResponse)
-    console.log('RUNNER VALIDATE: ' + evaluation.success)
+    Evaluator.evaluate(record, result, lastResponse)
 
     try {
       const include = await Interceptor.instance().interceptResult(record, result)
@@ -129,6 +128,7 @@ class BatchRunner {
       console.error(e.stack)
       return
     }
+
     this.job.addResult(result)
 
     if (Config.has('postSequence')) {

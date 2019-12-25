@@ -1,5 +1,6 @@
 /* eslint-env jest */
 const Interceptor = require('../src/what3words-interceptor')
+const Result = require('../../src/job').Result
 
 describe('what3words test', () => {
   beforeAll(() => {
@@ -25,7 +26,7 @@ describe('what3words test', () => {
     expect(record.utterance).toEqual('sample.raw')
   })
 
-  test.only('correctly handles result that is corrected by autosuggest', async () => {
+  test('correctly handles result that is corrected by autosuggest', async () => {
     const interceptor = new Interceptor()
     const alexaResponse = 'navigate|secondWord|double|double|ALEXA|thirdWord|improving|improving|ALEXA|firstWord|launched|launched|ALEXA'
     const record = {
@@ -34,16 +35,16 @@ describe('what3words test', () => {
       }
     }
 
-    const result = {
-      evaluation: {},
-      lastResponse: {
+    const result = new Result({},
+      undefined,
+      {
         card: {
           textField: alexaResponse
         }
       }
-    }
+    )
 
     await interceptor.interceptResult(record, result)
-    expect(result.evaluation.success).toEqual(true)
+    expect(result.success).toEqual(true)
   })
 })

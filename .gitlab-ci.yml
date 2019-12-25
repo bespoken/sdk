@@ -30,10 +30,10 @@ project-tests:
    - npm run docs
   artifacts:
     paths:
-      - test-results.xml
+      - test-report.xml
       - docs/
     reports:
-      junit: test-results.xml
+      junit: test-report.xml
     expire_in: 30 days
   only:
     - pushes

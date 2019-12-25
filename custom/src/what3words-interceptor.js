@@ -95,6 +95,7 @@ class What3WordsInterceptor extends Interceptor {
     result.addTag('address', metaData.address)
     result.addTag('gender', metaData.gender)
     result.addTag('speaker', metaData.speaker)
+    return true
   }
 
   _cardTextToAddress (encodedAlexaRequest) {
