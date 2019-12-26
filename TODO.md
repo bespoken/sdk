@@ -14,9 +14,6 @@
 - [ ] Track errors
 - [ ] Look into incrementally create test-reports
 - [ ] Create an npm package
-- [ ] Add more unit-tests
-  - [ ] Enable code coverage in Gitlab
-- [ ] Make job into _job
 
 ## Nice-to-have
 - [ ] Merge config and job - get properties of json file from job
@@ -57,3 +54,6 @@
 - [X] Fix this bug: ERROR TypeError: Cannot read property 'textField' of null SKIPPING RECORD
       1015 TypeError: Cannot read property 'textField' of null
       1016     at What3WordsInterceptor.interceptResult (/builds/what3words/batch-tester/custom/src/what3words-interceptor.js:41:58)
+- [X] Add more unit-tests
+  - [X] Enable code coverage in Gitlab
+- [X] Make job into _job
