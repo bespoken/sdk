@@ -145,6 +145,14 @@ class Result {
     return this._actualFields
   }
 
+  get error () {
+    return this._error
+  }
+
+  set error (error) {
+    this._error = error
+  }
+
   get lastResponse () {
     return this._lastResponse
   }

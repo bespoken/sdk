@@ -101,32 +101,40 @@ class BatchRunner {
 
     messages.push(utterance)
 
-    const responses = await device.message(voiceId, messages)
-    if (responses === undefined) {
-      return
+    // Call the virtual device, and grab the last response from the set of messages
+    let lastResponse
+    let error
+    try {
+      const responses = await device.message(voiceId, messages)
+      responses.forEach(response => console.log(`RUNNER MESSAGE: ${response.message} TRANSCRIPT: ${response.transcript}`))
+      lastResponse = _.nth(responses, -1)
+    } catch (e) {
+      error = e
     }
-    // console.log('RESPONSE FULL: ' + JSON.stringify(responses, null, 2))
-    responses.forEach(response => console.log(`RUNNER MESSAGE: ${response.message} TRANSCRIPT: ${response.transcript}`))
 
-    const lastResponse = _.nth(responses, -1)
+    // Create a result object
     const result = new Result(
       record,
       voiceId,
       lastResponse
     )
 
-    // Test the spoken response from Alexa
-    Evaluator.evaluate(record, result, lastResponse)
+    if (error) {
+      result.error = error
+    } else {
+      // Test the spoken response from Alexa
+      Evaluator.evaluate(record, result, lastResponse)
 
-    try {
-      const include = await Interceptor.instance().interceptResult(record, result)
-      if (include === false) {
-        return
+      try {
+        const include = await Interceptor.instance().interceptResult(record, result)
+        if (include === false) {
+          return
+        }
+      } catch (e) {
+        console.error(`ERROR ${e} SKIPPING RECORD`)
+        console.error(e.stack)
+        result.error = e
       }
-    } catch (e) {
-      console.error(`ERROR ${e} SKIPPING RECORD`)
-      console.error(e.stack)
-      return
     }
 
     this.job.addResult(result)

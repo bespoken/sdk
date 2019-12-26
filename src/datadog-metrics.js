@@ -21,7 +21,9 @@ class DataDogMetrics extends Metrics {
       defaultTags: tags
     })
 
-    if (result.success) {
+    if (result.error) {
+      datadog.increment('utterance.error', 1)
+    } else if (result.success) {
       datadog.increment('utterance.success', 1)
     } else {
       datadog.increment('utterance.failure', 1)

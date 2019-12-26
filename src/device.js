@@ -50,7 +50,7 @@ class Device {
 
       if (attempt > 3) {
         // Give up after three tries
-        return error
+        throw error
       }
 
       const backoffTime = 10000

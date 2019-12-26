@@ -25,10 +25,11 @@ class Printer {
     outputHeaders.push('SUCCESS')
     job.expectedFieldNames().forEach(h => outputHeaders.push('EXPECTED ' + h.toUpperCase()))
     job.outputFieldNames().forEach(h => outputHeaders.push(h.toUpperCase()))
+    outputHeaders.push('ERROR')
 
     const resultsArray = [outputHeaders]
     job.results.forEach(async (result) => {
-      const ignore = (_.get(result, 'response.error', '').length > 0)
+      const ignore = result.error !== undefined
       if (ignore) {
         ignoreCount++
       } else if (result.success) {
@@ -58,6 +59,10 @@ class Printer {
       for (const fieldName of job.outputFieldNames()) {
         const expected = result.outputFields[fieldName]
         resultArray.push(expected)
+      }
+
+      if (result.error) {
+        resultArray.push(result.error)
       }
 
       resultsArray.push(resultArray)
