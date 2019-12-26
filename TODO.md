@@ -1,14 +1,17 @@
 ## Critical
-- [ ] Create core bespoken version of the batch-tester
-  - [ ] Rename to batch-testing-framework
+- [ ] Figure out how to hide variables in gitlab - should be writeonly
+  - [ ] Update what3words AWS keys
+- [ ] Make module loading less painful - resolve relative to CWD?
+- [ ] Final publishing
+  - [ ] Rename to batch-framework
+  - [ ] Publish as actual npm package
+
+## Important
 - [ ] More documentation
   - [ ] More jsdocs - metrics, store
   - [ ] Update README
   - [ ] Figure out hosting of docs
-- [ ] Figure out how to hide variables in gitlab - should be writeonly
-  - [ ] Update what3words AWS keys
-- [ ] Move accrss of virtual-device-token env variable to initialize block so not required for testing
-- [ ] Make module loading less painful - resolve relative to CWD?
+- [ ] Move access of virtual-device-token env variable to initialize block so not required for testing
 - [ ] Identify long-term approach for managing accounts with regular runs
   - [ ] Setup dedicated amazon accounts
   - [ ] Create tokens

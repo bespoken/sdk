@@ -23,7 +23,7 @@
     "standard": "^14.3.1"
   },
   "files": ["index.js", "src/*.js"],
-  "homepage": "https://gitlab.com/bespoken/batch-testing-framework.git",
+  "homepage": "https://gitlab.com/bespoken/batch-framework.git",
   "license": "ISC",
   "jest": {
     "collectCoverage": true,
@@ -41,5 +41,5 @@
     "test": "jest"
   },
   "standard": {},
-  "version": "1.0.0"
+  "version": "0.1.0"
 }
