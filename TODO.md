@@ -5,6 +5,8 @@
   - [ ] More jsdocs - metrics, store
   - [ ] Update README
   - [ ] Figure out hosting of docs
+- [ ] Figure out how to hide variables in gitlab - should be writeonly
+  - [ ] Update what3words AWS keys
 - [ ] Identify long-term approach for managing accounts with regular runs
   - [ ] Setup dedicated amazon accounts
   - [ ] Create tokens
