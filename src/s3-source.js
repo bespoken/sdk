@@ -21,7 +21,7 @@ class S3Source extends Source {
   }
 
   async loadRecord (record) {
-    record.meta.signedUrl = S3Source.urlForKey(Config.get('bucket'), record.meta.Key)
+    record.meta.signedUrl = S3Source.urlForKey(this.sourceBucket, record.meta.Key)
     return Promise.resolve()
   }
 
