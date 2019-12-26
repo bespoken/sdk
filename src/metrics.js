@@ -2,7 +2,13 @@ const Config = require('./config')
 
 class Metrics {
   static instance () {
-    return Config.instance('metrics', ['datadog-metrics', 'cloudwatch-metrics', 'metrics'], 'metrics')
+    const metricsClass = Config.get('metrics')
+    // Special handling for datadog-metrics class, as that is also the name of the package provided by DataDog
+    if (metricsClass === 'datadog-metrics') {
+      const DataDog = require('./datadog-metrics')
+      Config.singleton('metrics', new DataDog())
+    }
+    return Config.instance('metrics', 'metrics')
   }
 
   async initialize () {

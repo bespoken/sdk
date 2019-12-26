@@ -1,7 +1,7 @@
 {
   "author": "Bespoken",
-  "bin" : { 
-    "bbt" : "./src/batch-runner.js" 
+  "bin": {
+    "bbt": "./src/batch-runner.js"
   },
   "description": "This project tests utterances in batch - supporting a variety of data sources and reporting formats",
   "dependencies": {
@@ -22,12 +22,17 @@
     "jsdoc": "^3.6.3",
     "standard": "^14.3.1"
   },
-  "files": ["index.js", "src/*.js"],
+  "files": [
+    "index.js",
+    "src/*.js"
+  ],
   "homepage": "https://gitlab.com/bespoken/batch-tester.git",
   "license": "ISC",
   "jest": {
     "collectCoverage": true,
-    "coveragePathIgnorePatterns": ["test"],
+    "coveragePathIgnorePatterns": [
+      "test"
+    ],
     "silent": false,
     "testResultsProcessor": "./node_modules/jest-junit-reporter",
     "verbose": true

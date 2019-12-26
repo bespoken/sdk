@@ -6,7 +6,7 @@ const Result = require('./job').Result
  */
 class Interceptor {
   static instance () {
-    return Config.instance('interceptor', undefined, 'interceptor', false)
+    return Config.instance('interceptor', 'interceptor')
   }
 
   /**

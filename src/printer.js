@@ -10,7 +10,7 @@ const stringify = require('csv-stringify/lib/sync')
  */
 class Printer {
   static instance () {
-    return Config.instance('printer', undefined, 'printer')
+    return Config.instance('printer', 'printer')
   }
 
   /**
@@ -66,9 +66,9 @@ class Printer {
       }
 
       resultsArray.push(resultArray)
-      console.log(`Record: ${result.record.utteranceRaw} Success: ${result.success} Count: ${successCount} Ignore: ${ignoreCount}`)
     })
 
+    console.log(`PRINTER Success: ${successCount} Ignore: ${ignoreCount} Total: ${job.results.length}`)
     const resultsOutput = stringify(resultsArray, {
       cast: {
         boolean: (v) => v ? 'TRUE' : 'FALSE'

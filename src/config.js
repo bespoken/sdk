@@ -54,27 +54,27 @@ class Config {
     return _.get(Config.config, key) !== undefined
   }
 
-  static instance (key, values, defaultClass, required) {
-    const singleton = Config.singletons[key]
+  static instance (key, defaultClass, values) {
+    const singleton = Config.singleton(key)
     if (singleton) {
       return singleton
     }
 
-    let className = Config.get(key, values, required)
+    let className = Config.get(key, values, false)
     if (!className) {
       console.log(`No ${key} provider specified - using default.`)
       className = defaultClass
     }
 
-    if (!className.startsWith('.')) {
-      className = './' + className
-    }
-
     try {
-      console.log(`Config loading class: ${className} for ${key}`)
-      const Class = require(className)
+      const modulePath = require.resolve(className, {
+        paths: [process.cwd(), __dirname]
+      })
+      console.log(`Config loading class: ${className} from path: ${modulePath} for ${key}`)
+
+      const Class = require(modulePath)
       const instance = new Class()
-      Config.singletons[key] = instance
+      Config.singleton(key, instance)
       return instance
     } catch (e) {
       console.error(`Could not resolve ${className} for ${key}. Exiting.`)
@@ -84,6 +84,17 @@ class Config {
     }
   }
 
+  static singleton (key, instance) {
+    if (!Config.singletons) {
+      Config.singletons = {}
+    }
+
+    if (!instance) {
+      return Config.singletons[key]
+    }
+    Config.singletons[key] = instance
+  }
+
   static _checkValues (key, value, allowedValues) {
     if (allowedValues.indexOf(value) === -1) {
       console.error(`Value [${value}] for ${key} is invalid - must be one of: ${allowedValues}`)
@@ -91,8 +102,5 @@ class Config {
     }
   }
 }
-
-// We create a map of singletons
-Config.singletons = {}
 
 module.exports = Config

@@ -9,7 +9,7 @@ class Source {
    * @returns {Source}
    */
   static instance () {
-    return Config.instance('source', undefined, 'csv-source')
+    return Config.instance('source', 'csv-source')
   }
 
   /**

@@ -1,7 +1,7 @@
 ## Critical
 - [ ] Figure out how to hide variables in gitlab - should be writeonly
   - [ ] Update what3words AWS keys
-- [ ] Make module loading less painful - resolve relative to CWD?
+- [X] Make module loading less painful - resolve relative to CWD?
 - [ ] Final publishing
   - [ ] Rename to batch-framework
   - [ ] Publish as actual npm package
