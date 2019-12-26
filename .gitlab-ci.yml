@@ -33,6 +33,8 @@ project-tests:
     reports:
       junit: test-report.xml
     expire_in: 30 days
+  # Got this from here: https://stackoverflow.com/questions/50798747/code-coverage-from-jest-to-stdout-to-gitlab
+  coverage: /All\sfiles.*?\s+(\d+.\d+)/
   only:
     - pushes
     - merge_requests
