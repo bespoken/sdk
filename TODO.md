@@ -1,6 +1,6 @@
 ## Critical
-- [ ] Figure out how to hide variables in gitlab - should be writeonly
-  - [ ] Update what3words AWS keys
+- [X] Figure out how to hide variables in gitlab - should be writeonly
+  - [X] Update what3words AWS keys
 - [X] Make module loading less painful - resolve relative to CWD?
 - [ ] Final publishing
   - [ ] Rename to batch-framework
