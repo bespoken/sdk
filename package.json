@@ -1,7 +1,7 @@
 {
   "author": "Bespoken",
   "bin" : { 
-    "btf" : "./src/batch-runner.js" 
+    "bbf" : "./src/batch-runner.js" 
   },
   "description": "This project tests utterances in batch - supporting a variety of data sources and reporting formats",
   "dependencies": {
