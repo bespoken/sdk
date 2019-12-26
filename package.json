@@ -22,15 +22,17 @@
   "homepage": "https://gitlab.com/bespoken/batch-tester.git",
   "license": "ISC",
   "jest": {
+    "collectCoverage": true,
+    "coveragePathIgnorePatterns": ["test"],
     "testResultsProcessor": "./node_modules/jest-junit-reporter"
   },
   "main": "src/batch-runner.js",
   "name": "batch-tester",
   "scripts": {
     "docs": "jsdoc -d public src/source.js src/job.js src/interceptor.js src/evaluator.js src/printer.js",
-    "process": "node src/batch-runner.js",
+    "process": "node src/batch-runner.js process",
     "standard": "standard --fix",
-    "test": "jest custom/test"
+    "test": "jest"
   },
   "standard": {},
   "version": "1.0.0"

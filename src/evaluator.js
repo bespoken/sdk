@@ -45,7 +45,7 @@ class Evaluator {
         console.error(`EVAL INVALID JSONPATH: ${expression}`)
       }
     }
-    const expected = record[field]
+    const expected = record.expectedFields[field]
     console.log(`EVAL FIELD: ${field} VALUE: ${actual} EXPECTED: ${expected}`)
 
     const fieldResult = {

@@ -7,8 +7,9 @@ const Source = require('./source').Source
 class CSVSource extends Source {
   async load () {
     const inputFile = Config.get('inputFile')
-    const utteranceData = fs.readFileSync(inputFile)
+    console.log(`CSV input file: ${inputFile}`)
 
+    const utteranceData = fs.readFileSync(inputFile)
     const rawRecords = parse(utteranceData, {
       columns: true,
       ltrim: true,
@@ -26,6 +27,7 @@ class CSVSource extends Source {
 
         record.addExpectedField(field, r[field])
       })
+      return record
     })
     return Promise.resolve(records)
   }

@@ -9,5 +9,6 @@ junit.xml
 results.csv
 docs/
 public/
+coverage/
 sample.raw
-#test-report.xml
+test-report.xml

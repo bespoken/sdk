@@ -55,6 +55,11 @@ class Config {
   }
 
   static instance (key, values, defaultClass, required) {
+    const singleton = Config.singletons[key]
+    if (singleton) {
+      return singleton
+    }
+
     let className = Config.get(key, values, required)
     if (!className) {
       console.log(`No ${key} provider specified - using default.`)
@@ -67,7 +72,9 @@ class Config {
 
     try {
       const Class = require(className)
-      return new Class()
+      const instance = new Class()
+      Config.singletons[key] = instance
+      return instance
     } catch (e) {
       console.error(`Could not resolve ${className} for ${key}. Exiting.`)
       console.error(`FullError: ${e}`)
@@ -83,5 +90,8 @@ class Config {
     }
   }
 }
+
+// We create a map of singletons
+Config.singletons = {}
 
 module.exports = Config

@@ -12,8 +12,8 @@ const Store = require('./store')
 const util = require('./util')
 
 class BatchRunner {
-  constructor (configFile) {
-    this._configFile = configFile
+  constructor (config) {
+    this._config = config
     this._startIndex = 0
   }
 
@@ -24,49 +24,54 @@ class BatchRunner {
     // Read in the CSV input records
     await this._read()
 
-    if (this.job.records.length === 0) {
+    if (this._job.records.length === 0) {
       console.error('No records to process in input file')
       process.exit(1)
     }
 
-    this.job.totalCount = this.job.records.length
+    this._job.totalCount = this._job.records.length
 
-    for (let i = this._startIndex; i < this.job.records.length; i++) {
-      const record = this.job.records[i]
+    for (let i = this._startIndex; i < this._job.records.length; i++) {
+      const record = this._job.records[i]
+
       // This runner can operate concurrently
       // It will run as many records simultaneously as there are tokens available
       const device = await this._devicePool.lock()
-
-      console.log(`PROCESS RECORD job: ${this.job.run} index: ${i} say: ${record.utterance} `)
 
       await this._processRecord(device, record)
 
       // Free the device once we are done with it
       this._devicePool.free(device)
 
-      this.job.addProcessedCount()
+      this._job.addProcessedCount()
 
       // Save the results after each record is done
-      Store.instance().save(this.job)
+      Store.instance().save(this._job)
 
       this._print()
     }
   }
 
   async _initialize () {
-    Config.loadFromFile(this._configFile)
+    // Config can be a file path or a JSON
+    // We allow for JSON for testability
+    if (typeof this._config === 'object') {
+      Config.loadFromJSON(this._config)
+    } else {
+      Config.loadFromFile(this._config)
+    }
     const jobName = Config.get('job', undefined, true)
-    this.job = new Job(jobName, undefined, Config.config)
+    this._job = new Job(jobName, undefined, Config.config)
 
     // Check if we are resuming
     if (process.env.RUN_NAME) {
       const run = process.env.RUN_NAME
-      this.job = await Store.instance().fetch(run)
-      this._startIndex = this.job.processedCount
+      this._job = await Store.instance().fetch(run)
+      this._startIndex = this._job.processedCount
       console.log(`RESUMING JOB - starting at: ${this._startIndex}`)
     }
 
-    this._devicePool = new DevicePool() // Manages virtual devices
+    this._devicePool = DevicePool.instance() // Manages virtual devices
 
     this._metrics = Metrics.instance()
     return this._metrics.initialize()
@@ -137,7 +142,7 @@ class BatchRunner {
       }
     }
 
-    this.job.addResult(result)
+    this._job.addResult(result)
 
     if (Config.has('postSequence')) {
       const commands = Config.get('postSequence')
@@ -149,33 +154,46 @@ class BatchRunner {
     }
 
     // Publish to cloudwatch
-    await this._metrics.publish(this.job, result)
+    await this._metrics.publish(this._job, result)
   }
 
   async _read () {
     const source = Source.instance()
-    this.job.records = await source.load()
+    this._job.records = await source.load()
+    console.log('BATCH read - record count: ' + this._job.records.length)
   }
 
   _print () {
     const Printer = require('./printer')
-    Printer.instance().print(this.job)
+    Printer.instance().print(this._job)
+  }
+
+  /**
+   * @returns {Job} The job created and processed by this runner
+   */
+  get job () {
+    return this._job
   }
 }
 
-const configFile = _.nth(process.argv, 2)
+const command = _.nth(process.argv, 2)
+const configFile = _.nth(process.argv, 3)
 
-if (configFile) {
-  const runner = new BatchRunner(configFile)
-  runner.process(() => {
-    console.log('RUNNER DONE!')
-  })
-} else {
-  console.error('BatchRunner requires two arguments - the config file and the CSV file to process')
-  process.exit(1)
+if (command === 'process') {
+  if (configFile) {
+    const runner = new BatchRunner(configFile)
+    runner.process(() => {
+      console.log('RUNNER DONE!')
+    })
+  } else {
+    console.error('For process, a file path must be passed for the configuration')
+    process.exit(1)
+  }
 }
 
 process.on('unhandledRejection', (e) => {
   console.error('UNHANDLED: ' + e)
   console.error(e.stack)
 })
+
+module.exports = BatchRunner

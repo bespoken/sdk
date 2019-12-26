@@ -16,6 +16,7 @@
 - [ ] Create an npm package
 - [ ] Add more unit-tests
   - [ ] Enable code coverage in Gitlab
+- [ ] Make job into _job
 
 ## Nice-to-have
 - [ ] Merge config and job - get properties of json file from job
