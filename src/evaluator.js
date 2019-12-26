@@ -1,7 +1,7 @@
 const jsonpath = require('jsonpath')
 const Config = require('./config')
 const Record = require('./source').Record
-const Result = require('./Job').Result
+const Result = require('./job').Result
 
 /**
  * The evaluator class encapsulates logic to determine if a particular record passed its tests
