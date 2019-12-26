@@ -8,6 +8,7 @@
 - [ ] Figure out how to hide variables in gitlab - should be writeonly
   - [ ] Update what3words AWS keys
 - [ ] Move accrss of virtual-device-token env variable to initialize block so not required for testing
+- [ ] Make module loading less painful - resolve relative to CWD?
 - [ ] Identify long-term approach for managing accounts with regular runs
   - [ ] Setup dedicated amazon accounts
   - [ ] Create tokens
