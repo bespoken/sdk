@@ -80,7 +80,7 @@ class Config {
       console.error(`Could not resolve ${className} for ${key}. Exiting.`)
       console.error(`FullError: ${e}`)
       console.error(`${e.stack}`)
-      process.exit(1)
+      throw e
     }
   }
 

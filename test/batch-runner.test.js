@@ -12,7 +12,12 @@ describe('batch runner processes records', () => {
       inputFile: 'test/test.csv'
     }
     const runner = new BatchRunner(config)
-    await runner.process()
+    try {
+      await runner.process()
+    } catch (e) {
+      console.error(e)
+      throw e
+    }
     expect(runner.job.results.length).toEqual(1)
 
     const firstResult = runner.job.results[0]
