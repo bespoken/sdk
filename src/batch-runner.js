@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const _ = require('lodash')
 const Config = require('./config')
 const DevicePool = require('./device').DevicePool
