@@ -13,11 +13,20 @@ class Source {
   }
 
   /**
-   * Loads records - this function must be implemented by subclasses
+   * Loads all records - this function must be implemented by subclasses
    * @returns {Promise<Record[]>} The records to be processed
    */
-  async load () {
+  async loadAll () {
     throw new Error('No-op - must be implemented by subclass')
+  }
+
+  /**
+   * Called just before the record is processed - for last minute operations
+   * @param {Record} record
+   * @returns {Promise<void>}
+   */
+  async loadRecord (record) {
+    return Promise.resolve()
   }
 }
 
@@ -33,6 +42,7 @@ class Record {
    */
   constructor (utterance, expectedFields = {}, meta) {
     this._utterance = utterance
+    this._utteranceRaw = utterance // Save off the original utterance in case we change it during processing
     this._expectedFields = expectedFields
     this._meta = meta
   }
@@ -63,6 +73,14 @@ class Record {
 
   set meta (object) {
     this._meta = object
+  }
+
+  /**
+   * The original utterance
+   * @returns {string}
+   */
+  get utteranceRaw () {
+    return this._utteranceRaw
   }
 
   /**

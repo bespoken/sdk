@@ -11,13 +11,18 @@ class S3Source extends Source {
     return S3Source.s3
   }
 
-  async load () {
+  async loadAll () {
     const bucket = this.sourceBucket
     const contents = await this._listObjects(bucket)
     const records = contents.map(content => {
       return new Record(content.Key, {}, content)
     })
     return records
+  }
+
+  async loadRecord (record) {
+    record.meta.signedUrl = S3Source.urlForKey(Config.get('bucket'), record.meta.Key)
+    return Promise.resolve()
   }
 
   static urlForKey (bucket, key) {

@@ -71,6 +71,7 @@ class Config {
     }
 
     try {
+      console.log(`Config loading class: ${className} for ${key}`)
       const Class = require(className)
       const instance = new Class()
       Config.singletons[key] = instance

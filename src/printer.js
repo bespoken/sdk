@@ -41,7 +41,7 @@ class Printer {
       // Then the actual values
       // Then TRUE or FALSE for success
       // Then the expected values
-      const resultArray = [result.record.utterance]
+      const resultArray = [result.record.utteranceRaw]
 
       const expectedFieldNames = job.expectedFieldNames()
       for (const fieldName of expectedFieldNames) {
@@ -66,7 +66,7 @@ class Printer {
       }
 
       resultsArray.push(resultArray)
-      console.log(`Record: ${result.record.utterance} Success: ${result.success} Count: ${successCount} Ignore: ${ignoreCount}`)
+      console.log(`Record: ${result.record.utteranceRaw} Success: ${result.success} Count: ${successCount} Ignore: ${ignoreCount}`)
     })
 
     const resultsOutput = stringify(resultsArray, {

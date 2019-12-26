@@ -4,10 +4,6 @@
 const BatchRunner = require('../src/batch-runner')
 
 describe('batch runner processes records', () => {
-  beforeAll(() => {
-
-  })
-
   test('process simple file', async () => {
     const config = {
       device: '../test/mock-device',

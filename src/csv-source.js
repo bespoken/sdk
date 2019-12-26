@@ -5,7 +5,7 @@ const Record = require('./source').Record
 const Source = require('./source').Source
 
 class CSVSource extends Source {
-  async load () {
+  async loadAll () {
     const inputFile = Config.get('inputFile')
     console.log(`CSV input file: ${inputFile}`)
 

@@ -6,7 +6,7 @@ class DataDogMetrics extends Metrics {
     const tags = [
       `job:${job.name}`,
       `run:${job.run}`,
-      `utterance:${result.utterance}`,
+      `utterance:${result.record.utteranceRaw}`,
       `voiceId:${result.voiceId}`
     ]
 

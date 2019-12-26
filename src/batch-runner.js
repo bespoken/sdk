@@ -78,6 +78,9 @@ class BatchRunner {
   }
 
   async _processRecord (device, record) {
+    // Do just-in-time processing on the record
+    await Source.instance().loadRecord(record)
+
     // Skip a record if the interceptor returns false
     const process = await Interceptor.instance().interceptRecord(record)
     if (process === false) {
@@ -159,7 +162,7 @@ class BatchRunner {
 
   async _read () {
     const source = Source.instance()
-    this._job.records = await source.load()
+    this._job.records = await source.loadAll()
     console.log('BATCH read - record count: ' + this._job.records.length)
   }
 
