@@ -25,7 +25,9 @@
   "jest": {
     "collectCoverage": true,
     "coveragePathIgnorePatterns": ["test"],
-    "testResultsProcessor": "./node_modules/jest-junit-reporter"
+    "silent": false,
+    "testResultsProcessor": "./node_modules/jest-junit-reporter",
+    "verbose": true
   },
   "main": "index.js",
   "name": "bespoken-batch-framework",

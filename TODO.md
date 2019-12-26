@@ -11,9 +11,8 @@
   - [ ] Dedicated test skill [optional]
   - [ ] Enable skill for testing
   - [ ] Document accounts - names, passwords, etc.
-- [ ] Track errors
-- [ ] Look into incrementally create test-reports
 - [ ] Create an npm package
+- [ ] Add codecov
 
 ## Nice-to-have
 - [ ] Merge config and job - get properties of json file from job
