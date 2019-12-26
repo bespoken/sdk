@@ -1,7 +1,7 @@
 {
   "author": "Bespoken",
   "bin" : { 
-    "bbf" : "./src/batch-runner.js" 
+    "bbt" : "./src/batch-runner.js" 
   },
   "description": "This project tests utterances in batch - supporting a variety of data sources and reporting formats",
   "dependencies": {
@@ -23,7 +23,7 @@
     "standard": "^14.3.1"
   },
   "files": ["index.js", "src/*.js"],
-  "homepage": "https://gitlab.com/bespoken/batch-framework.git",
+  "homepage": "https://gitlab.com/bespoken/batch-tester.git",
   "license": "ISC",
   "jest": {
     "collectCoverage": true,
@@ -33,7 +33,7 @@
     "verbose": true
   },
   "main": "index.js",
-  "name": "bespoken-batch-framework",
+  "name": "bespoken-batch-tester",
   "scripts": {
     "docs": "jsdoc -d public src/source.js src/job.js src/interceptor.js src/evaluator.js src/printer.js",
     "process": "node src/batch-runner.js process",
