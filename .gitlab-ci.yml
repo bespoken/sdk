@@ -6,27 +6,14 @@ cache:
 
 # We have two stages to force the jobs to run sequentially
 stages:
-  - utterance-tests
-  - project-tests
+  - tests
+  - docs
 
-utterance-tests:
-  stage: utterance-tests
+tests:
+  stage: tests
   script:
-   - npm install
-   - npm run process custom/input/what3words.json
-  artifacts:
-    paths:
-      - results.csv
-    expire_in: 30 days
-  only: 
-    - schedules
-    - web
-
-project-tests:
-  stage: project-tests
-  script:
-   - npm install
-   - npm test
+    - npm install
+    - npm test
   artifacts:
     paths:
       - test-report.xml
@@ -40,9 +27,10 @@ project-tests:
     - merge_requests
 
 pages:
-  stage: project-tests
+  stage: docs
   script:
-  - npm run docs
+    - npm install
+    - npm run docs
   artifacts:
     paths:
     - public
