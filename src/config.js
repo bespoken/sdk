@@ -19,7 +19,7 @@ class Config {
    * Loads a new config object from a file
    * This only needs to be called once - it should be done as soon as the process starts
    * </pre>
-   * @param {Config} file 
+   * @param {Config} file
    */
   static loadFromFile (file) {
     const configString = fs.readFileSync(file)
@@ -29,7 +29,7 @@ class Config {
   /**
    * Loads a new config object from JSON - this function is mainly for testability
    * This only needs to be called once - it should be done as soon as the process starts
-   * @param {Config} json 
+   * @param {Config} json
    */
   static loadFromJSON (json) {
     if (Config.config) {
@@ -67,10 +67,10 @@ class Config {
   /**
    * Gets a particulate key value from the configuration file. Dot-notation is allowed.
    * Checks the values against the allowed values, if provided
-   * @param {string} key 
-   * @param {string} [allowedValues] 
+   * @param {string} key
+   * @param {string} [allowedValues]
    * @param {boolean} [required=false]
-   * @returns {Object} The value for the specified key 
+   * @returns {Object} The value for the specified key
    */
   static get (key, allowedValues, required = false) {
     const value = _.get(Config.config, key)
@@ -99,6 +99,12 @@ class Config {
     let className = Config.get(key, values, false)
     if (!className) {
       console.log(`No ${key} provider specified - using default.`)
+      // We can also pass an actual class, instaed of a class name
+      if (typeof defaultClass !== 'string') {
+        const instance = new defaultClass() // eslint-disable-line
+        Config.singleton(key, instance)
+        return instance
+      }
       className = defaultClass
     }
 

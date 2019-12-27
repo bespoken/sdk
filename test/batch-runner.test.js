@@ -2,15 +2,16 @@
 /* eslint-env jest */
 
 const BatchRunner = require('../src/batch-runner')
+const MockDevicePool = require('./mock-device')
 
 describe('batch runner processes records', () => {
   test('process simple file', async () => {
     const config = {
-      device: '../test/mock-device',
       job: 'unit-test',
       source: 'csv-source',
       inputFile: 'test/test.csv'
     }
+    require('../src/config').singleton('device-pool', new MockDevicePool())
     const runner = new BatchRunner(config)
     try {
       await runner.process()

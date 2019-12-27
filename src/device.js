@@ -67,11 +67,7 @@ class Device {
 
 class DevicePool {
   static instance () {
-    if (Config.get('device')) {
-      return Config.instance('device')
-    } else {
-      return new DevicePool()
-    }
+    return Config.instance('device-pool', DevicePool)
   }
 
   constructor () {

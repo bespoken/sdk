@@ -5,6 +5,7 @@
 - [ ] Final publishing
   - [ ] Rename to batch-framework
   - [ ] Publish as actual npm package
+- [] Add gender and speaker to output fields
 
 ## Important
 - [ ] More documentation

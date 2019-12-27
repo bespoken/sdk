@@ -1,7 +1,6 @@
 # Bespoken Batch Tester
-This project provides a ready-to-use template for doing in-depth testing on long-form audio.
+This project enables batch testing of utterances for voice experiences.
 
-We store the utterances that we want to test in the file `input/utterances.csv`.
 
 ## Getting Setup
 ### Environment Management
