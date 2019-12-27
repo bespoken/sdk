@@ -7,7 +7,6 @@ node_modules
 .env
 junit.xml
 results.csv
-docs/
 public/
 coverage/
 sample.raw

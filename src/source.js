@@ -57,15 +57,16 @@ class Record {
   }
 
   /**
-   * @returns {Object.<string, string>} The expected values for the record
+   * The expected values for the record
+   * @type {Object.<string, string>}
    */
   get expectedFields () {
     return this._expectedFields
   }
 
   /**
-   * Additional info about the record to be used in processing
-   * @returns {Object}
+   * Property for additional info to be set on the record
+   * @type {Object}
    */
   get meta () {
     return this._meta
@@ -77,7 +78,7 @@ class Record {
 
   /**
    * The original utterance
-   * @returns {string}
+   * @type {string}
    */
   get utteranceRaw () {
     return this._utteranceRaw
@@ -85,11 +86,15 @@ class Record {
 
   /**
    * Getter and setter for the utterance
+   * @type {string}
    */
   get utterance () {
     return this._utterance
   }
 
+  /**
+   * @private
+   */
   set utterance (utterance) {
     this._utterance = utterance
   }

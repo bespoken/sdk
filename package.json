@@ -40,7 +40,7 @@
   "main": "index.js",
   "name": "bespoken-batch-tester",
   "scripts": {
-    "docs": "jsdoc -d public src/source.js src/job.js src/interceptor.js src/evaluator.js src/printer.js",
+    "docs": "jsdoc -c .jsdoc.json",
     "process": "node src/batch-runner.js process",
     "standard": "standard --fix",
     "test": "jest"

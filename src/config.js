@@ -4,12 +4,33 @@ const fs = require('fs')
 
 require('dotenv').config()
 
+/**
+ * <pre>
+ * Manages configuration for the batch-runner
+ * Provides programmatic access to the configuration file used for the particular test
+ * Additionally:
+ *  * Provides convenience access to environment variables
+ *  * Manages and provides access to singletons
+ * </pre>
+ */
 class Config {
+  /**
+   * <pre>
+   * Loads a new config object from a file
+   * This only needs to be called once - it should be done as soon as the process starts
+   * </pre>
+   * @param {Config} file 
+   */
   static loadFromFile (file) {
     const configString = fs.readFileSync(file)
     Config.loadFromJSON(JSON.parse(configString))
   }
 
+  /**
+   * Loads a new config object from JSON - this function is mainly for testability
+   * This only needs to be called once - it should be done as soon as the process starts
+   * @param {Config} json 
+   */
   static loadFromJSON (json) {
     if (Config.config) {
       return
@@ -23,6 +44,13 @@ class Config {
     return Config.config
   }
 
+  /**
+   * Returns the value for the specified environment variable
+   * Also checks to see if it is one of the allowed values if provided, and throws an error if not
+   * @param {string} key The environment variable requested
+   * @param {string} [allowedValues] The allowed values for the variable
+   * @returns The value for the specified environment variable
+   */
   static env (key, allowedValues) {
     if (!process.env[key]) {
       console.error(`Required environment variable ${key} not found. Must be set.`)
@@ -36,6 +64,14 @@ class Config {
     return value
   }
 
+  /**
+   * Gets a particulate key value from the configuration file. Dot-notation is allowed.
+   * Checks the values against the allowed values, if provided
+   * @param {string} key 
+   * @param {string} [allowedValues] 
+   * @param {boolean} [required=false]
+   * @returns {Object} The value for the specified key 
+   */
   static get (key, allowedValues, required = false) {
     const value = _.get(Config.config, key)
     if (value && allowedValues) {
