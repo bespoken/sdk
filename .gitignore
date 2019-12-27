@@ -12,3 +12,4 @@ coverage/
 sample.raw
 test-report.xml
 data/
+env.bak

@@ -48,7 +48,7 @@ class BatchRunner {
       // Save the results after each record is done
       await Store.instance().save(this._job)
 
-      this._print()
+      await this._print()
     }
   }
 

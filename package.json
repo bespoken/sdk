@@ -31,16 +31,13 @@
   "license": "ISC",
   "jest": {
     "collectCoverage": true,
-    "coveragePathIgnorePatterns": [
-      "test"
-    ],
-    "silent": false,
-    "testResultsProcessor": "./node_modules/jest-junit-reporter",
-    "verbose": true
+    "collectCoverageFrom": ["**/src/*.js"],
+    "testResultsProcessor": "./node_modules/jest-junit-reporter"
   },
   "main": "index.js",
   "name": "bespoken-batch-tester",
   "scripts": {
+    "codecov": "codecov",
     "docs": "jsdoc -c .jsdoc.json",
     "process": "node src/batch-runner.js process",
     "standard": "standard --fix",
