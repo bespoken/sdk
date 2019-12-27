@@ -1,5 +1,5 @@
 const AWS = require('aws-sdk')
-const Job = require('./job')
+const Job = require('./job').Job
 const Store = require('./store')
 
 class S3Store extends Store {

@@ -71,6 +71,10 @@ class DevicePool {
   }
 
   constructor () {
+    this.initialize()
+  }
+
+  initialize () {
     const tokens = process.env.VIRTUAL_DEVICE_TOKEN.split(',') // The virtual device token(s) used for processing
     this._devices = []
 

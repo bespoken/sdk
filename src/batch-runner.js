@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 const _ = require('lodash')
 const Config = require('./config')
 const DevicePool = require('./device').DevicePool
@@ -47,7 +46,7 @@ class BatchRunner {
       this._job.addProcessedCount()
 
       // Save the results after each record is done
-      Store.instance().save(this._job)
+      await Store.instance().save(this._job)
 
       this._print()
     }

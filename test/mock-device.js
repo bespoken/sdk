@@ -1,6 +1,14 @@
 const DevicePool = require('../src/device').DevicePool
 
 module.exports = class MockDevicePool extends DevicePool {
+  initialize () {
+
+  }
+
+  async free () {
+    return Promise.resolve()
+  }
+
   async lock () {
     return Promise.resolve(MockDevice)
   }

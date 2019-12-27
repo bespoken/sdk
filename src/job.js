@@ -95,6 +95,10 @@ class Job {
     return this._results
   }
 
+  /**
+   * The run name
+   * @type {string}
+   */
   get run () {
     return this._run
   }
@@ -166,7 +170,7 @@ class Result {
   }
 
   /**
-   * @returns {boolean}
+   * @type {boolean}
    */
   get success () {
     return this._success

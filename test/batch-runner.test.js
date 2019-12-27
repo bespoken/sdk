@@ -9,6 +9,7 @@ describe('batch runner processes records', () => {
     const config = {
       job: 'unit-test',
       source: 'csv-source',
+      store: 'file-store',
       inputFile: 'test/test.csv'
     }
     require('../src/config').singleton('device-pool', new MockDevicePool())
