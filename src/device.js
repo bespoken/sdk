@@ -85,7 +85,7 @@ class DevicePool {
     // Create a device for each token
     tokens.forEach(token => {
       console.log(`DEVICE create token: ${token} skipSTT: ${skipSTT}`)
-      this._devices.push(new Device(token, skipSTT))
+      this._devices.push(new Device(token.trim(), skipSTT))
     })
 
     // Create an array to track the devices currently in use
