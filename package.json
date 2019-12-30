@@ -1,7 +1,7 @@
 {
   "author": "Bespoken",
   "bin": {
-    "bbt": "./src/batch-runner.js"
+    "bbt": "./bin/bbt.js"
   },
   "description": "This project tests utterances in batch - supporting a variety of data sources and reporting formats",
   "dependencies": {
@@ -25,6 +25,7 @@
   },
   "files": [
     "index.js",
+    "bin/*.js",
     "src/*.js"
   ],
   "homepage": "https://gitlab.com/bespoken/batch-tester.git",
@@ -41,7 +42,7 @@
   "scripts": {
     "codecov": "codecov",
     "docs": "jsdoc -c .jsdoc.json",
-    "process": "node src/batch-runner.js process",
+    "process": "node bin/bbt.js process",
     "standard": "standard --fix",
     "test": "jest"
   },

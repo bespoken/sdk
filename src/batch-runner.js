@@ -181,21 +181,6 @@ class BatchRunner {
   }
 }
 
-const command = _.nth(process.argv, 2)
-const configFile = _.nth(process.argv, 3)
-
-if (command === 'process') {
-  if (configFile) {
-    const runner = new BatchRunner(configFile)
-    runner.process(() => {
-      console.log('RUNNER DONE!')
-    })
-  } else {
-    console.error('For process, a file path must be passed for the configuration')
-    process.exit(1)
-  }
-}
-
 process.on('unhandledRejection', (e) => {
   console.error('UNHANDLED: ' + e)
   console.error(e.stack)

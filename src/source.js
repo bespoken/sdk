@@ -23,6 +23,7 @@ class Source {
    * ```
    * The property is taken from the `meta` attribute of the record
    * @param {Record[]} records
+   * @returns {Record[]} The records after the filter is applied
    */
   filter (records) {
     if (Config.has('filters')) {
