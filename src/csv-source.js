@@ -6,10 +6,10 @@ const Source = require('./source').Source
 
 class CSVSource extends Source {
   async loadAll () {
-    const inputFile = Config.get('sourceFile')
-    console.log(`CSV input file: ${inputFile}`)
+    const sourceFile = Config.get('sourceFile')
+    console.log(`CSV input file: ${sourceFile}`)
 
-    const utteranceData = fs.readFileSync(inputFile)
+    const utteranceData = fs.readFileSync(sourceFile)
     const rawRecords = parse(utteranceData, {
       columns: true,
       ltrim: true,

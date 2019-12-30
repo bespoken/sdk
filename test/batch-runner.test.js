@@ -17,7 +17,7 @@ describe('batch runner processes records', () => {
       job: 'unit-test',
       source: 'csv-source',
       store: 'file-store',
-      inputFile: 'test/test.csv'
+      sourceFile: 'test/test.csv'
     }
     Config.singleton('device-pool', new MockDevicePool())
     const runner = new BatchRunner(config)
