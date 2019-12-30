@@ -51,6 +51,8 @@ bbt process batch-test.json
 
 And it will be off and running. In practice, we recommend this not be run locally but in a CI environment.
 
+The tester will create a results.csv file, as well as publish metrics to the configured metrics provider.
+
 ## In-Depth Configuration
 The environment variables store sensitive credentials.
 
@@ -130,28 +132,6 @@ Contact Bespoken to have credentials allocated for this, or modify to use your o
 * Create a DataDog account.
 * Take the API key from the Integrations -> API section
 * Add it to the `.env` file
-
-## Running utterance resolution tests
-These tests check whether or not the utterance names are being understood correctly by Alexa.
-
-To run the CSV-driven tests, enter this command:
-```
-npm run utterances
-```
-
-This will test each utterance defined in the utterances.csv file. The CSV file contains the following fields:
-
-| Column | Description |
-| --- | --- |
-| utterance | The utterance to be said to Alexa
-| expectedResponses | One-to-many expected responses - each one is separated by a comma
-
-For the initial entries, we are typically just looking for the name of the recipe in the response. When the tests are run, here is what will happen:  
-> Bespoken Says: `get the recipe for giada chicken piccata`  
-
->Alexa Replies: `okay for giada chicken piccata I recommend quick chicken piccata 25 minutes to make what would you like start recipe send it to your phone or your next recipe`
-
-This test will pass because the actual response contains the expected response from our CSV file.
 
 ## Gitlab Configuration
 The gitlab configuration is defined by the file `.gitlab-ci.yml`. The file looks like this:
