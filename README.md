@@ -10,7 +10,7 @@ To install the Bespoken Batch Tester, just run:
 npm install bespoken-batch-tester --save
 ```
 
-We recommend creating a new project to store artifacts related to the tester, such as the configuration file and the
+We recommend creating a new project to store artifacts related to the tester, such as the testing configuration file, CI configuration, and custom source code.
 
 ### Environment Management
 We use dotenv when running locally, which takes environment variables from a local `.env` file.
