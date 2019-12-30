@@ -42,8 +42,8 @@ describe('batch runner processes records', () => {
         booleanProperty: true
       },
       job: 'unit-test',
-      store: 'file-store',
-      inputFile: 'test/test.csv'
+      sourceFile: 'test/test.csv',
+      store: 'file-store'
     }
     Config.singleton('device-pool', new MockDevicePool())
     Config.singleton('source', new MockSource())

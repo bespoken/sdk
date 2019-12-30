@@ -10,7 +10,13 @@
   "plugins": ["plugins/markdown"],
   "recurseDepth": 10,
   "source": {
-      "include": ["src/config.js", "src/interceptor.js", "src/job.js", "src/evaluator.js", "src/printer.js", "src/source.js"]
+      "include": ["src/config.js",
+        "src/evaluator.js",  
+        "src/interceptor.js", 
+        "src/job.js", 
+        "src/metrics.js",
+        "src/printer.js", 
+        "src/source.js"]
   },
   "sourceType": "module",
   "tags": {

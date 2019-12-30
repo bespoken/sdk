@@ -1,5 +1,8 @@
 const Config = require('./config')
 
+/**
+ * Defines the interface for publishing metrics to data/reporting tools
+ */
 class Metrics {
   static instance () {
     const metricsClass = Config.get('metrics')
@@ -11,16 +14,22 @@ class Metrics {
     return Config.instance('metrics', 'metrics')
   }
 
+  /**
+   * Called to initialize the metrics client
+   */
   async initialize () {
     return Promise.resolve()
   }
 
+  /**
+   * Called to publish data about a specific result.
+   * Must be implemented by sub-classes.
+   * @param {Job} job
+   * @param {Result} result
+   * @returns {Promise<void>}
+   */
   async publish (job, result) {
     return Promise.resolve()
-  }
-
-  get job () {
-    return this._job
   }
 }
 
