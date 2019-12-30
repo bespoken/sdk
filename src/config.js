@@ -126,6 +126,14 @@ class Config {
     }
   }
 
+  /**
+   * Mostly for testing - resets the state of the configuration
+   */
+  static reset () {
+    Config.config = undefined
+    Config.singletons = undefined
+  }
+
   static singleton (key, instance) {
     if (!Config.singletons) {
       Config.singletons = {}

@@ -1,3 +1,4 @@
+const _ = require('lodash')
 const Config = require('./config')
 
 /**
@@ -10,6 +11,60 @@ class Source {
    */
   static instance () {
     return Config.instance('source', 'csv-source')
+  }
+
+  /**
+   * Filters records based on configuration
+   * The filters are set in the config as a key and set of values, such as:
+   * ```
+   * filters: {
+   *   property: ['value1', 'value2'],
+   * }
+   * ```
+   * The property is taken from the `meta` attribute of the record
+   * @param {Record[]} records
+   */
+  filter (records) {
+    if (Config.has('filters')) {
+      const filteredRecords = []
+      const filters = Config.get('filters')
+      // Apply the filter to the records
+      for (const record of records) {
+        let match = true
+        for (const filterProperty of Object.keys(filters)) {
+          let values = filters[filterProperty]
+          // If the values element is not an array, make it into one
+          if (!Array.isArray(values)) {
+            values = [values]
+          }
+          console.log(`Filtering: ${filterProperty} values: ${values}`)
+
+          let value = _.get(record.meta, filterProperty)
+          if (!value) {
+            match = false
+            break
+          }
+
+          value += '' // Turn everything into a string for ease of comparison
+          match = values.find(v => {
+            v += ''
+            return v.trim().toLowerCase() === value.trim().toLowerCase()
+          })
+
+          if (!match) {
+            break
+          }
+        }
+
+        if (match) {
+          filteredRecords.push(record)
+          break
+        }
+      }
+      return filteredRecords
+    } else {
+      return records
+    }
   }
 
   /**

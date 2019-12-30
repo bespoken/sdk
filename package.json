@@ -31,7 +31,9 @@
   "license": "ISC",
   "jest": {
     "collectCoverage": true,
-    "collectCoverageFrom": ["**/src/*.js"],
+    "collectCoverageFrom": [
+      "**/src/*.js"
+    ],
     "testResultsProcessor": "./node_modules/jest-junit-reporter"
   },
   "main": "index.js",
