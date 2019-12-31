@@ -62,7 +62,6 @@ class Source {
 
         if (match) {
           filteredRecords.push(record)
-          break
         }
       }
       return filteredRecords

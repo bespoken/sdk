@@ -38,7 +38,7 @@ describe('batch runner processes records', () => {
   test('filter applied to records', async () => {
     const config = {
       filters: {
-        index: [1, 2],
+        index: [1, 2, 3],
         booleanProperty: true
       },
       job: 'unit-test',
@@ -55,7 +55,7 @@ describe('batch runner processes records', () => {
       console.error(e)
       throw e
     }
-    expect(runner.job.results.length).toEqual(1)
+    expect(runner.job.results.length).toEqual(2)
 
     const firstResult = runner.job.results[0]
     expect(firstResult.record.utterance).toEqual('Utterance1')
@@ -64,7 +64,12 @@ describe('batch runner processes records', () => {
 
 class MockSource extends Source {
   async loadAll () {
-    return Promise.resolve([this._makeRecord(0), this._makeRecord(1), this._makeRecord(2, false)])
+    return Promise.resolve([
+      this._makeRecord(0),
+      this._makeRecord(1),
+      this._makeRecord(2, false),
+      this._makeRecord(3)
+    ])
   }
 
   _makeRecord (index, booleanProperty = true) {

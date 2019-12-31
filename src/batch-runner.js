@@ -162,10 +162,10 @@ class BatchRunner {
 
   async _read () {
     const source = Source.instance()
-    this._job.records = await source.loadAll()
+    const records = await source.loadAll()
     // Apply the filter to the records
-    this._job.records = source.filter(this._job.records)
-    console.log('BATCH read - record count: ' + this._job.records.length)
+    this._job.records = source.filter(records)
+    console.log(`BATCH READ pre-filter: ${records.length} post-filter: ${this._job.records.length}`)
   }
 
   _print () {
