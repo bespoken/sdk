@@ -14,7 +14,7 @@
     "dotenv": "^8.2.0",
     "jsonpath": "^1.0.2",
     "lodash": "^4.17.15",
-    "momentjs": "^2.0.0"
+    "moment": "^2.0.0"
   },
   "devDependencies": {
     "codecov": "^3.6.1",

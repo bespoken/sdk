@@ -29,6 +29,8 @@ class Source {
     if (Config.has('filters')) {
       const filteredRecords = []
       const filters = Config.get('filters')
+      console.log(`FILTER properties: ${Object.keys(filters)}`)
+
       // Apply the filter to the records
       for (const record of records) {
         let match = true
@@ -38,10 +40,10 @@ class Source {
           if (!Array.isArray(values)) {
             values = [values]
           }
-          console.log(`Filtering: ${filterProperty} values: ${values}`)
 
           let value = _.get(record.meta, filterProperty)
           if (!value) {
+            console.log(`FILTER skipping: ${record.utterance} reason: ${filterProperty} is undefined`)
             match = false
             break
           }
@@ -53,6 +55,7 @@ class Source {
           })
 
           if (!match) {
+            console.log(`FILTER skipping: ${record.utterance} reason: ${filterProperty} = ${value}`)
             break
           }
         }
