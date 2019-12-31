@@ -78,6 +78,7 @@ class BatchRunner {
   }
 
   async _processRecord (device, record) {
+    console.log(`PROCESS run: ${this._job.run} utterance: ${record.utterance}`)
     // Do just-in-time processing on the record
     await Source.instance().loadRecord(record)
 
