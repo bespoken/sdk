@@ -11,7 +11,8 @@ class FileStore extends Store {
    */
   async fetch (run) {
     const runFilePath = path.join(BASE_PATH, FileStore.key(run))
-    if (fs.existsSync(runFilePath)) {
+    console.log(`FILESTORE FETCH ${runFilePath}`)
+    if (!fs.existsSync(runFilePath)) {
       return undefined
     }
 
