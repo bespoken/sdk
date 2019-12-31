@@ -42,6 +42,7 @@
   "scripts": {
     "codecov": "codecov",
     "docs": "jsdoc -c .jsdoc.json",
+    "postversion": "git push && git push --tags",
     "process": "node bin/bbt.js process",
     "standard": "standard --fix",
     "test": "jest"
