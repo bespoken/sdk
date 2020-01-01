@@ -94,7 +94,7 @@ class DevicePool {
 
   async lock () {
     // Check if a free token is available
-    console.log('LOCK ATTEMPT - DEVICES AVAILABLE: ' + this._freeCount())
+    console.log('DEVICE LOCK attempt - devices available: ' + this._freeCount())
     while (this._freeCount() === 0) {
       await util.sleep(1000)
     }
@@ -103,7 +103,7 @@ class DevicePool {
     const device = this._devices.find((device) => {
       return this._devicesInUse.find(d => d.token === device.token) === undefined
     })
-    console.log('LOCK ACQUIRE - DEVICES AVAILABLE: ' + this._freeCount() + ' TOKEN: ' + device.token)
+    console.log('DEVICE LOCK acquire - devices available: ' + this._freeCount() + ' TOKEN: ' + device.token)
 
     this._devicesInUse.push(device)
     return device
@@ -112,7 +112,7 @@ class DevicePool {
   async free (device) {
     // Remove the token we used from our tokens in list use - i.e., return it to the free pool
     this._devicesInUse = _.pull(this._devicesInUse, device)
-    console.log('LOCK FREE ' + device._token + ' TOKENS AVAILABLE: ' + this._freeCount())
+    console.log('DEVICE FREE ' + device._token + ' tokens available: ' + this._freeCount())
   }
 
   _freeCount () {
