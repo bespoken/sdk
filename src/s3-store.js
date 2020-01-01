@@ -17,8 +17,7 @@ class S3Store extends Store {
     }
 
     const jobJSON = JSON.parse(jobData)
-    let job = new Job()
-    job = Object.assign(job, jobJSON)
+    const job = Job.fromJSON(jobJSON)
     return job
   }
 

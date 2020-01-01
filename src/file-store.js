@@ -11,15 +11,15 @@ class FileStore extends Store {
    */
   async fetch (run) {
     const runFilePath = path.join(BASE_PATH, FileStore.key(run))
-    console.log(`FILESTORE FETCH ${runFilePath}`)
+    const normalizedPath = path.normalize(runFilePath)
+    console.log(`FILESTORE FETCH ${runFilePath} FOUND: ${fs.existsSync(runFilePath)} NORMAL: ${normalizedPath}`)
     if (!fs.existsSync(runFilePath)) {
       return undefined
     }
 
     const jobData = fs.readFileSync(runFilePath)
     const jobJSON = JSON.parse(jobData)
-    let job = new Job()
-    job = Object.assign(job, jobJSON)
+    const job = Job.fromJSON(jobJSON)
     return job
   }
 

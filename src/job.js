@@ -5,6 +5,25 @@ const moment = require('moment')
  * Class that manages info and execution of a particular job
  */
 class Job {
+  /**
+   * Creates a new Job object from JSON
+   * @param {Object} json
+   * @returns {Job}
+   */
+  static fromJSON (json) {
+    const job = new Job()
+    Object.assign(job, json)
+    // Loop through results and turn into objects
+    const resultObjects = []
+    for (const result of job._results) {
+      const o = new Result()
+      Object.assign(o, result)
+      resultObjects.push(o)
+    }
+    job._results = resultObjects
+    return job
+  }
+
   constructor (name, run, config) {
     this._name = name
     if (run) {
@@ -47,6 +66,7 @@ class Job {
   }
 
   outputFieldNames () {
+    console.log('RESULTS ' + this._results.length)
     const fields = this._uniqueFields(this._results, 'outputFields')
     // console.log(`JOB ouputFields: ${fields}`)
     return fields
