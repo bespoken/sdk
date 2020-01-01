@@ -66,7 +66,6 @@ class Job {
   }
 
   outputFieldNames () {
-    console.log('RESULTS ' + this._results.length)
     const fields = this._uniqueFields(this._results, 'outputFields')
     // console.log(`JOB ouputFields: ${fields}`)
     return fields

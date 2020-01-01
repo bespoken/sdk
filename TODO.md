@@ -2,25 +2,25 @@
 - [X] Figure out how to hide variables in gitlab - should be writeonly
   - [X] Update what3words AWS keys
 - [X] Make module loading less painful - resolve relative to CWD?
-- [ ] Final publishing
-  - [ ] Rename to batch-framework
-  - [ ] Publish as actual npm package
-- [] Add gender and speaker to output fields
+- [X] Final publishing
+  - [X] Rename to batch-framework
+  - [X] Publish as actual npm package
+- [ ] Change default bucket policy to exclude listobejct
 
 ## Important
-- [ ] More documentation
-  - [ ] More jsdocs - metrics, store
-  - [ ] Update README
-  - [ ] Figure out hosting of docs
-- [ ] Move access of virtual-device-token env variable to initialize block so not required for testing
-- [ ] Identify long-term approach for managing accounts with regular runs
-  - [ ] Setup dedicated amazon accounts
-  - [ ] Create tokens
-  - [ ] Dedicated test skill [optional]
-  - [ ] Enable skill for testing
-  - [ ] Document accounts - names, passwords, etc.
-- [ ] Create an npm package
-- [ ] Add codecov
+- [X] More documentation
+  - [X] More jsdocs - metrics, store
+  - [X] Update README
+  - [X] Figure out hosting of docs
+- [X] Move access of virtual-device-token env variable to initialize block so not required for testing
+- [X] Identify long-term approach for managing accounts with regular runs
+  - [X] Setup dedicated amazon accounts
+  - [X] Create tokens
+  - [X] Dedicated test skill [optional]
+  - [X] Enable skill for testing
+  - [X] Document accounts - names, passwords, etc.
+- [X] Create an npm package
+- [X] Add codecov
 
 ## Nice-to-have
 - [ ] Merge config and job - get properties of json file from job
