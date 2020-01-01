@@ -67,8 +67,11 @@ class BatchRunner {
     if (process.env.RUN_NAME) {
       const run = process.env.RUN_NAME
       this._job = await Store.instance().fetch(run)
+      if (!this._job) {
+        throw new Error('BATCH INIT Could not find job to resume: ' + run)
+      }
       this._startIndex = this._job.processedCount
-      console.log(`RESUMING JOB - starting at: ${this._startIndex}`)
+      console.log(`BATCH INIT resuming job - starting at: ${this._startIndex}`)
     }
 
     this._devicePool = DevicePool.instance() // Manages virtual devices
