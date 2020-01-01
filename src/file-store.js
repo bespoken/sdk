@@ -12,7 +12,7 @@ class FileStore extends Store {
   async fetch (run) {
     const runFilePath = path.join(BASE_PATH, FileStore.key(run))
     const normalizedPath = path.normalize(runFilePath)
-    console.log(`FILESTORE FETCH ${runFilePath} FOUND: ${fs.existsSync(runFilePath)} NORMAL: ${normalizedPath}`)
+    console.log(`FILESTORE FETCH ${runFilePath} FOUND: ${fs.existsSync(runFilePath)} NORMAL: ${normalizedPathnpm}`)
     if (!fs.existsSync(runFilePath)) {
       return undefined
     }
