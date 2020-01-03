@@ -77,7 +77,7 @@ class BatchRunner {
     this._devicePool = DevicePool.instance() // Manages virtual devices
 
     this._metrics = Metrics.instance()
-    return this._metrics.initialize()
+    return this._metrics.initialize(this._job)
   }
 
   async _processRecord (device, record) {

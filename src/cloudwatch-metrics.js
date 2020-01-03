@@ -1,45 +1,59 @@
 const _ = require('lodash')
 const AWS = require('aws-sdk')
+const Config = require('./config')
+const Job = require('./job').Job
+const Metrics = require('./metrics')
+const Result = require('./job').Result
 
-class CloudWatchMetrics {
-  constructor (name) {
-    this.logGroup = '/demo/make-this-configurable'
-    this._name = name
-  }
+class CloudWatchMetrics extends Metrics {
+  async initialize (job) {
+    this.logGroup = Config.get('cloudwatchLogGroup', undefined, true)
 
-  async initialize () {
     // Create a new log stream to write to
     const cloudwatch = new AWS.CloudWatchLogs()
     return cloudwatch.createLogStream({
       logGroupName: this.logGroup,
-      logStreamName: this._streamName()
+      logStreamName: job.run
     }).promise()
   }
 
-  async publishUtteranceResults (result) {
-    return this._publishJSON(result)
+  async publish (job, result) {
+    return this._publishImpl(job, result)
   }
 
-  async publishEndToEndResults (result) {
-    return this._publishJSON(result)
-  }
-
-  async _publishJSON (json, tries = 0) {
+  /**
+   *
+   * @param {Job} job
+   * @param {Result} result
+   * @param {Number} [tries=0]
+   */
+  async _publishImpl (job, result, tries = 0) {
     if (!process.env.AWS_ACCESS_KEY_ID) {
       console.log('CloudWatch NOT configured - set AWS credentials in environment to use CloudWatch')
       return
     }
-    json.processTime = this._processTime
-    json.name = this._name
+
+    // Turn the result into JSON - we use JS getters and setters, so need to do this one-by-one
+    const json = {
+      actualFields: result.actualFields,
+      lastResponse: result.lastResponse,
+      outputFields: result.outputFields,
+      record: result.record,
+      success: result.success,
+      tags: result.tags,
+      voiceId: result.voiceId
+    }
+    json.processTime = job.processTime
+    json.name = job.name
 
     const cloudwatch = new AWS.CloudWatchLogs()
     const payload = {
       logEvents: [{
-        message: JSON.stringify(json),
+        message: JSON.stringify(result),
         timestamp: Date.now()
       }],
       logGroupName: this.logGroup,
-      logStreamName: this._streamName()
+      logStreamName: job.run
     }
 
     if (this._sequenceToken) {
@@ -59,18 +73,14 @@ class CloudWatchMetrics {
         const logStreams = await cloudwatch.describeLogStreams({
           descending: true,
           logGroupName: this.logGroup,
-          logStreamNamePrefix: this._streamName()
+          logStreamNamePrefix: job.run
         })
         // Set the sequence token and retry
         this._sequenceToken = logStreams[0].uploadSequenceToken
-        await this._publishJSON(json, tries + 1)
+        await this._publishJSON(job, result, tries + 1)
       }
     }
     // console.log('PutLog Response: ' + JSON.stringify(response, null, 2))
-  }
-
-  _streamName () {
-    return this._name + '_' + this._processTime
   }
 }
 

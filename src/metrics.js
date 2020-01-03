@@ -16,8 +16,10 @@ class Metrics {
 
   /**
    * Called to initialize the metrics client
+   * @params {Job} job The job the metrics client is publishing data for
+   * @returns {Promise<void>}
    */
-  async initialize () {
+  async initialize (job) {
     return Promise.resolve()
   }
 
