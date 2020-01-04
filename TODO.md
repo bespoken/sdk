@@ -25,8 +25,8 @@
 ## Nice-to-have
 - [ ] Merge config and job - get properties of json file from job
 - [ ] Add locale support
-- [ ] Fix cloudwatch
-- [ ] Look into using AWS gitlab runners? Or via Kubernetes on GCP?
+- [X] Fix cloudwatch
+- [X] Look into using AWS gitlab runners? Or via Kubernetes on GCP?
 
 ## Done
 - [X] Make parallelization simpler

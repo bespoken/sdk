@@ -38,17 +38,13 @@ class BatchRunner {
       // It will run as many records simultaneously as there are tokens available
       const device = await this._devicePool.lock()
 
-      await this._processRecord(device, record)
-
-      // Free the device once we are done with it
-      this._devicePool.free(device)
-
-      this._job.addProcessedCount()
-
-      // Save the results after each record is done
-      await Store.instance().save(this._job)
-
-      await this._print()
+      this._processRecord(device, record).then(() => {
+        // Free the device once we are done with it
+        this._devicePool.free(device)
+      }).catch((e) => {
+        console.error('BATCH process error: ' + e)
+        this._devicePool.free(device)
+      })
     }
   }
 
@@ -99,6 +95,15 @@ class BatchRunner {
     } else {
       await this._processVariation(device, record)
     }
+
+    this._job.addProcessedCount()
+
+    // Save the results after each record is done
+    // We synchronize these operatons with a mutex - so only one write happens at a time
+    console.log('BATCH SAVE attempting')
+    util.mutexAcquire().then(() => {
+      this._save()
+    })
   }
 
   async _processVariation (device, record, voiceId = 'en-US-Wavenet-D') {
@@ -172,9 +177,15 @@ class BatchRunner {
     console.log(`BATCH READ pre-filter: ${records.length} post-filter: ${this._job.records.length}`)
   }
 
-  _print () {
-    const Printer = require('./printer')
-    Printer.instance().print(this._job)
+  async _save () {
+    console.log('BATCH SAVING')
+    try {
+      await Store.instance().save(this._job)
+      const Printer = require('./printer')
+      await Printer.instance().print(this._job)
+    } catch (e) {
+      console.error('BATCH SAVE error: ' + e)
+    }
   }
 
   /**
