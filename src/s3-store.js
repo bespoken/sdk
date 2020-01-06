@@ -22,12 +22,14 @@ class S3Store extends Store {
   }
 
   async save (job) {
+    console.time('S3-STORE SAVE')
     const s3 = new AWS.S3()
-    return s3.putObject({
+    await s3.putObject({
       Body: JSON.stringify(job, null, 2),
       Bucket: 'batch-runner',
       Key: S3Store.key(job.run)
     }).promise()
+    console.timeEnd('S3-STORE SAVE')
   }
 
   static key (run) {

@@ -1,11 +1,11 @@
 const Util = {
   locks: {},
-  mutexAcquire: async (lockName = 'default', waitTime = 100, attempt = 1) => {
+  mutexAcquire: async (lockName = 'default', waitTime = 100, attempt = 1, maxAttempts = 1) => {
     const lock = Util.locks[lockName]
     if (lock === true) {
       console.error('UTIL MUTEXACQUIRE failed on attempt: {attempt}')
       // Give up after three tries
-      if (attempt > 3) {
+      if (attempt >= maxAttempts) {
         return false
       }
       await Util.sleep(waitTime)

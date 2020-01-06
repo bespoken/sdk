@@ -16,6 +16,8 @@ class BatchRunner {
   constructor (config) {
     this._config = config
     this._startIndex = 0
+    /** @type {Job} */
+    this._job = undefined
   }
 
   async process () {
@@ -39,14 +41,23 @@ class BatchRunner {
       // It will run as many records simultaneously as there are tokens available
       const device = await this._devicePool.lock()
 
-      this._processRecord(device, record).then(() => {
+      this._processRecord(device, record).catch((e) => {
+        console.error('BATCH process error: ' + e)
+      }).finally(() => {
         // Free the device once we are done with it
         this._devicePool.free(device)
-      }).catch((e) => {
-        console.error('BATCH process error: ' + e)
-        this._devicePool.free(device)
+
+        // Make sure to increment the processed count every time we do a record
+        this._job.addProcessedCount()
       })
     }
+
+    // Wait for all records to fnish
+    while (this._job.processedCount < this._job.totalCount) {
+      console.log(`BATCH PROCESS waiting for records to finish processed: ${this._job.processedCount} total: ${this._job.totalCount}`)
+      await util.sleep(1000)
+    }
+    await this._save()
   }
 
   async _initialize () {
@@ -97,15 +108,13 @@ class BatchRunner {
       await this._processVariation(device, record)
     }
 
-    this._job.addProcessedCount()
-
     // Save the results after each record is done
     // We synchronize these operatons with a mutex - so only one write happens at a time
     // If another record is trying to write at the same time, we just move on
     console.log('BATCH SAVE attempting')
-    util.mutexAcquire().then((acquired) => {
+    util.mutexAcquire().then(async (acquired) => {
       if (acquired) {
-        this._save()
+        await this._save()
       } else {
         console.log('BATCH SAVE skipping')
       }
@@ -186,9 +195,10 @@ class BatchRunner {
 
   async _save () {
     try {
-      await Store.instance().save(this._job)
+      console.time('BATCH SAVE')
       await Printer.instance().print(this._job)
-      console.log('BATCH SAVE done')
+      await Store.instance().save(this._job)
+      console.timeEnd('BATCH SAVE')
     } catch (e) {
       console.error('BATCH SAVE error: ' + e)
     }

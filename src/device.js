@@ -54,7 +54,7 @@ class Device {
       }
 
       const backoffTime = 10000
-      console.error(`ERROR: ${error} RETRYING IN ${backoffTime / 1000} seconds`)
+      console.error(`DEVICE MESSAGE error: ${error} retrying ${backoffTime / 1000} seconds`)
       await util.sleep(backoffTime)
       return this.message(voiceId, messages, attempt + 1)
     }
