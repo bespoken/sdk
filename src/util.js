@@ -1,16 +1,22 @@
-module.exports = {
+const Util = {
   locks: {},
-  mutexAcquire: async (lockName = 'default', waitTime = 100) => {
-    let lock = this.locks[lockName]
-    while (lock === true) {
-      await this.sleep(waitTime)
-      lock = this.locks[lockName]
+  mutexAcquire: async (lockName = 'default', waitTime = 100, attempt = 1) => {
+    const lock = Util.locks[lockName]
+    if (lock === true) {
+      console.error('UTIL MUTEXACQUIRE failed on attempt: {attempt}')
+      // Give up after three tries
+      if (attempt > 3) {
+        return false
+      }
+      await Util.sleep(waitTime)
+      return Util.mutexAcquire(lockName, waitTime, attempt + 1)
     }
-    this.locks[lockName] = true
+    Util.locks[lockName] = true
+    return true
   },
 
   mutexRelease: async (lockName = 'default') => {
-    this.locks[lockName] = false
+    Util.locks[lockName] = false
   },
 
   sleep: async (sleepTime) => {
@@ -21,3 +27,5 @@ module.exports = {
     })
   }
 }
+
+module.exports = Util

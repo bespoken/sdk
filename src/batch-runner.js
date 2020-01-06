@@ -5,6 +5,7 @@ const Evaluator = require('./evaluator')
 const Interceptor = require('./interceptor')
 const Job = require('./job').Job
 const Metrics = require('./metrics')
+const Printer = require('./printer')
 const Record = require('./source').Record
 const Result = require('./job').Result
 const Source = require('./source').Source
@@ -100,9 +101,15 @@ class BatchRunner {
 
     // Save the results after each record is done
     // We synchronize these operatons with a mutex - so only one write happens at a time
+    // If another record is trying to write at the same time, we just move on
     console.log('BATCH SAVE attempting')
-    util.mutexAcquire().then(() => {
-      this._save()
+    util.mutexAcquire().then((acquired) => {
+      if (acquired) {
+        this._save()
+      } else {
+        console.log('BATCH SAVE skipping')
+      }
+      util.mutexRelease()
     })
   }
 
@@ -178,11 +185,10 @@ class BatchRunner {
   }
 
   async _save () {
-    console.log('BATCH SAVING')
     try {
       await Store.instance().save(this._job)
-      const Printer = require('./printer')
       await Printer.instance().print(this._job)
+      console.log('BATCH SAVE done')
     } catch (e) {
       console.error('BATCH SAVE error: ' + e)
     }
