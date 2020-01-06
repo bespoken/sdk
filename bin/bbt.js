@@ -8,7 +8,7 @@ const configFile = _.nth(process.argv, 3)
 console.log('command: ' + command + ' file: ' + configFile)
 if (command && configFile) {
   const runner = new BatchRunner(configFile)
-  runner.process(() => {
+  runner.process().then(() => {
     console.log('RUNNER DONE!')
   })
 } else {

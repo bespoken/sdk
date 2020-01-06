@@ -57,7 +57,11 @@ class BatchRunner {
       console.log(`BATCH PROCESS waiting for records to finish processed: ${this._job.processedCount} total: ${this._job.totalCount}`)
       await util.sleep(1000)
     }
+
+    // Do a save once all records are done - in case any writes got skipped due to contention
+    console.log('BATCH PROCESS all records done - final save')
     await this._save()
+    console.log('BATCH PROCESS done')
   }
 
   async _initialize () {
@@ -112,14 +116,16 @@ class BatchRunner {
     // We synchronize these operatons with a mutex - so only one write happens at a time
     // If another record is trying to write at the same time, we just move on
     console.log('BATCH SAVE attempting')
-    util.mutexAcquire().then(async (acquired) => {
-      if (acquired) {
+    const acquired = await util.mutexAcquire()
+    if (acquired) {
+      try {
         await this._save()
-      } else {
-        console.log('BATCH SAVE skipping')
+      } finally {
+        util.mutexRelease()
       }
-      util.mutexRelease()
-    })
+    } else {
+      console.log('BATCH SAVE skipping')
+    }
   }
 
   async _processVariation (device, record, voiceId = 'en-US-Wavenet-D') {
