@@ -13,6 +13,13 @@ class Printer {
     return Config.instance('printer', 'printer')
   }
 
+  constructor () {
+    // Make the output director if it does not exist
+    if (!fs.existsSync('output')) {
+      fs.mkdirSync('output')
+    }
+  }
+
   /**
    * Prints out the results for a job
    * @param {Job} job
@@ -74,7 +81,8 @@ class Printer {
         boolean: (v) => v ? 'TRUE' : 'FALSE'
       }
     })
-    fs.writeFileSync('results.csv', resultsOutput)
+
+    fs.writeFileSync('output/results.csv', resultsOutput)
   }
 }
 
