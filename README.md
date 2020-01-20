@@ -1,10 +1,11 @@
-# Bespoken Batch Tester
+# **Bespoken Batch Tester**
+[<p align="center"><a href="#installation">Installation</a> | <a href="#running-the-tester">Execution</a> | <a href="#gitlab-configuration">GitLab</a> | <a href="#datadog-configuration">DataDog</a></p>]()
 This project enables batch testing of utterances for voice experiences.
 
 It leverages Bespoken's Virtual Devices to run large sets of utterances through Alexa, Google Assistant, and other voice platforms.
 
-## Getting Started
-### Installation
+## **Getting Started**
+### **Installation**
 To install the Bespoken Batch Tester, just run:  
 ```
 npm install bespoken-batch-tester --save
@@ -12,14 +13,14 @@ npm install bespoken-batch-tester --save
 
 We recommend creating a new project to store artifacts related to the tester, such as the testing configuration file, CI configuration, and custom source code.
 
-### Environment Management
+### **Environment Management**
 We use dotenv when running locally, which takes environment variables from a local `.env` file.
 
 To set this up, just make a copy of `example.env` and name it `.env`. Replace the values inside there with the correct values for your configuration.
 
 For running with continuous integration (such as Jenkins, Circle CI or Gitlab), these values should instead come from actual environment variables.
 
-### Virtual Device Setup
+### **Virtual Device Setup**
 * Create a virtual device with our [easy-to-follow guide here](https://read.bespoken.io/end-to-end/setup/#creating-a-virtual-device).
 * Add the newly created token to the `.env` file
 
@@ -27,7 +28,7 @@ If you want to use multiple tokens, just added them as a comma-separated list.
 
 For more information on the best practices for virtual device management, [read our guide here]([docs/ACCOUNT_SETUP.md]).
 
-### Create a Configuration File
+### **Create a Configuration File**
 Here is a bare minimum configuration file:
 ```json
 {
@@ -43,7 +44,7 @@ To get started, cut and paste those settings into a new file, such as `batch-tes
 
 More information on configuring the batch test is below.
 
-### Running the Tester
+### **Running the Tester**
 Once the configuration file is created, just enter:
 ```
 bbt process batch-test.json
@@ -53,7 +54,7 @@ And it will be off and running. In practice, we recommend this not be run locall
 
 The tester will create a results.csv file, as well as publish metrics to the configured metrics provider.
 
-## In-Depth Configuration
+## **In-Depth Configuration**
 The environment variables store sensitive credentials.
 
 Our configuration file stores information particular to how the tests should run, but of a non-sensitive nature.
@@ -75,7 +76,7 @@ An example file:
 ```
 
 Each of the properties is explained below:
-### fields
+### **`fields`**
 Each field represents a column in the CSV file.
 
 By default, we take these columns and treat them as expected fields in the response output from the Virtual Device.
@@ -84,7 +85,7 @@ However, in some cases, these fields are rather complicated. In that case, we ca
 
 This way we can perform complex verification on our utterances with a nice, clean CSV file.
 
-### interceptor
+### **`interceptor`**
 The interceptor allows for the core behavior of the batch runner to be modified.
 
 There are two main methods currently:  
@@ -101,7 +102,7 @@ Using [interceptResult](https://bespoken.gitlab.io/batch-tester/Interceptor.html
 You can read all about the Interceptor class here:
 https://bespoken.gitlab.io/batch-tester/Interceptor.html
 
-### metrics
+### **`metrics`**
 We have builtin two classes for metrics: `datadog-metrics` and `cloudwatch-metrics`.
 
 This dictates where metrics on the results of the tests are sent.
@@ -109,31 +110,31 @@ This dictates where metrics on the results of the tests are sent.
 Additionally, new metric providers can be used by implementing this base class:  
 https://bespoken.gitlab.io/batch-tester/Metrics.html
 
-### sequence
+### **`sequence`**
 For tests in which there are multiple steps required before we do the "official" utterance that is being tested, we can specify them here.
 
 Typically, this would involve launching a skill before saying the specific utterance we want to test, but more complex sequences are possible.
 
-### source
+### **`source`**
 The source for records. Defaults to `csv-source`. Additional builtin option is `s3-source`.
 
 For the `csv-source`, as sourceFile property must also be set.
 
 For the `s3-source`, a sourceBucket must be set. Additionally, AWS credentials must be set in the environment that can access this bucket.
 
-### store
+### **`store`**
 The mechanism used to store the output of the test cases.
 
 Defaults to `s3-store`. To use the s3-store, AWS credentials must be provided that have access to the batch-runner S3 bucket maintained by Bespoken.
 
 Contact Bespoken to have credentials allocated for this, or modify to use your own S3 bucket.
 
-## DataDog Configuration
+## **DataDog Configuration**
 * Create a DataDog account.
 * Take the API key from the Integrations -> API section
 * Add it to the `.env` file
 
-## Gitlab Configuration
+## **Gitlab Configuration**
 The gitlab configuration is defined by the file `.gitlab-ci.yml`. The file looks like this:
 ```yaml
 image: node:10
@@ -158,7 +159,7 @@ test:
 
 This build script runs the utterances and saves of the resulting CSV file.
 
-## Test Reporting
+## **Test Reporting**
 We have setup this project to make use of a few different types of reporting to show off what is possible.
 
 The reporting comes in these forms:
@@ -168,7 +169,7 @@ The reporting comes in these forms:
 
 Each is discussed in more detail below.
 
-### CSV File
+### **CSV File**
 The CSV File contains the following output:
 
 | Column | Description |
@@ -178,20 +179,18 @@ The CSV File contains the following output:
 | success | Whether or not the test was successful
 | expectedResponses | The possible expected response back from the utterance
 
-### DataDog
-DataDog captures metrics related to how all the tests have performed.
+### **DataDog**
+DataDog captures metrics related to how all the tests have performed. Each time we run the tests, and when `datadog` has been set as the `metric` mechanism to use in the `config.json` file, we push the result of each test to DataDog.
 
-The metrics can be easily reported on.
+In general, we are using next metrics:
+- `utterance.success`
+- `utterance.failure`
 
-They also can be used to setup notifcations when certain conditions are triggered.
+The metrics can be easily reported on through a DataDog Dashboard. They also can be used to setup notifcations when certain conditions are triggered.
 
-### Creating A Dashboard
-DataDog makes it easy to create a Dashboard.
+Read more about configuring DataDog in our [walkthrough](./docs/datadog.md).
 
-### Creating Alarms
-DataDog makes it easy to setup alarms.
-
-## Additional Topics
+## **Additional Topics**
+* [Working With CloudWatch](./docs/cloudwatch.md)
 * Working With Circle CI - TBC
-* Working With CloudWatch - TBC
 * Working With PagerDuty - TBC
