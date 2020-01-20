@@ -49,7 +49,7 @@ class CloudWatchMetrics extends Metrics {
     const cloudwatch = new AWS.CloudWatchLogs()
     const payload = {
       logEvents: [{
-        message: JSON.stringify(result),
+        message: JSON.stringify(json),
         timestamp: Date.now()
       }],
       logGroupName: this.logGroup,
