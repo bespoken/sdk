@@ -88,6 +88,10 @@ class Job {
     return this._config
   }
 
+  get customer () {
+    return this.config.customer
+  }
+
   get name () {
     return this._name
   }

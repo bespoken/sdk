@@ -114,6 +114,10 @@ class Record {
     this._expectedFields[name] = value
   }
 
+  expectedField (name) {
+    return this._expectedFields[name]
+  }
+
   /**
    * The expected values for the record
    * @type {Object.<string, string>}

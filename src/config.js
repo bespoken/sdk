@@ -72,16 +72,20 @@ class Config {
    * @param {boolean} [required=false]
    * @returns {Object} The value for the specified key
    */
-  static get (key, allowedValues, required = false) {
-    const value = _.get(Config.config, key)
+  static get (key, allowedValues, required = false, defaultValue) {
+    let value = _.get(Config.config, key)
     if (value && allowedValues) {
       Config._checkValues(key, value, allowedValues)
     }
 
-    if (required && !value) {
+    if (required && !value && !defaultValue) {
       console.log('Config: ' + Config.config[key])
       console.error(`${key} is required in configuration but is not set. Exiting.`)
       process.exit(1)
+    }
+
+    if (!value && defaultValue) {
+      value = defaultValue
     }
     return value
   }

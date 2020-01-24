@@ -17,7 +17,7 @@ class Device {
       voiceID: voiceId
     })
 
-    virtualDevice.baseURL = process.env.VIRTUAL_DEVICE_BASE_URL ? process.env.VIRTUAL_DEVICE_BASE_URL : 'https://virtual-device.bespoken.io'
+    virtualDevice.baseURL = Config.get('virtualDeviceBaseURL')
 
     try {
       const messagesArray = []
@@ -75,7 +75,8 @@ class DevicePool {
   }
 
   initialize () {
-    const tokens = process.env.VIRTUAL_DEVICE_TOKEN.split(',') // The virtual device token(s) used for processing
+    const tokensInfo = Config.get('virtualDevices', undefined, true)
+    const tokens = Object.keys(tokensInfo)
     this._devices = []
 
     let skipSTT = false
