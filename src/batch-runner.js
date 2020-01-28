@@ -39,7 +39,7 @@ class BatchRunner {
 
       // This runner can operate concurrently
       // It will run as many records simultaneously as there are tokens available
-      const device = await this._devicePool.lock()
+      const device = await this._devicePool.lock(record)
 
       this._processRecord(device, record).catch((e) => {
         console.error('BATCH process error: ' + e)

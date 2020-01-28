@@ -4,6 +4,7 @@ const datadog = require('datadog-metrics')
 class DataDogMetrics extends Metrics {
   async publish (job, result) {
     const tags = [
+      `customer:${job.customer}`,
       `job:${job.name}`,
       `run:${job.run}`,
       `utterance:${result.record.utteranceRaw}`,
