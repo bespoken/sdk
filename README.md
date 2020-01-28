@@ -34,9 +34,9 @@ If you want to use multiple tokens, potentially for different purposes, leverage
 }
 ```
 
-The tags can then be assigned to a record:
+The tags can then be assigned to a record with [record.addDeviceTag](https://bespoken.gitlab.io/batch-tester/Record.html#addDeviceTag):
 ```
-record.addTag('USAccount')
+record.addDeviceTag('USAccount')
 ```
 Only tokens that have that tag (or tags) will be used to process it.
 
