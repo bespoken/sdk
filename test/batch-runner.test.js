@@ -14,6 +14,7 @@ describe('batch runner processes records', () => {
 
   test('process simple file', async () => {
     const config = {
+      customer: 'bespoken',
       job: 'unit-test',
       source: 'csv-source',
       store: 'file-store',
@@ -37,6 +38,7 @@ describe('batch runner processes records', () => {
 
   test('filter applied to records', async () => {
     const config = {
+      customer: 'bespoken',
       filters: {
         index: [1, 2, 3],
         booleanProperty: true
