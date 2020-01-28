@@ -41,6 +41,10 @@ class Config {
     AWS.config.update({ region: 'us-east-1' })
 
     Config.config = json
+
+    // Check for required values
+    Config.get('customer', undefined, true)
+    Config.get('job', undefined, true)
     return Config.config
   }
 
@@ -79,8 +83,7 @@ class Config {
     }
 
     if (required && !value && !defaultValue) {
-      console.log('Config: ' + Config.config[key])
-      console.error(`${key} is required in configuration but is not set. Exiting.`)
+      console.error(`CONFIG FATAL ERROR: ${key} is required in configuration but is not set. Exiting.`)
       process.exit(1)
     }
 
