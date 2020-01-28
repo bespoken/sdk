@@ -22,9 +22,23 @@ For running with continuous integration (such as Jenkins, Circle CI or Gitlab), 
 
 ### **Virtual Device Setup**
 * Create a virtual device with our [easy-to-follow guide here](https://read.bespoken.io/end-to-end/setup/#creating-a-virtual-device).
-* Add the newly created token to the `.env` file
+* Add them the configuration file, as described below
 
-If you want to use multiple tokens, just added them as a comma-separated list.
+If you want to use multiple tokens, potentially for different purposes, leverage tags:
+```json
+{
+  "virtualDevices": {
+    "myToken": ["USAccount"],
+    "myOtherToken": ["UKAccount"]
+  }
+}
+```
+
+The tags can then be assigned to a record with [record.addDeviceTag](https://bespoken.gitlab.io/batch-tester/Record.html#addDeviceTag):
+```
+record.addDeviceTag('USAccount')
+```
+Only tokens that have that tag (or tags) will be used to process it.
 
 For more information on the best practices for virtual device management, [read our guide here]([docs/ACCOUNT_SETUP.md]).
 
@@ -36,7 +50,10 @@ Here is a bare minimum configuration file:
   "sequence": ["open my audio player"],
   "source": "csv-source",
   "sourceFile": "path/to/my/file.csv",
-  "store": "s3-store"
+  "store": "s3-store",
+  "virtualDevices": {
+    "myVirtualDevice": ["my-optional-tags"]
+  }
 }
 ```
 

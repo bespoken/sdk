@@ -41,6 +41,10 @@ class Config {
     AWS.config.update({ region: 'us-east-1' })
 
     Config.config = json
+
+    // Check for required values
+    Config.get('customer', undefined, true)
+    Config.get('job', undefined, true)
     return Config.config
   }
 
@@ -72,16 +76,19 @@ class Config {
    * @param {boolean} [required=false]
    * @returns {Object} The value for the specified key
    */
-  static get (key, allowedValues, required = false) {
-    const value = _.get(Config.config, key)
+  static get (key, allowedValues, required = false, defaultValue) {
+    let value = _.get(Config.config, key)
     if (value && allowedValues) {
       Config._checkValues(key, value, allowedValues)
     }
 
-    if (required && !value) {
-      console.log('Config: ' + Config.config[key])
-      console.error(`${key} is required in configuration but is not set. Exiting.`)
+    if (required && !value && !defaultValue) {
+      console.error(`CONFIG FATAL ERROR: ${key} is required in configuration but is not set. Exiting.`)
       process.exit(1)
+    }
+
+    if (!value && defaultValue) {
+      value = defaultValue
     }
     return value
   }

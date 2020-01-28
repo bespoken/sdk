@@ -103,6 +103,15 @@ class Record {
     this._utteranceRaw = utterance // Save off the original utterance in case we change it during processing
     this._expectedFields = expectedFields
     this._meta = meta
+    this._deviceTags = []
+  }
+
+  /**
+   * Device tags indicate that a record can ONLY be run on a device with this tag
+   * @param {string} tag
+   */
+  addDeviceTag (tag) {
+    this._deviceTags.push(tag)
   }
 
   /**
@@ -112,6 +121,17 @@ class Record {
    */
   addExpectedField (name, value) {
     this._expectedFields[name] = value
+  }
+
+  expectedField (name) {
+    return this._expectedFields[name]
+  }
+
+  /**
+   * Gets the device tags associated with this record
+   */
+  get deviceTags () {
+    return this._deviceTags
   }
 
   /**
