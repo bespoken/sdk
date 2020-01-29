@@ -2,8 +2,10 @@ const _ = require('lodash')
 const Config = require('./config')
 const fs = require('fs')
 const Job = require('./job').Job
-const stringify = require('csv-stringify/lib/sync')
+const path = require('path')
+const stringify = require('csv-stringify')
 
+const OUTPUT_PATH = 'output/results.csv'
 /**
  * The printer class is responsible for outputting results in a human-readable format
  * The default implementation creates a CSV file
@@ -15,8 +17,14 @@ class Printer {
 
   constructor () {
     // Make the output director if it does not exist
-    if (!fs.existsSync('output')) {
-      fs.mkdirSync('output')
+    const outputDirectory = path.dirname(OUTPUT_PATH)
+    if (!fs.existsSync(outputDirectory)) {
+      fs.mkdirSync(outputDirectory)
+    }
+
+    // If there is already an output file, remove it
+    if (fs.existsSync(OUTPUT_PATH)) {
+      fs.unlinkSync(OUTPUT_PATH)
     }
   }
 
@@ -24,7 +32,7 @@ class Printer {
    * Prints out the results for a job
    * @param {Job} job
    */
-  print (job) {
+  async print (job) {
     let successCount = 0
     let ignoreCount = 0
     const outputHeaders = ['UTTERANCE']
@@ -76,13 +84,26 @@ class Printer {
     })
 
     console.log(`PRINTER Success: ${successCount} Ignore: ${ignoreCount} Total: ${job.results.length}`)
-    const resultsOutput = stringify(resultsArray, {
-      cast: {
-        boolean: (v) => v ? 'TRUE' : 'FALSE'
-      }
+    // Create the CSV and the output file asynchronously
+    return new Promise((resolve, reject) => {
+      stringify(resultsArray, {
+        cast: {
+          boolean: (v) => v ? 'TRUE' : 'FALSE'
+        }
+      }, (error, output) => {
+        if (error) {
+          reject(error)
+        } else {
+          fs.writeFile(OUTPUT_PATH, output, (error) => {
+            if (error) {
+              reject(error)
+            } else {
+              resolve()
+            }
+          })
+        }
+      })
     })
-
-    fs.writeFileSync('output/results.csv', resultsOutput)
   }
 }
 

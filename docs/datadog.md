@@ -39,6 +39,53 @@ DATADOG makes it easy to create a Dashboard:
   ```
 * Give your graphic a title and click on the "Done" button
 
+## Creating A Table With Success, Failure And Percentage, Grouped by Some Attribute
+```json
+{
+    "viz": "query_table",
+    "requests": [
+        {
+            "q": "sum:utterance.success{customer:customerName} by {utterance}",
+            "conditional_formats": [],
+            "alias": "Success",
+            "aggregator": "sum",
+            "limit": 100,
+            "order": "desc"
+        },
+        {
+            "q": "sum:utterance.failure{customer:customerName} by {utterance}",
+            "conditional_formats": [],
+            "alias": "Failure",
+            "aggregator": "sum"
+        },
+        {
+            "q": "sum:utterance.success{customer:customerName} by {utterance}/(sum:utterance.failure{customer:customerName} by {utterance}+sum:utterance.failure{customer:customerName} by {utterance})*100",
+            "conditional_formats": [
+                {
+                    "comparator": ">=",
+                    "value": "90",
+                    "palette": "white_on_green"
+                },
+                {
+                    "comparator": "<",
+                    "value": "70",
+                    "palette": "white_on_red"
+                },
+                {
+                    "comparator": "<",
+                    "value": "90",
+                    "palette": "white_on_yellow"
+                }
+            ],
+            "alias": "% Success",
+            "aggregator": "avg"
+        }
+    ]
+}
+```
+
+TODO - Add a screenshot of the above
+
 ## **Creating Alarms**
 DATADOG makes it easy to setup alarms, let's see how:
 * Go to Monitors on the left menu and select "New Monitor"

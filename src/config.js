@@ -62,7 +62,7 @@ class Config {
     }
 
     const value = process.env[key]
-    if (allowedValues) {
+    if (allowedValues && allowedValues.length > 0) {
       Config._checkValues(key, value, allowedValues)
     }
     return value
@@ -116,10 +116,11 @@ class Config {
     }
 
     try {
+      const paths = [process.cwd(), __dirname]
       const modulePath = require.resolve(className, {
         paths: [process.cwd(), __dirname]
       })
-      console.log(`Config loading class: ${className} from path: ${modulePath} for ${key}`)
+      console.log(`Config loading class: ${className} from module-path: ${modulePath} using paths: ${paths} for service: ${key}`)
 
       const Class = require(modulePath)
       const instance = new Class()

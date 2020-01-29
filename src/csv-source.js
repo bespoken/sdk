@@ -6,9 +6,12 @@ const Source = require('./source').Source
 
 class CSVSource extends Source {
   async loadAll () {
-    const sourceFile = Config.get('sourceFile')
-    console.log(`CSV input file: ${sourceFile}`)
+    const sourceFile = Config.get('sourceFile', undefined, false, 'input/records.csv')
+    console.log(`CSV-SOURCE LOADALL input file: ${sourceFile}`)
 
+    if (!fs.existsSync(sourceFile)) {
+      console.error(`CSV-SOURCE LOADALL error - file does not exist: ${sourceFile}`)
+    }
     const utteranceData = fs.readFileSync(sourceFile)
     const rawRecords = parse(utteranceData, {
       columns: true,
@@ -19,16 +22,23 @@ class CSVSource extends Source {
     })
 
     const records = rawRecords.map(r => {
-      const record = new Record(r.utterance)
+      const utteranceProperty = Object.keys(r).find(property => property.trim().toLowerCase() === 'utterance')
+      const utterance = r[utteranceProperty]
+      if (!utterance || utterance.trim().length === 0 || utterance.startsWith('#')) {
+        console.log(`CSV-SOURCE LOADALL skipping utterance: ${utterance}`)
+        return undefined
+      }
+      const record = new Record(r[utteranceProperty])
       Object.keys(r).forEach(field => {
-        if (field === 'utterance') {
+        if (field.trim().toLowerCase() === 'utterance') {
           return
         }
 
         record.addExpectedField(field, r[field])
       })
       return record
-    })
+    }).filter(r => r !== undefined) // Remove undefined records - i.e., the ones we skipped
+
     return Promise.resolve(records)
   }
 }

@@ -18,7 +18,7 @@ class Device {
       voiceID: voiceId
     })
 
-    virtualDevice.baseURL = Config.get('virtualDeviceBaseURL', [], false, 'https://virtual-device.bespoken.io')
+    virtualDevice.baseURL = Config.get('virtualDeviceBaseURL', undefined, false, 'https://virtual-device.bespoken.io')
 
     try {
       const messagesArray = []

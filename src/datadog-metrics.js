@@ -22,13 +22,13 @@ class DataDogMetrics extends Metrics {
       defaultTags: tags
     })
 
-    if (result.error) {
-      datadog.increment('utterance.error', 1)
-    } else if (result.success) {
-      datadog.increment('utterance.success', 1)
-    } else {
-      datadog.increment('utterance.failure', 1)
-    }
+    const error = result.error ? 1 : 0
+    const success = result.success ? 1 : 0
+    const failure = !result.success && !result.error ? 1 : 0
+
+    datadog.increment('utterance.error', error)
+    datadog.increment('utterance.success', success)
+    datadog.increment('utterance.failure', failure)
 
     datadog.flush()
   }

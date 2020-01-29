@@ -135,7 +135,12 @@ Typically, this would involve launching a skill before saying the specific utter
 ### **`source`**
 The source for records. Defaults to `csv-source`. Additional builtin option is `s3-source`.
 
-For the `csv-source`, as sourceFile property must also be set.
+For the `csv-source`, the source file defaults to `input/records.csv`. This can be overridden by setting the `sourceFile` property:  
+```
+{ 
+  "sourceFile
+}
+```
 
 For the `s3-source`, a sourceBucket must be set. Additionally, AWS credentials must be set in the environment that can access this bucket.
 
