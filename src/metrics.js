@@ -11,7 +11,7 @@ class Metrics {
       const DataDog = require('./datadog-metrics')
       Config.singleton('metrics', new DataDog())
     }
-    return Config.instance('metrics', 'metrics')
+    return Config.instance('metrics', Metrics)
   }
 
   /**

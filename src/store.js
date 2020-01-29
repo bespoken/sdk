@@ -2,7 +2,7 @@ const Config = require('./config')
 
 class Store {
   static instance () {
-    return Config.instance('store', 's3-store')
+    return Config.instance('store', './s3-store')
   }
 
   async initialize () {

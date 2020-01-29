@@ -45,7 +45,7 @@ DATADOG makes it easy to create a Dashboard:
     "viz": "query_table",
     "requests": [
         {
-            "q": "sum:utterance.success{customer:customerName} by {utterance}",
+            "q": "sum:utterance.success{customer:customerName} by {utterance}.as_count()",
             "conditional_formats": [],
             "alias": "Success",
             "aggregator": "sum",
@@ -53,13 +53,13 @@ DATADOG makes it easy to create a Dashboard:
             "order": "desc"
         },
         {
-            "q": "sum:utterance.failure{customer:customerName} by {utterance}",
+            "q": "sum:utterance.failure{customer:customerName} by {utterance}.as_count()",
             "conditional_formats": [],
             "alias": "Failure",
             "aggregator": "sum"
         },
         {
-            "q": "sum:utterance.success{customer:customerName} by {utterance}/(sum:utterance.failure{customer:customerName} by {utterance}+sum:utterance.failure{customer:customerName} by {utterance})*100",
+            "q": "sum:utterance.success{customer:customerName} by {utterance}.as_count()/(sum:utterance.success{customer:customerName} by {utterance}.as_count()+sum:utterance.failure{customer:customerName} by {utterance}.as_count())*100",
             "conditional_formats": [
                 {
                     "comparator": ">=",

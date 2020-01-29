@@ -12,7 +12,7 @@ const OUTPUT_PATH = 'output/results.csv'
  */
 class Printer {
   static instance () {
-    return Config.instance('printer', 'printer')
+    return Config.instance('printer', Printer)
   }
 
   constructor () {

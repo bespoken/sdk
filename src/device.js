@@ -54,7 +54,6 @@ class Device {
         throw error
       }
 
-      console.log('UTTERANCE: ' + JSON.stringify(messages, null, 2))
       const backoffTime = 10000
       console.error(`DEVICE MESSAGE error: ${error} retrying ${backoffTime / 1000} seconds`)
       await util.sleep(backoffTime)
