@@ -1,8 +1,11 @@
 const Config = require('./config')
 
 class Store {
+  /**
+   * @return {Store}
+   */
   static instance () {
-    let className = Config.get('store', [], false, './s3-store')
+    let className = Config.get('store', undefined, false, './s3-store')
     if (className === 's3-store') {
       className = './s3-store'
     } else if (className === 'file-store') {
@@ -15,7 +18,12 @@ class Store {
     return Promise.resolve()
   }
 
-  async fetch (job) {
+  /**
+   * Fetches the run by name
+   * @param {string} run
+   * @returns {Job}
+   */
+  async fetch (run) {
     return Promise.resolve()
   }
 

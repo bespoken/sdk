@@ -78,7 +78,7 @@ class Config {
    */
   static get (key, allowedValues, required = false, defaultValue) {
     let value = _.get(Config.config, key)
-    if (value && allowedValues) {
+    if (value && allowedValues && allowedValues.length > 0) {
       Config._checkValues(key, value, allowedValues)
     }
 
