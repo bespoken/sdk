@@ -142,6 +142,10 @@ class Config {
     Config.singletons = undefined
   }
 
+  static set (key, value) {
+    Config.config[key] = value
+  }
+
   static singleton (key, instance) {
     if (!Config.singletons) {
       Config.singletons = {}

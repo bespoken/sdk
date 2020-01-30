@@ -5,13 +5,14 @@ class Store {
    * @return {Store}
    */
   static instance () {
-    let className = Config.get('store', undefined, false, './s3-store')
+    const className = Config.get('store', undefined, false)
+    // This code is done to fix module-loading issue in Node 12
     if (className === 's3-store') {
-      className = './s3-store'
+      Config.set('store', './s3-store')
     } else if (className === 'file-store') {
-      className = './file-store'
+      Config.set('store', './file-store')
     }
-    return Config.instance('store', className)
+    return Config.instance('store')
   }
 
   async initialize () {
