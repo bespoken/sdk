@@ -10,12 +10,6 @@ class Source {
    * @returns {Source}
    */
   static instance () {
-    const className = Config.get('source', undefined, false)
-    if (className === 'csv-source') {
-      Config.set('source', './csv-source')
-    } else if (className === 's3-source') {
-      Config.set('source', './s3-source')
-    }
     return Config.instance('source', './csv-source')
   }
 

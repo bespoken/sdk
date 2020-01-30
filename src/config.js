@@ -1,6 +1,7 @@
 const _ = require('lodash')
 const AWS = require('aws-sdk')
 const fs = require('fs')
+const path = require('path')
 
 require('dotenv').config()
 
@@ -113,6 +114,11 @@ class Config {
         return instance
       }
       className = defaultClass
+    }
+
+    // Add a ./ for issue module resolution in Node 12 (perhaps on Mac only? can't reproduce on Windows or Linux)
+    if (!path.isAbsolute(className) && !className.startsWith('.')) {
+      className = './' + className
     }
 
     try {
