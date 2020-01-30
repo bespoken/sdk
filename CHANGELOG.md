@@ -1,3 +1,10 @@
+## 0.4.3
+### **Enhancements**
+* Better documentation on DataDog chart creation
+
+### **Bug Fixes**
+* More work to ensure module resolution works well - very tough issue to replicate
+
 ## 0.4.2
 ### **Enhancements**
 * Added reprint feature - described [here](README.md#csv-file). Allows for retrieving CSV results after the run is completed.
