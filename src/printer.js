@@ -86,7 +86,7 @@ class Printer {
       resultsArray.push(resultArray)
     })
 
-    console.log(`PRINTER Success: ${successCount} Ignore: ${ignoreCount} Total: ${job.results.length}`)
+    // console.log(`PRINTER Success: ${successCount} Ignore: ${ignoreCount} Total: ${job.results.length}`)
     // Create the CSV and the output file asynchronously
     return new Promise((resolve, reject) => {
       stringify(resultsArray, {

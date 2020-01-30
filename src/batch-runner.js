@@ -32,9 +32,15 @@ class BatchRunner {
       process.exit(1)
     }
 
-    this._job.totalCount = this._job.records.length
+    let recordsToProcess = Config.get('limit', [], false, this._job.records.length)
+    recordsToProcess = +recordsToProcess
 
-    for (let i = this._startIndex; i < this._job.records.length; i++) {
+    if (isNaN(recordsToProcess)) {
+      console.error('INVALID VALUE for limit key in configuration file. Use a positive number.')
+      process.exit(1)
+    }
+
+    for (let i = this._startIndex; i < recordsToProcess; i++) {
       const record = this._job.records[i]
 
       // This runner can operate concurrently
@@ -49,12 +55,13 @@ class BatchRunner {
 
         // Make sure to increment the processed count every time we do a record
         this._job.addProcessedCount()
+        console.log(`BATCH PROCESS processed: ${this._job.processedCount} out of ${recordsToProcess}`)
       })
     }
 
     // Wait for all records to fnish
-    while (this._job.processedCount < this._job.totalCount) {
-      console.log(`BATCH PROCESS waiting for records to finish processed: ${this._job.processedCount} total: ${this._job.totalCount}`)
+    while (this._job.processedCount < recordsToProcess) {
+      console.log(`BATCH PROCESS waiting for records to finish processed: ${this._job.processedCount} total: ${recordsToProcess}`)
       await util.sleep(1000)
     }
 
