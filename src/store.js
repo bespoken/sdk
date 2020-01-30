@@ -12,7 +12,7 @@ class Store {
     } else if (className === 'file-store') {
       Config.set('store', './file-store')
     }
-    return Config.instance('store')
+    return Config.instance('store', './s3-store')
   }
 
   async initialize () {

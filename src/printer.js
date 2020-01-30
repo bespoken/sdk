@@ -11,6 +11,9 @@ const OUTPUT_PATH = 'output/results.csv'
  * The default implementation creates a CSV file
  */
 class Printer {
+  /**
+   * @returns {Printer}
+   */
   static instance () {
     return Config.instance('printer', Printer)
   }

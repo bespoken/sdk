@@ -199,9 +199,16 @@ The CSV File contains the following output:
 | Column | Description |
 | --- | --- |
 | name | The name of the receipt to ask for
-| actualResponse | The actual response back from Alexa
+| transcript | The actual response back from Alexa
 | success | Whether or not the test was successful
 | expectedResponses | The possible expected response back from the utterance
+
+Reports can be reprinted by running:  
+```
+bbt reprint <JOB_NAME>
+```
+
+The job name can be found in the logs for any run - it will be something like: `UtteranceTests__2020-01-28T19-30-11`
 
 ### **DataDog**
 DataDog captures metrics related to how all the tests have performed. Each time we run the tests, and when `datadog` has been set as the `metric` mechanism to use in the `config.json` file, we push the result of each test to DataDog.

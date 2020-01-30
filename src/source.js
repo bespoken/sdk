@@ -16,7 +16,7 @@ class Source {
     } else if (className === 's3-source') {
       Config.set('source', './s3-source')
     }
-    return Config.instance('source')
+    return Config.instance('source', './csv-source')
   }
 
   /**
@@ -98,6 +98,16 @@ class Source {
  * Individual records to be processed
  */
 class Record {
+  static fromJSON (o) {
+    if (o) {
+      const record = new Record()
+      Object.assign(record, o)
+      return record
+    } else {
+      return undefined
+    }
+  }
+
   /**
    * Creates a record
    * @param {string} utterance The utterance to be sent to the voice experience being tested

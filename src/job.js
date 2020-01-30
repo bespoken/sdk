@@ -18,9 +18,18 @@ class Job {
     for (const result of job._results) {
       const o = new Result()
       Object.assign(o, result)
+      // Make the record property back into a record object - I know, we do similar stuff below :-)
+      o._record = Record.fromJSON(result._record)
       resultObjects.push(o)
     }
     job._results = resultObjects
+
+    // Loop through the records and turn them into objects
+    const records = []
+    for (const record of job._records) {
+      records.push(Record.fromJSON(record))
+    }
+    job._records = records
     return job
   }
 

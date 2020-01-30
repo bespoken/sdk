@@ -23,6 +23,16 @@
       ],
       "program": "${workspaceFolder}\\node_modules\\jest\\bin\\jest",
       "args": []
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Reprint",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}\\src\\printer.js",
+      "args": ["reprint", "RUN_NAME"]
     }
   ]
 }

@@ -1,4 +1,7 @@
 ## 0.4.2
+### **Enhancements**
+* Added reprint feature - described [here](README.md#csv-file). Allows for retrieving CSV results after the run is completed.
+
 ### **Bug Fixes**
 * Fixed issue with module resolution identified with [Node V12 and greater](https://github.com/nodejs/node/issues/27583)
 
