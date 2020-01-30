@@ -151,6 +151,8 @@ Defaults to `s3-store`. To use the s3-store, AWS credentials must be provided th
 
 Contact Bespoken to have credentials allocated for this, or modify to use your own S3 bucket.
 
+The other option is `file-store`, which stores the interim output locally on one's machine under the `./data` folder.
+
 ## **DataDog Configuration**
 * Create a DataDog account.
 * Take the API key from the Integrations -> API section

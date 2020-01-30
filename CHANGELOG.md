@@ -1,3 +1,7 @@
+## 0.4.2
+### **Bug Fixes**
+* Fixed issue with module resolution identified with [Node V12 and greater](https://github.com/nodejs/node/issues/27583)
+
 ## 0.4.1
 ### **Enhancements**
 * Default location for CSV input files is now used - `input/records.csv`

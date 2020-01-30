@@ -5,7 +5,6 @@
   },
   "description": "This project tests utterances in batch - supporting a variety of data sources and reporting formats",
   "dependencies": {
-    "@what3words/api": "^3.1.0",
     "aws-sdk": "^2.579.0",
     "axios": "^0.19.0",
     "bespoken-tools": "^2.4.10",

@@ -2,7 +2,13 @@ const Config = require('./config')
 
 class Store {
   static instance () {
-    return Config.instance('store', './s3-store')
+    let className = Config.get('store', [], false, './s3-store')
+    if (className === 's3-store') {
+      className = './s3-store'
+    } else if (className === 'file-store') {
+      className = './file-store'
+    }
+    return Config.instance('store', className)
   }
 
   async initialize () {

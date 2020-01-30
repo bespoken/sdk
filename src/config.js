@@ -117,10 +117,10 @@ class Config {
 
     try {
       const paths = [process.cwd(), __dirname]
+      console.log(`Config loading class: ${className} using paths: ${paths} for service: ${key}`)
       const modulePath = require.resolve(className, {
-        paths: [process.cwd(), __dirname]
+        paths: paths
       })
-      console.log(`Config loading class: ${className} from module-path: ${modulePath} using paths: ${paths} for service: ${key}`)
 
       const Class = require(modulePath)
       const instance = new Class()

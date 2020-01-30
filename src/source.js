@@ -10,7 +10,13 @@ class Source {
    * @returns {Source}
    */
   static instance () {
-    return Config.instance('source', './csv-source')
+    let className = Config.get('source', [], false, './csv-source')
+    if (className === 'csv-source') {
+      className = './csv-source'
+    } else if (className === 's3-source') {
+      className = './s3-source'
+    }
+    return Config.instance('source', className)
   }
 
   /**
