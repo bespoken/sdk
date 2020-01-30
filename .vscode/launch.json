@@ -11,8 +11,8 @@
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "program": "${workspaceFolder}\\src\\batch-runner.js",
-      "args": ["custom/input/What3Words.json"]
+      "program": "${workspaceFolder}\\bin\\bbt",
+      "args": ["process", "data/ivan.json"]
     },
     {
       "type": "node",
