@@ -15,7 +15,7 @@ class Printer {
    * @returns {Printer}
    */
   static instance () {
-    return Config.instance('printer', Printer)
+    return Config.instance('printer', 'printer')
   }
 
   constructor () {

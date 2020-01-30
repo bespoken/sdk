@@ -1,6 +1,7 @@
 const _ = require('lodash')
 const AWS = require('aws-sdk')
 const fs = require('fs')
+const path = require('path')
 
 require('dotenv').config()
 
@@ -116,6 +117,11 @@ class Config {
     }
 
     try {
+      // Unable to replicate the issue with unit tests, but this fixes errors seen by external callers
+      if (!path.isAbsolute(className) && !className.startsWith('.')) {
+        className = './' + className
+      }
+
       const paths = [process.cwd(), __dirname]
       console.log(`Config loading class: ${className} using paths: ${paths} for service: ${key}`)
       const modulePath = require.resolve(className, {
