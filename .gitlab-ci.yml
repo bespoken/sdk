@@ -1,4 +1,4 @@
-image: node:10
+image: node:10.16.3
 
 cache:
   paths:
@@ -9,7 +9,7 @@ stages:
   - tests
   - docs
 
-tests:
+tests:10.16.3:
   stage: tests
   script:
     - npm install
@@ -21,6 +21,15 @@ tests:
     reports:
       junit: test-report.xml
     expire_in: 30 days
+  only:
+    - pushes
+    - merge_requests
+
+tests:12.14.1:
+  stage: tests
+  script:
+    - npm install
+    - npm test
   only:
     - pushes
     - merge_requests
