@@ -117,9 +117,9 @@ class Config {
     }
 
     // Add a ./ for issue module resolution in Node 12 (perhaps on Mac only? can't reproduce on Windows or Linux)
-    if (!path.isAbsolute(className) && !className.startsWith('.')) {
-      className = './' + className
-    }
+    // if (!path.isAbsolute(className) && !className.startsWith('.')) {
+    //   className = './' + className
+    // }
 
     try {
       const paths = [process.cwd(), __dirname]
