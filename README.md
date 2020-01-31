@@ -152,6 +152,26 @@ Defaults to `s3-store`. To use the s3-store, AWS credentials must be provided th
 Contact Bespoken to have credentials allocated for this, or modify to use your own S3 bucket.
 
 The other option is `file-store`, which stores the interim output locally on one's machine under the `./data` folder.
+## Advanced Execution
+### Resuming A Job
+To resume a job that did not complete, due to errors or timeout, simply set the `RUN_NAME` environment variable.
+
+It should be set to the name of the run, which will be something like: `UtteranceTests__2020-01-28T19-30-11`
+
+The environment variable can be set locally with:
+```
+export RUN_NAME=<RUN_NAME>
+```
+
+It can also be set in Gitlab on the `Run Pipeline` screen.
+
+### Reprinting A Job
+CSV reports can be reprinted at any time by running:  
+```
+bbt reprint <JOB_NAME>
+```
+
+The job name can be found in the logs for any run - it will be something like: `UtteranceTests__2020-01-28T19-30-11`
 
 ## **DataDog Configuration**
 * Create a DataDog account.
@@ -202,13 +222,6 @@ The CSV File contains the following output:
 | transcript | The actual response back from Alexa
 | success | Whether or not the test was successful
 | expectedResponses | The possible expected response back from the utterance
-
-Reports can be reprinted by running:  
-```
-bbt reprint <JOB_NAME>
-```
-
-The job name can be found in the logs for any run - it will be something like: `UtteranceTests__2020-01-28T19-30-11`
 
 ### **DataDog**
 DataDog captures metrics related to how all the tests have performed. Each time we run the tests, and when `datadog` has been set as the `metric` mechanism to use in the `config.json` file, we push the result of each test to DataDog.
