@@ -1,3 +1,7 @@
+## 0.4.4
+### **Enhancements**
+* Implementing limit feature in configuration file. Now it is possible to run just some utterances for testing purposes.
+
 ## 0.4.3
 ### **Enhancements**
 * Better documentation on DataDog chart creation
