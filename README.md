@@ -6,6 +6,8 @@ It leverages Bespoken's Virtual Devices to run large sets of utterances through 
 
 ## **Getting Started**
 ### **Installation**
+**This package requires Node.js 10 or greater.**
+
 To install the Bespoken Batch Tester, just run:  
 ```
 npm install bespoken-batch-tester --save
