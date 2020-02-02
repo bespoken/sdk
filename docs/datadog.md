@@ -6,13 +6,13 @@ DataDog makes it easy to create a Dashboard:
 
 **Give the Dashboard a name and select "New Timeboard":**  
 
-[<img src="../images/DataDogCreatingDashboard2.png" width="50%">](./images/DataDogCreatingDashboard2.png)
+[<img src="images/DataDogCreatingDashboard2.png" width="50%">](images/DataDogCreatingDashboard2.png)
 
 **Click on "Add a graph"**
 
 **Drag the "Timeseries" widget to the rectangular area below:**  
 
-[<img src="../images/DataDogCreatingDashboard3.png" width="50%">](./images/DataDogCreatingDashboard3.png)
+[<img src="images/DataDogCreatingDashboard3.png" width="50%">](images/DataDogCreatingDashboard3.png)
 
 **Define the JSON:**
 ```json
@@ -50,7 +50,7 @@ Other types of charts and the JSON to create them are described below:
 ## DataDog Table - Success And Failure Grouped By Tags
 Example chart:  
 
-[<img src="../images/DataDogQuery.png" width="50%">](./images/DataDogQuery.png)
+[<img src="images/DataDogQuery.png" width="50%">](images/DataDogQuery.png)
 
 The JSON:  
 ```json
@@ -99,7 +99,7 @@ The JSON:
 
 ### DataDog Query Value - a single value:  
 Example chart:  
-[<img src="../images/DataDogQuery.png" width="50%">](./images/DataDogQuery.png)
+[<img src="images/DataDogQuery.png" width="50%">](images/DataDogQuery.png)
 
 The JSON:
 ```
@@ -135,11 +135,11 @@ The JSON:
 DATADOG makes it easy to setup alarms, let's see how:  
 **Go to Monitors on the left menu and select "New Monitor":**
 
-[<img src="../images/DataDogCreatingAlarm1.png" width="50%">](./images/DataDogCreatingAlarm1.png)
+[<img src="images/DataDogCreatingAlarm1.png" width="50%">](images/DataDogCreatingAlarm1.png)
 
 **Select **Import** as the "monitor type":**
 
-[<img src="../images/DataDogCreatingAlarm2.png" width="50%">](./images/DataDogCreatingAlarm2.png)
+[<img src="images/DataDogCreatingAlarm2.png" width="50%">](images/DataDogCreatingAlarm2.png)
 
 **Paste below content in the monitor definition area:**
 ```json
