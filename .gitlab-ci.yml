@@ -62,10 +62,11 @@ server:
     - docker:dind
   script:
     - docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
-    - docker build -f conf/Dockerfile -t bespoken/batch-tester:${CI_COMMIT_TAG} .
+    - docker build -f server/Dockerfile -t bespoken/batch-tester:${CI_COMMIT_TAG} .
     - docker push bespoken/batch-tester:${CI_COMMIT_TAG}
     - npm install fargate-helper -g
-    - fargate service |
+    - | 
+      fargate service 
       --command "node server/server.js" \
       --name batch-tester \
       --containerPort 3000 \
