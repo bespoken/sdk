@@ -8,7 +8,8 @@ cache:
 stages:
   - tests
   - docs
-  - server
+  - server-build
+  - server-deploy
 
 tests:10.16.3:
   stage: tests
@@ -55,8 +56,8 @@ pages:
   except:
     - /server.*/
 
-server:
-  stage: server
+server-build:
+  stage: server-build
   image: docker:19.03
   services:
     - docker:dind
@@ -64,17 +65,20 @@ server:
     - docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
     - docker build -f server/Dockerfile -t bespoken/batch-tester:${CI_COMMIT_TAG} .
     - docker push bespoken/batch-tester:${CI_COMMIT_TAG}
-    - npm install fargate-helper -g
-    - | 
-      fargate service 
-      --command "node server/server.js" \
-      --name batch-tester \
-      --containerPort 3000 \
-      --image bespoken/batch-tester:${CI_COMMIT_TAG} \
-      --hostname batch-tester.bespoken.io \
-      --cpu 256 \
-      --memory 512 \
-      --env AWS_ACCESS_KEY_ID="${BATCH_AWS_ACCESS_KEY_ID}" \
-      --env AWS_SECRET_ACCESS_KEY="${BATCH_AWS_SECRET_ACCESS_KEY}"
   only:
-    - /server.*/
+    - BatchTesterServer
+
+server-deploy:
+  script: | 
+    fargate service 
+    --command "node server/server.js" \
+    --name batch-tester \
+    --containerPort 3000 \
+    --image bespoken/batch-tester:${CI_COMMIT_TAG} \
+    --hostname batch-tester.bespoken.io \
+    --cpu 256 \
+    --memory 512 \
+    --env AWS_ACCESS_KEY_ID="${BATCH_AWS_ACCESS_KEY_ID}" \
+    --env AWS_SECRET_ACCESS_KEY="${BATCH_AWS_SECRET_ACCESS_KEY}"
+  only:
+    - BatchTesterServer
