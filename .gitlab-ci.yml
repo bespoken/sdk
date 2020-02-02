@@ -69,6 +69,7 @@ server-build:
     - BatchTesterServer
 
 server-deploy:
+  stage: server-deploy
   script: | 
     fargate service 
     --command "node server/server.js" \
