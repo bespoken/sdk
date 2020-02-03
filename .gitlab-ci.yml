@@ -74,7 +74,7 @@ server-deploy:
     - npm install fargate-helper -g
     - | 
       fargate service \
-      --command "node server/server.js" \
+      --command "node server/server.js run" \
       --name batch-tester \
       --containerPort 3000 \
       --image bespoken/batch-tester:${CI_COMMIT_TAG} \
