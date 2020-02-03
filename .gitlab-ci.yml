@@ -73,7 +73,7 @@ server-deploy:
   script: 
     - npm install fargate-helper -g
     - | 
-      fargate service 
+      fargate service \
       --command "node server/server.js" \
       --name batch-tester \
       --containerPort 3000 \
