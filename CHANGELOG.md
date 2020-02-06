@@ -1,3 +1,10 @@
+## 0.4.5
+### **Enhancements**
+* Automatically publish expected and actual field values to DataDog - **NOTE** this may be redundant with existing tags
+
+### **Bug Fixes**
+* Handles errors on interceptRecord gracefully - shows the full message and does not stop processing
+
 ## 0.4.4
 ### **Enhancements**
 * Implemented limit feature in configuration file. Now it is possible to run just some utterances for testing purposes.

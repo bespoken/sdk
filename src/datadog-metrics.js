@@ -18,6 +18,18 @@ class DataDogMetrics extends Metrics {
       }
     }
 
+    // Add the actual fields to the tags
+    for (const field of Object.keys(result.actualFields)) {
+      const value = result.actualFields[field]
+      tags.push(`actual-${field}:${value}`)
+    }
+
+    // Add the expected fields to the tags
+    for (const field of Object.keys(result.record.expectedFields)) {
+      const value = result.record.expectedFields[field]
+      tags.push(`expected-${field}:${value}`)
+    }
+
     datadog.init({
       defaultTags: tags
     })

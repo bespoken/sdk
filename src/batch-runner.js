@@ -48,7 +48,7 @@ class BatchRunner {
       const device = await this._devicePool.lock(record)
 
       this._processRecord(device, record).catch((e) => {
-        console.error('BATCH process error: ' + e)
+        console.error(`BATCH process error: ${e}\n${e.stack}`)
       }).finally(() => {
         // Free the device once we are done with it
         this._devicePool.free(device)
@@ -100,12 +100,18 @@ class BatchRunner {
   }
 
   async _processRecord (device, record) {
-    console.log(`RUNNER PROCESS run: ${this._job.run} utterance: ${record.utterance}`)
+    console.log(`RUNNER PROCESS-RECORD run: ${this._job.run} utterance: ${record.utterance}`)
     // Do just-in-time processing on the record
     await Source.instance().loadRecord(record)
 
     // Skip a record if the interceptor returns false
-    const process = await Interceptor.instance().interceptRecord(record)
+    let process = true
+    try {
+      process = await Interceptor.instance().interceptRecord(record)
+    } catch (e) {
+      console.error(`RUNNER PROCESS-RECORD intercept-record error ${e}`)
+    }
+
     if (process === false) {
       return
     }
