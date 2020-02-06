@@ -1,4 +1,4 @@
-## 0.4.5
+## 0.5.0
 ### **Enhancements**
 * Automatically publish expected and actual field values to DataDog - **NOTE** this may be redundant with existing tags
 
