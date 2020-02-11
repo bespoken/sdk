@@ -1,3 +1,7 @@
+## 0.6.1
+### **Enhancements**
+* Print out log URL to console after each record is processed
+
 ## 0.6.0
 ### **Enhancements**
 * Added bespoken-store - new and improved persistent results storage!
