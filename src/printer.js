@@ -33,9 +33,10 @@ class Printer {
 
   /**
    * Prints out the results for a job
+   * @param {string} key The key used to access this job via API
    * @param {Job} job
    */
-  async print (job) {
+  async print (key, job) {
     let successCount = 0
     let ignoreCount = 0
     const outputHeaders = ['UTTERANCE']
@@ -44,6 +45,7 @@ class Printer {
     job.expectedFieldNames().forEach(h => outputHeaders.push('EXPECTED ' + h.toUpperCase()))
     job.outputFieldNames().forEach(h => outputHeaders.push(h.toUpperCase()))
     outputHeaders.push('ERROR')
+    outputHeaders.push('RAW DATA URL')
 
     const resultsArray = [outputHeaders]
     job.results.forEach(async (result) => {
@@ -79,9 +81,16 @@ class Printer {
         resultArray.push(expected)
       }
 
+      // Add errors to output
       if (result.error) {
         resultArray.push(result.error)
+      } else {
+        resultArray.push('')
       }
+
+      // Push a link to the logs
+      const index = resultsArray.length - 1
+      resultArray.push(`https://batch-tester.bespoken.io/log?run=${key}&index=${index}`)
 
       resultsArray.push(resultArray)
     })

@@ -208,8 +208,8 @@ class BatchRunner {
   async _save () {
     try {
       console.time('BATCH SAVE')
-      await Printer.instance().print(this._job)
       const key = await Store.instance().save(this._job)
+      await Printer.instance().print(key, this._job)
       console.timeEnd('BATCH SAVE')
       console.log(`BATCH SAVE completed key: ${key}`)
       return key

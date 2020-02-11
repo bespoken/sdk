@@ -53,6 +53,8 @@ class Server {
 
     if (path === '/fetch') {
       this._fetch(response, url)
+    } else if (path === '/log') {
+      this._log(response, url)
     } else if (path === '/save') {
       this._save(response, json)
     } else {
@@ -61,11 +63,28 @@ class Server {
   }
 
   async _fetch (response, url) {
+    const job = await this._fetchJob(url)
+    response.end(JSON.stringify(job, null, 2))
+  }
+
+  /**
+   *
+   * @param {string} url
+   * @returns {Job}
+   */
+  async _fetchJob (url) {
     const encryptedRun = url.query.run
     const run = Util.decrypt(encryptedRun)
     console.log(`SERVER HANDLE fetch: ${run}`)
-    const job = await Store.instance().fetch(run)
-    response.end(JSON.stringify(job, null, 2))
+    return Store.instance().fetch(run)
+  }
+
+  async _log (response, url) {
+    const index = url.query.index
+    const job = await this._fetchJob(url)
+    const result = _.nth(job.results, index)
+    console.log(`SERVER HANDLE log: ${index}`)
+    response.end(JSON.stringify(result, null, 2))
   }
 
   async _ping (response) {
@@ -77,7 +96,7 @@ class Server {
   async _save (response, json) {
     const job = Job.fromJSON(json)
     const key = job.run
-    console.log(`SERVER HANDLE save: ${JSON.stringify(json)} key: ${key}`)
+    console.log(`SERVER HANDLE save key: ${key}`)
     await Store.instance().save(job)
 
     const encryptedKey = Util.encrypt(key)
