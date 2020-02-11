@@ -1,8 +1,10 @@
 const _ = require('lodash')
 const fs = require('fs')
 const http = require('http')
+const Job = require('../src/job').Job
 const Store = require('../src/store')
 const URL = require('url')
+const Util = require('../src/util')
 
 class Server {
   constructor (listener) {
@@ -34,28 +36,6 @@ class Server {
     })
   }
 
-  async _handleRequest (message, response, json) {
-    const url = URL.parse(message.url, true) /* eslint-disable-line */
-    const path = url.pathname
-
-    if (path === '/save') {
-      console.log(`SERVER HANDLE save: ${JSON.stringify(json)}`)
-      await Store.instance().save(json)
-
-      response.end('{ success: true }')
-    } else if (path === '/fetch') {
-      const run = url.query.run
-
-      console.log(`SERVER HANDLE fetch: ${run}`)
-      const job = await Store.instance().fetch(run)
-      response.end(JSON.stringify(job))
-    } else {
-      const packageData = fs.readFileSync('package.json')
-      const packageJSON = JSON.parse(packageData)
-      response.end(`BATCH-TESTER-DATA VERSION: ${packageJSON.version}`)
-    }
-  }
-
   stop () {
     return new Promise((resolve) => {
       console.log('SERVER STOP CALLED')
@@ -65,6 +45,46 @@ class Server {
         resolve()
       })
     })
+  }
+
+  _handleRequest (message, response, json) {
+    const url = URL.parse(message.url, true) /* eslint-disable-line */
+    const path = url.pathname
+
+    if (path === '/fetch') {
+      this._fetch(response, url)
+    } else if (path === '/save') {
+      this._save(response, json)
+    } else {
+      this._ping(response)
+    }
+  }
+
+  async _fetch (response, url) {
+    const encryptedRun = url.query.run
+    const run = Util.decrypt(encryptedRun)
+    console.log(`SERVER HANDLE fetch: ${run}`)
+    const job = await Store.instance().fetch(run)
+    response.end(JSON.stringify(job, null, 2))
+  }
+
+  async _ping (response) {
+    const packageData = fs.readFileSync('package.json')
+    const packageJSON = JSON.parse(packageData)
+    response.end(`BATCH-TESTER-DATA VERSION: ${packageJSON.version}`)
+  }
+
+  async _save (response, json) {
+    const job = Job.fromJSON(json)
+    const key = job.run
+    console.log(`SERVER HANDLE save: ${JSON.stringify(json)} key: ${key}`)
+    await Store.instance().save(job)
+
+    const encryptedKey = Util.encrypt(key)
+    response.end(JSON.stringify({
+      key: encryptedKey,
+      success: true
+    }))
   }
 }
 

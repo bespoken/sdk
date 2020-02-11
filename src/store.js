@@ -21,8 +21,13 @@ class Store {
     return Promise.resolve()
   }
 
+  /**
+   *
+   * @param {Object} job
+   * @returns {string} key
+   */
   async save (job) {
-    return Promise.resolve()
+    return Promise.resolve(job.run)
   }
 
   get job () {
@@ -31,6 +36,10 @@ class Store {
 
   get run () {
     return this._name + this._processTime
+  }
+
+  static key (run) {
+    return run + '.json'
   }
 }
 
