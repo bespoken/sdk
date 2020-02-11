@@ -1,3 +1,17 @@
+## 0.5.0
+### **Enhancements**
+* Automatically publish expected and actual field values to DataDog - **NOTE** this may be redundant with existing tags
+
+### **Bug Fixes**
+* Handles errors on interceptRecord gracefully - shows the full message and does not stop processing
+
+## 0.4.4
+### **Enhancements**
+* Implemented limit feature in configuration file. Now it is possible to run just some utterances for testing purposes.
+
+### **Bug Fixes**
+* Added Node.js version requirements to package.json and README
+
 ## 0.4.3
 ### **Enhancements**
 * Better documentation on DataDog chart creation

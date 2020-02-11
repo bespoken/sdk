@@ -6,6 +6,8 @@ It leverages Bespoken's Virtual Devices to run large sets of utterances through 
 
 ## **Getting Started**
 ### **Installation**
+**This package requires Node.js 10 or greater.**
+
 To install the Bespoken Batch Tester, just run:  
 ```
 npm install bespoken-batch-tester --save
@@ -88,7 +90,8 @@ An example file:
   "sequence": ["open my audio player"],
   "source": "csv-source",
   "sourceFile": "path/to/my/file.csv",
-  "store": "s3-store"
+  "store": "s3-store",
+  "limit": 5
 }
 ```
 
@@ -152,6 +155,10 @@ Defaults to `s3-store`. To use the s3-store, AWS credentials must be provided th
 Contact Bespoken to have credentials allocated for this, or modify to use your own S3 bucket.
 
 The other option is `file-store`, which stores the interim output locally on one's machine under the `./data` folder.
+
+### **`limit`**
+The numbers of records to test during test execution. Very useful when you want to try just a small subset of utterances.
+
 ## Advanced Execution
 ### Resuming A Job
 To resume a job that did not complete, due to errors or timeout, simply set the `RUN_NAME` environment variable.
