@@ -82,6 +82,7 @@ server-deploy:
       --cpu 256 \
       --memory 512 \
       --env AWS_ACCESS_KEY_ID="${BATCH_AWS_ACCESS_KEY_ID}" \
-      --env AWS_SECRET_ACCESS_KEY="${BATCH_AWS_SECRET_ACCESS_KEY}"
+      --env AWS_SECRET_ACCESS_KEY="${BATCH_AWS_SECRET_ACCESS_KEY}" \
+      --env ENCRYPTION_KEY=${ENCRYPTION_KEY}
   only:
     - /server.*/
