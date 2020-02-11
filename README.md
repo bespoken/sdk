@@ -52,7 +52,6 @@ Here is a bare minimum configuration file:
   "sequence": ["open my audio player"],
   "source": "csv-source",
   "sourceFile": "path/to/my/file.csv",
-  "store": "s3-store",
   "virtualDevices": {
     "myVirtualDevice": ["my-optional-tags"]
   }
@@ -90,7 +89,6 @@ An example file:
   "sequence": ["open my audio player"],
   "source": "csv-source",
   "sourceFile": "path/to/my/file.csv",
-  "store": "s3-store",
   "limit": 5
 }
 ```
@@ -122,6 +120,9 @@ Using [interceptResult](https://bespoken.gitlab.io/batch-tester/Interceptor.html
 You can read all about the Interceptor class here:
 https://bespoken.gitlab.io/batch-tester/Interceptor.html
 
+### **`limit`**
+The numbers of records to test during test execution. Very useful when you want to try just a small subset of utterances.
+
 ### **`metrics`**
 We have builtin two classes for metrics: `datadog-metrics` and `cloudwatch-metrics`.
 
@@ -147,27 +148,18 @@ For the `csv-source`, the source file defaults to `input/records.csv`. This can 
 
 For the `s3-source`, a sourceBucket must be set. Additionally, AWS credentials must be set in the environment that can access this bucket.
 
-### **`store`**
-The mechanism used to store the output of the test cases.
-
-Defaults to `s3-store`. To use the s3-store, AWS credentials must be provided that have access to the batch-runner S3 bucket maintained by Bespoken.
-
-Contact Bespoken to have credentials allocated for this, or modify to use your own S3 bucket.
-
-The other option is `file-store`, which stores the interim output locally on one's machine under the `./data` folder.
-
-### **`limit`**
-The numbers of records to test during test execution. Very useful when you want to try just a small subset of utterances.
-
 ## Advanced Execution
 ### Resuming A Job
-To resume a job that did not complete, due to errors or timeout, simply set the `RUN_NAME` environment variable.
+To resume a job that did not complete, due to errors or timeout, simply set the `RUN_KEY` environment variable.
 
-It should be set to the name of the run, which will be something like: `UtteranceTests__2020-01-28T19-30-11`
+The run key can be found in the logs for any run - it will appear like this: 
+```
+BATCH SAVE completed key: 7f6113df3e2af093f095d2d3b2505770d9af1c057b93d0dff378d83c0434ec61
+```
 
 The environment variable can be set locally with:
 ```
-export RUN_NAME=<RUN_NAME>
+export RUN_KEY=<RUN_KEY>
 ```
 
 It can also be set in Gitlab on the `Run Pipeline` screen.
@@ -175,10 +167,13 @@ It can also be set in Gitlab on the `Run Pipeline` screen.
 ### Reprinting A Job
 CSV reports can be reprinted at any time by running:  
 ```
-bbt reprint <JOB_NAME>
+bbt reprint <RUN_KEY>
 ```
 
-The job name can be found in the logs for any run - it will be something like: `UtteranceTests__2020-01-28T19-30-11`
+The run key can be found in the logs for any run - it will appear like this: 
+```
+BATCH SAVE completed key: 7f6113df3e2af093f095d2d3b2505770d9af1c057b93d0dff378d83c0434ec61
+```
 
 ## **DataDog Configuration**
 * Create a DataDog account.

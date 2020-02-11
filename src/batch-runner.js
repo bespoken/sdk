@@ -83,8 +83,8 @@ class BatchRunner {
     this._job = new Job(jobName, undefined, Config.config)
 
     // Check if we are resuming
-    if (process.env.RUN_NAME) {
-      const run = process.env.RUN_NAME
+    if (process.env.RUN_KEY) {
+      const run = process.env.RUN_KEY
       this._job = await Store.instance().fetch(run)
       if (!this._job) {
         throw new Error('BATCH INIT Could not find job to resume: ' + run)

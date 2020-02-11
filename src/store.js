@@ -5,7 +5,7 @@ class Store {
    * @return {Store}
    */
   static instance () {
-    return Config.instance('store', './s3-store')
+    return Config.instance('store', './bespoken-store')
   }
 
   async initialize () {
