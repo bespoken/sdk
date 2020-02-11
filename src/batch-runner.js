@@ -67,8 +67,8 @@ class BatchRunner {
 
     // Do a save once all records are done - in case any writes got skipped due to contention
     console.log('BATCH PROCESS all records done - final save')
-    await this._save()
-    console.log('BATCH PROCESS done')
+    const key = await this._save()
+    console.log(`BATCH PROCESS done - job key: ${key}`)
   }
 
   async _initialize () {
@@ -83,8 +83,8 @@ class BatchRunner {
     this._job = new Job(jobName, undefined, Config.config)
 
     // Check if we are resuming
-    if (process.env.RUN_NAME) {
-      const run = process.env.RUN_NAME
+    if (process.env.RUN_KEY) {
+      const run = process.env.RUN_KEY
       this._job = await Store.instance().fetch(run)
       if (!this._job) {
         throw new Error('BATCH INIT Could not find job to resume: ' + run)
@@ -128,7 +128,6 @@ class BatchRunner {
     // Save the results after each record is done
     // We synchronize these operatons with a mutex - so only one write happens at a time
     // If another record is trying to write at the same time, we just move on
-    console.log('BATCH SAVE attempting')
     const acquired = await util.mutexAcquire()
     if (acquired) {
       try {
@@ -215,9 +214,11 @@ class BatchRunner {
   async _save () {
     try {
       console.time('BATCH SAVE')
-      await Printer.instance().print(this._job)
-      await Store.instance().save(this._job)
+      const key = await Store.instance().save(this._job)
+      await Printer.instance().print(key, this._job)
       console.timeEnd('BATCH SAVE')
+      console.log(`BATCH SAVE completed key: ${key}`)
+      return key
     } catch (e) {
       console.error('BATCH SAVE error: ' + e)
     }

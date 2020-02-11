@@ -7,7 +7,7 @@ class S3Store extends Store {
     const s3 = new AWS.S3()
     const response = await s3.getObject({
       Bucket: 'batch-runner',
-      Key: S3Store.key(run)
+      Key: Store.key(run)
     }).promise()
 
     // console.log('S3 JOB KEY: ' + S3Store.key(run) + ' RESPONSE: ' + JSON.stringify(response.Body, null, 2))
@@ -27,13 +27,10 @@ class S3Store extends Store {
     await s3.putObject({
       Body: JSON.stringify(job, null, 2),
       Bucket: 'batch-runner',
-      Key: S3Store.key(job.run)
+      Key: Store.key(job.run)
     }).promise()
     console.timeEnd('S3-STORE SAVE')
-  }
-
-  static key (run) {
-    return run + '.json'
+    return job.run
   }
 }
 

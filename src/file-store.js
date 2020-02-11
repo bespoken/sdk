@@ -10,7 +10,7 @@ class FileStore extends Store {
    * @param {string} run
    */
   async fetch (run) {
-    const runFilePath = path.join(BASE_PATH, FileStore.key(run))
+    const runFilePath = path.join(BASE_PATH, Store.key(run))
     const normalizedPath = path.normalize(runFilePath)
     console.log(`FILESTORE FETCH ${runFilePath} FOUND: ${fs.existsSync(runFilePath)} NORMAL: ${normalizedPath}`)
     if (!fs.existsSync(runFilePath)) {
@@ -33,12 +33,9 @@ class FileStore extends Store {
       fs.mkdirSync(BASE_PATH)
     }
 
-    const fullPath = path.join(BASE_PATH, FileStore.key(job.run))
+    const fullPath = path.join(BASE_PATH, Store.key(job.run))
     fs.writeFileSync(fullPath, JSON.stringify(job, null, 2))
-  }
-
-  static key (run) {
-    return run + '.json'
+    return job.run
   }
 }
 

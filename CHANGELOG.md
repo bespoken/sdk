@@ -1,3 +1,11 @@
+## 0.6.0
+### **Enhancements**
+* Added bespoken-store - new and improved persistent results storage!
+  * **IMPORTANT:** file-store and s3-store are now deprecated. Existing projects should remove the `store` key from the input json. The runner will just default to bespoken-store from now on.
+  * **IMPORTANT:** No need to set AWS keys in environment variables - these should be removed in existing projects
+  * **IMPORTANT:** Resuming jobs now takes a RUN_KEY as opposed to RUN_NAME
+  * Added link to detailed logs in CSV results - look at raw input and output directly
+
 ## 0.5.0
 ### **Enhancements**
 * Automatically publish expected and actual field values to DataDog - **NOTE** this may be redundant with existing tags
