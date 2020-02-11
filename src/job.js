@@ -41,7 +41,7 @@ class Job {
       this._run = name + '_' + moment().format('YYYY-MM-DDTHH-mm-ss')
     }
     this._config = config
-
+    this._key = undefined
     this._records = []
     this._results = []
     this._processedCount = 0
@@ -99,6 +99,14 @@ class Job {
 
   get customer () {
     return this.config.customer
+  }
+
+  get key () {
+    return this._key
+  }
+
+  set key (key) {
+    this._key = key
   }
 
   get name () {

@@ -29,6 +29,18 @@ class BespokenStore extends Store {
   accessURL () {
     return Config.get('storeURL', undefined, false, 'https://batch-tester.bespoken.io')
   }
+
+  logURL (job, index) {
+    if (!job.key) {
+      return 'N/A'
+    }
+
+    if (!index) {
+      index = job.results.length - 1
+    }
+
+    return `${this.accessURL()}/log?run=${job.key}&index=${index}`
+  }
 }
 
 module.exports = BespokenStore

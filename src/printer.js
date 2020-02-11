@@ -91,7 +91,7 @@ class Printer {
 
       // Push a link to the logs
       const index = resultsArray.length - 1
-      resultArray.push(`${Store.instance().accessURL()}/log?run=${key}&index=${index}`)
+      resultArray.push(`${Store.instance().logURL(job, index)}`)
 
       resultsArray.push(resultArray)
     })

@@ -189,6 +189,7 @@ class BatchRunner {
     }
 
     this._job.addResult(result)
+    console.log(`BATCH PROCESS record completed. URL: ${Store.instance().logURL(this._job)}`)
 
     if (Config.has('postSequence')) {
       const commands = Config.get('postSequence')

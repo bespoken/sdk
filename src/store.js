@@ -21,6 +21,10 @@ class Store {
     return undefined
   }
 
+  logURL (job, index) {
+    return undefined
+  }
+
   /**
    * Fetches the run by name
    * @param {string} run
