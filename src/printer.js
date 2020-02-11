@@ -3,6 +3,7 @@ const Config = require('./config')
 const fs = require('fs')
 const Job = require('./job').Job
 const path = require('path')
+const Store = require('./store')
 const stringify = require('csv-stringify')
 
 const OUTPUT_PATH = 'output/results.csv'
@@ -90,7 +91,7 @@ class Printer {
 
       // Push a link to the logs
       const index = resultsArray.length - 1
-      resultArray.push(`https://batch-tester.bespoken.io/log?run=${key}&index=${index}`)
+      resultArray.push(`${Store.instance().accessURL()}/log?run=${key}&index=${index}`)
 
       resultsArray.push(resultArray)
     })

@@ -2,13 +2,14 @@ const _ = require('lodash')
 const fs = require('fs')
 const http = require('http')
 const Job = require('../src/job').Job
-const Store = require('../src/store')
+const S3Store = require('../src/s3-store')
 const URL = require('url')
 const Util = require('../src/util')
 
 class Server {
   constructor (listener) {
     this.listener = listener
+    this.store = new S3Store()
   }
 
   async start (port = 3000) {
@@ -76,7 +77,7 @@ class Server {
     const encryptedRun = url.query.run
     const run = Util.decrypt(encryptedRun)
     console.log(`SERVER HANDLE fetch: ${run}`)
-    return Store.instance().fetch(run)
+    return this.store.fetch(run)
   }
 
   async _log (response, url) {
@@ -97,7 +98,7 @@ class Server {
     const job = Job.fromJSON(json)
     const key = job.run
     console.log(`SERVER HANDLE save key: ${key}`)
-    await Store.instance().save(job)
+    await this.store.save(job)
 
     const encryptedKey = Util.encrypt(key)
     response.end(JSON.stringify({

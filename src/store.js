@@ -13,6 +13,15 @@ class Store {
   }
 
   /**
+   * If the store provides hosted access, the base URL
+   * Defaults to undefined
+   * @returns {string} The base URL for accessing stored data
+   */
+  accessURL () {
+    return undefined
+  }
+
+  /**
    * Fetches the run by name
    * @param {string} run
    * @returns {Job}
