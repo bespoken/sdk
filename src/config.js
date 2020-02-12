@@ -23,7 +23,6 @@ class Config {
    * @param {Config} file
    */
   static loadFromFile (file) {
-    console.log('File: ' + file)
     const configString = fs.readFileSync(file)
     Config.loadFromJSON(JSON.parse(configString))
   }

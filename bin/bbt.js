@@ -20,7 +20,7 @@ if (command && argument) {
       await Printer.instance().print(job)
       console.log('PRINTER REPRINT done')
     })
-  } else if (command === 'rerun') {
+  } else if (command === 'reprocess') {
     const rerunner = new Rerunner()
     const key = _.nth(process.argv, 4)
     const encrypt = _.nth(process.argv, 5)
@@ -36,7 +36,9 @@ if (command && argument) {
 }
 
 function printHelp () {
-  console.error('To run the Bespoken Batch Tester, must include a command ["process", "reprint"] and a configuration file')
-  console.error('For reprint, the second argument should be a run name')
+  console.error('To run the Bespoken Batch Tester:')
+  console.error('Include a command ["process", "reprint", "reprocess"] and a configuration file')
+  console.error('For reprint, a second argument is required - the run key')
+  console.error('For reprocess, a second argument is required - the run key')
   process.exit(1)
 }

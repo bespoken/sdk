@@ -1,3 +1,10 @@
+## 0.6.2
+### **Enhancements**
+* Added the `rerunner` - allows for reprocessing previous jobs - [read here](README.md#re-processing-a-job)
+
+### **Bug Fixes**
+* Increased max-file-size allowed to be sent by bespoken-store
+
 ## 0.6.1
 ### **Enhancements**
 * Print out log URL to console after each record is processed
