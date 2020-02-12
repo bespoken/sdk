@@ -79,8 +79,8 @@ server-deploy:
       --containerPort 3000 \
       --image bespoken/batch-tester:${CI_COMMIT_TAG} \
       --hostname batch-tester.bespoken.io \
-      --cpu 256 \
-      --memory 512 \
+      --cpu 512 \
+      --memory 1024 \
       --env AWS_ACCESS_KEY_ID="${BATCH_AWS_ACCESS_KEY_ID}" \
       --env AWS_SECRET_ACCESS_KEY="${BATCH_AWS_SECRET_ACCESS_KEY}" \
       --env ENCRYPTION_KEY=${ENCRYPTION_KEY}

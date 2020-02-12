@@ -2,6 +2,7 @@
 const _ = require('lodash')
 const BatchRunner = require('../src/batch-runner')
 const Printer = require('../src/printer')
+const Rerunner = require('../src/rerunner')
 const Store = require('../src/store')
 
 const command = _.nth(process.argv, 2)
@@ -18,6 +19,14 @@ if (command && argument) {
     Store.instance().fetch(argument).then(async (job) => {
       await Printer.instance().print(job)
       console.log('PRINTER REPRINT done')
+    })
+  } else if (command === 'rerun') {
+    const rerunner = new Rerunner()
+    const key = _.nth(process.argv, 4)
+    const encrypt = _.nth(process.argv, 5)
+    console.log('KEY: ' + key + ' encrypt: ' + encrypt)
+    rerunner.rerun(argument, key, encrypt === true).then(() => {
+      console.log('RERUN DONE')
     })
   } else {
     printHelp()

@@ -1,4 +1,5 @@
 const Config = require('./config')
+const Job = require('./job').Job
 
 class Store {
   /**
@@ -21,6 +22,11 @@ class Store {
     return undefined
   }
 
+  /**
+   *
+   * @param {Job} job
+   * @param {number} index
+   */
   logURL (job, index) {
     return undefined
   }

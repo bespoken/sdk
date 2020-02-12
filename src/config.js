@@ -23,6 +23,7 @@ class Config {
    * @param {Config} file
    */
   static loadFromFile (file) {
+    console.log('File: ' + file)
     const configString = fs.readFileSync(file)
     Config.loadFromJSON(JSON.parse(configString))
   }
@@ -47,6 +48,10 @@ class Config {
     Config.get('customer', undefined, true)
     Config.get('job', undefined, true)
     return Config.config
+  }
+
+  static loaded () {
+    return Config.config !== undefined
   }
 
   /**
