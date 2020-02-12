@@ -6,11 +6,16 @@ const Source = require('./source').Source
 
 class CSVSource extends Source {
   async loadAll () {
-    const sourceFile = Config.get('sourceFile', undefined, false, 'input/records.csv')
+    let sourceFile = Config.get('sourceFile')
+    if (!sourceFile) {
+      console.log('CSV-SOURCE LOADALL no sourceFile specified in config - using default')
+      sourceFile = 'input/records.csv'
+    }
     console.log(`CSV-SOURCE LOADALL input file: ${sourceFile}`)
 
     if (!fs.existsSync(sourceFile)) {
       console.error(`CSV-SOURCE LOADALL error - file does not exist: ${sourceFile}`)
+      process.exit(1)
     }
     const utteranceData = fs.readFileSync(sourceFile)
     const rawRecords = parse(utteranceData, {
