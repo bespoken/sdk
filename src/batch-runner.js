@@ -174,6 +174,9 @@ class BatchRunner {
       lastResponse
     )
 
+    // Add a tag for the platform being used for the test
+    result.addTag('platform', device.platform)
+
     if (error) {
       result.error = error
     } else {

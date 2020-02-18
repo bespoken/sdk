@@ -1,6 +1,7 @@
 ## 0.6.2
 ### **Enhancements**
 * Added the `rerunner` - allows for reprocessing previous jobs - [read here](README.md#re-processing-a-job)
+* Automatically adds a tag to every result for the platform used for the test
 
 ### **Bug Fixes**
 * Increased max-file-size allowed to be sent by bespoken-store
