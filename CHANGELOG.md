@@ -1,7 +1,8 @@
 ## 0.6.2
 ### **Enhancements**
 * Added the `rerunner` - allows for reprocessing previous jobs - [read here](README.md#re-processing-a-job)
-* Automatically adds a tag to every result for the platform used for the test
+* Automatically adds a tag to every result for the platform used by the device ('amazon-alexa' and 'google-assistant' for now)
+* **IMPORTANT** Automatically add output fields to tags - no need to define both output field and tag
 
 ### **Bug Fixes**
 * Increased max-file-size allowed to be sent by bespoken-store

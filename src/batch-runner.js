@@ -164,7 +164,7 @@ class BatchRunner {
       responses.forEach(response => console.log(`RUNNER MESSAGE: ${response.message} TRANSCRIPT: ${response.transcript}`))
       lastResponse = _.nth(responses, -1)
     } catch (e) {
-      error = e
+      error = e.toString()
     }
 
     // Create a result object

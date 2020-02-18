@@ -21,7 +21,7 @@ class BespokenStore extends Store {
     console.time('BESPOKEN-STORE SAVE')
     const url = `${this.accessURL()}/save`
     const response = await axios.post(url, job, {
-      maxContentLength: (100 * 1024 * 1024), // up to 100 mb
+      maxContentLength: (200 * 1024 * 1024), // up to 200 mb - biggest file so far is 57 MB
       responseType: 'json'
     })
 
