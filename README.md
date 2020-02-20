@@ -201,9 +201,7 @@ BATCH SAVE completed key: 7f6113df3e2af093f095d2d3b2505770d9af1c057b93d0dff378d8
 ```
 
 ## **DataDog Configuration**
-* Create a DataDog account.
-* Take the API key from the Integrations -> API section
-* Add it to the `.env` file
+Follow [this guide](./docs/datadog#how-to-signup-and-get-an-api-key) to get started.
 
 ## **Gitlab Configuration**
 The gitlab configuration is defined by the file `.gitlab-ci.yml`. The file looks like this:

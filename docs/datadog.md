@@ -1,20 +1,29 @@
 # **DataDog Reporting Configuration**
 
-## **Creating A Dashboard**
-DataDog makes it easy to create a Dashboard:  
-**Click on Dashboards, then select "New Dashboard" from the left menu**  
+## **How to signup and get an API key**
+[DataDog](https://www.datadoghq.com/) has several plans for different use cases. You can start a 14-day free trial and get your API Key to collect the test results on your dashboard, or use ours, included in our packaged solutions (for more information, [contact us](mailto:sales@bespoken.io)).
 
-**Give the Dashboard a name and select "New Timeboard":**  
+After the signup process, you can create your API key following these steps:
+1. Select `APIs` from the left `Integrations` menu.
+
+  [<img src="images/DataDogCreatingAPIKey.png" width="50%">](images/DataDogCreatingAPIKey.png)
+
+2. Create a new API key in the `API Keys` section.
+
+Then you can copy the value to your `.env` file (use `DATADOG_API_KEY` as variable name), or add it as an environment variable on your CI settings.
+
+## **Creating A Dashboard**
+DataDog makes it easy to create a Dashboard:
+
+1- Click on Dashboards, then select "New Dashboard" from the left menu. Give the Dashboard a name and select "New Timeboard":
 
 [<img src="images/DataDogCreatingDashboard2.png" width="50%">](images/DataDogCreatingDashboard2.png)
 
-**Click on "Add a graph"**
-
-**Drag the "Timeseries" widget to the rectangular area below:**  
+2- Click on "Add a graph". Drag the "Timeseries" widget to the rectangular area below:
 
 [<img src="images/DataDogCreatingDashboard3.png" width="50%">](images/DataDogCreatingDashboard3.png)
 
-**Define the JSON:**
+3- Define the JSON:
 ```json
 {
   "viz": "timeseries",
@@ -44,13 +53,13 @@ DataDog makes it easy to create a Dashboard:
 }
 ```
 
-**Give your graph a title and click on the "Done" button**
+4- Give your graph a title and click on the "Done" button.
 
 Other types of charts and the JSON to create them are described below:
 ## DataDog Table - Success And Failure Grouped By Tags
 Example chart:  
 
-[<img src="images/DataDogQuery.png" width="50%">](images/DataDogQuery.png)
+[<img src="images/DataDogTable.png" width="50%">](images/DataDogTable.png)
 
 The JSON:  
 ```json
@@ -102,7 +111,7 @@ Example chart:
 [<img src="images/DataDogQuery.png" width="50%">](images/DataDogQuery.png)
 
 The JSON:
-```
+```json
 {
     "viz": "query_value",
     "requests": [
@@ -133,15 +142,15 @@ The JSON:
 
 ## **Creating Alarms**
 DATADOG makes it easy to setup alarms, let's see how:  
-**Go to Monitors on the left menu and select "New Monitor":**
+1- Go to Monitors on the left menu and select "New Monitor":
 
-[<img src="images/DataDogCreatingAlarm1.png" width="50%">](images/DataDogCreatingAlarm1.png)
+[<img src="images/DataDogCreatingAlarm1.png" width="40%">](images/DataDogCreatingAlarm1.png)
 
-**Select **Import** as the "monitor type":**
+2- Select **Import** as the "monitor type":
 
 [<img src="images/DataDogCreatingAlarm2.png" width="50%">](images/DataDogCreatingAlarm2.png)
 
-**Paste below content in the monitor definition area:**
+3- Paste below content in the monitor definition area:
 ```json
 {
   "name": "Long audio test failed",
@@ -167,4 +176,4 @@ DATADOG makes it easy to setup alarms, let's see how:
 }
 ```
 
-**Click on the "Save" button**
+4- Click on the "Save" button
