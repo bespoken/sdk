@@ -49,6 +49,10 @@ class Config {
     return Config.config
   }
 
+  static loaded () {
+    return Config.config !== undefined
+  }
+
   /**
    * Returns the value for the specified environment variable
    * Also checks to see if it is one of the allowed values if provided, and throws an error if not

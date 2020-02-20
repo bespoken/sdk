@@ -30,6 +30,12 @@ class DataDogMetrics extends Metrics {
       tags.push(`expected-${field}:${value}`)
     }
 
+    // Add the output fields to the tags
+    for (const field of Object.keys(result.outputFields)) {
+      const value = result.outputFields[field]
+      tags.push(`${field}:${value}`)
+    }
+
     datadog.init({
       defaultTags: tags
     })

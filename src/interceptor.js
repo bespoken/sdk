@@ -1,6 +1,7 @@
 const Config = require('./config')
 const Record = require('./source').Record
 const Result = require('./job').Result
+
 /**
  * The interceptor is responsible for allowing customization of the batch runner behavior
  */

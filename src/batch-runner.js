@@ -6,7 +6,6 @@ const Interceptor = require('./interceptor')
 const Job = require('./job').Job
 const Metrics = require('./metrics')
 const Printer = require('./printer')
-const Record = require('./source').Record
 const Result = require('./job').Result
 const Source = require('./source').Source
 const Store = require('./store')
@@ -18,6 +17,7 @@ class BatchRunner {
     this._startIndex = 0
     /** @type {Job} */
     this._job = undefined
+    this.rerun = false
   }
 
   async process () {
@@ -33,11 +33,8 @@ class BatchRunner {
     }
 
     let recordsToProcess = Config.get('limit', [], false, this._job.records.length)
-    recordsToProcess = +recordsToProcess
-
-    if (isNaN(recordsToProcess)) {
-      console.error('INVALID VALUE for limit key in configuration file. Use a positive number.')
-      process.exit(1)
+    if (recordsToProcess > this._job.records.length) {
+      recordsToProcess = this._job.records.length
     }
 
     for (let i = this._startIndex; i < recordsToProcess; i++) {
@@ -67,17 +64,19 @@ class BatchRunner {
 
     // Do a save once all records are done - in case any writes got skipped due to contention
     console.log('BATCH PROCESS all records done - final save')
-    const key = await this._save()
-    console.log(`BATCH PROCESS done - job key: ${key}`)
+    await this._save()
   }
 
   async _initialize () {
     // Config can be a file path or a JSON
     // We allow for JSON for testability
-    if (typeof this._config === 'object') {
-      Config.loadFromJSON(this._config)
-    } else {
-      Config.loadFromFile(this._config)
+    // We do NOT load the config again if already loaded
+    if (!Config.loaded()) {
+      if (typeof this._config === 'object') {
+        Config.loadFromJSON(this._config)
+      } else {
+        Config.loadFromFile(this._config)
+      }
     }
     const jobName = Config.get('job', undefined, true)
     this._job = new Job(jobName, undefined, Config.config)
@@ -105,14 +104,14 @@ class BatchRunner {
     await Source.instance().loadRecord(record)
 
     // Skip a record if the interceptor returns false
-    let process = true
+    let includeRecord = true
     try {
-      process = await Interceptor.instance().interceptRecord(record)
+      includeRecord = await Interceptor.instance().interceptRecord(record)
     } catch (e) {
       console.error(`RUNNER PROCESS-RECORD intercept-record error ${e}`)
     }
 
-    if (process === false) {
+    if (includeRecord === false) {
       return
     }
 
@@ -123,6 +122,11 @@ class BatchRunner {
       }
     } else {
       await this._processVariation(device, record)
+    }
+
+    // If this is a rerun, we don't save until the end
+    if (this.rerun) {
+      return
     }
 
     // Save the results after each record is done
@@ -160,7 +164,7 @@ class BatchRunner {
       responses.forEach(response => console.log(`RUNNER MESSAGE: ${response.message} TRANSCRIPT: ${response.transcript}`))
       lastResponse = _.nth(responses, -1)
     } catch (e) {
-      error = e
+      error = e.toString()
     }
 
     // Create a result object
@@ -169,6 +173,9 @@ class BatchRunner {
       voiceId,
       lastResponse
     )
+
+    // Add a tag for the platform being used for the test
+    result.addTag('platform', device.platform)
 
     if (error) {
       result.error = error
@@ -215,11 +222,10 @@ class BatchRunner {
   async _save () {
     try {
       console.time('BATCH SAVE')
-      const key = await Store.instance().save(this._job)
-      await Printer.instance().print(key, this._job)
+      await Store.instance().save(this._job)
+      await Printer.instance().print(this._job)
       console.timeEnd('BATCH SAVE')
-      console.log(`BATCH SAVE completed key: ${key}`)
-      return key
+      console.log(`BATCH SAVE completed key: ${this._job.key}`)
     } catch (e) {
       console.error('BATCH SAVE error: ' + e)
     }

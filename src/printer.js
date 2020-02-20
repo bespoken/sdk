@@ -1,5 +1,6 @@
 const _ = require('lodash')
 const Config = require('./config')
+const debug = require('debug')('PRINTER')
 const fs = require('fs')
 const Job = require('./job').Job
 const path = require('path')
@@ -34,10 +35,9 @@ class Printer {
 
   /**
    * Prints out the results for a job
-   * @param {string} key The key used to access this job via API
    * @param {Job} job
    */
-  async print (key, job) {
+  async print (job) {
     let successCount = 0
     let ignoreCount = 0
     const outputHeaders = ['UTTERANCE']
@@ -96,7 +96,7 @@ class Printer {
       resultsArray.push(resultArray)
     })
 
-    // console.log(`PRINTER Success: ${successCount} Ignore: ${ignoreCount} Total: ${job.results.length}`)
+    debug(`PRINT Success: ${successCount} Ignore: ${ignoreCount} Total: ${job.results.length}`)
     // Create the CSV and the output file asynchronously
     return new Promise((resolve, reject) => {
       stringify(resultsArray, {
