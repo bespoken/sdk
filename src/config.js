@@ -92,7 +92,7 @@ class Config {
       process.exit(1)
     }
 
-    if (!value && defaultValue) {
+    if (value === undefined && defaultValue) {
       value = defaultValue
     }
     return value

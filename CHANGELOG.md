@@ -1,3 +1,10 @@
+## 0.6.3
+### **Enhancements**
+* Convenience methods for accessing outputFields and actualFields on the result object
+
+### **Bug Fixes**
+* Fixed issue with configuration values that are booleans which have a default value
+
 ## 0.6.2
 ### **Enhancements**
 * Added the `rerunner` - allows for reprocessing previous jobs - [read here](README.md#re-processing-a-job)

@@ -164,6 +164,15 @@ class Result {
   }
 
   /**
+   *
+   * @param {string} field
+   * @returns {string} The value for the field
+   */
+  actualField (field) {
+    return this._outputFields[field]
+  }
+
+  /**
    * Adds the actual value for an expected field to the result
    * @param {string} field The name of the field
    * @param {string} value The value of the field
@@ -183,6 +192,15 @@ class Result {
 
   addTag (key, value) {
     this._tags[key] = value
+  }
+
+  /**
+   * Gets a specific output field
+   * @param {string} field
+   * @returns {string} The value of the field
+   */
+  outputField (field) {
+    return this._outputFields[field]
   }
 
   get actualFields () {
