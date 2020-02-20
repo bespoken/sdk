@@ -75,6 +75,19 @@ class Device {
     return success
   }
 
+  /**
+   * Returns the name of the platform this device corresponds to
+   */
+  get platform () {
+    let platform = 'other'
+    if (this._token.startsWith('alexa')) {
+      platform = 'amazon-alexa'
+    } else if (this._token.startsWith('google')) {
+      platform = 'google-assistant'
+    }
+    return platform
+  }
+
   get tags () {
     return this._tags
   }

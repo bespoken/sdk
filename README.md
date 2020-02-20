@@ -164,10 +164,35 @@ export RUN_KEY=<RUN_KEY>
 
 It can also be set in Gitlab on the `Run Pipeline` screen.
 
-### Reprinting A Job
+### Re-printing A Job
 CSV reports can be reprinted at any time by running:  
 ```
 bbt reprint <RUN_KEY>
+```
+
+The run key can be found in the logs for any run - it will appear like this: 
+```
+BATCH SAVE completed key: 7f6113df3e2af093f095d2d3b2505770d9af1c057b93d0dff378d83c0434ec61
+```
+
+### Re-processing A Job
+Similar to reprinting the CSV results for a job, we can also run a job again applying different tests to the results.
+
+This does NOT call the voice platforms again. Instead, it takes the responses from the platform and pushes them back through the post-processing logic.
+
+This is useful to examine fields that were previously ignored or to change success/failure logic. It allows for fixing errors in the initial analysis without re-doing all the virtual assistant calls.
+
+To use it, enter the following:  
+```
+bbt reprocess <TEST_FILE> <RUN_KEY>
+```
+
+The TEST_FILE is a the path to the test configuration. 
+The RUN_KEY is the key, shown in the test output, that identifies the job in our storage.
+
+An example call:
+```
+bbt reprocess input/bespoken-utterances.json 7f6113df3e2af093f095d2d3b2505770d9af1c057b93d0dff378d83c0434ec61
 ```
 
 The run key can be found in the logs for any run - it will appear like this: 
