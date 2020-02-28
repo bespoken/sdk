@@ -212,21 +212,30 @@ cache:
   paths:
   - node_modules/
 
-stages:
-  - test
-
-test:
-  stage: test
+utterance-tests:
   script:
    - npm install
-   - npm run utterances
+   - npm test
   artifacts:
+    when: always
     paths:
-    - utterance-results.csv
-    expire_in: 1 week
+      - test_output/report/index.inline.html
+      - test-report.xml
+    reports:
+      junit: test-report.xml
+  only: 
+    - schedules
+    - web
 ```
 
-This build script runs the utterances and saves of the resulting CSV file.
+When the GitLab Runner is executed, it takes this file and creates a Linux instance with Node.js, executes the commands under the `script` element, and saves the reports as artifacts.
+
+#### **Setting a schedule**
+It is very easy to run your end-to-end tests regularly using GitLab. Once your CI file (`.gitlab-ci.yml`) has been uploaded to the repository just go to "CI/CD => Schedules" from the left menu. Create a new schedule, it looks like this:
+
+[<img src="docs/images/GitLabCISchedule-1.png" width="50%">](docs/images/GitLabCISchedule-1.png)
+
+[<img src="docs/images/GitLabCISchedule-2.png" width="50%">](docs/images/GitLabCISchedule-2.png)
 
 ## **Test Reporting**
 We have setup this project to make use of a few different types of reporting to show off what is possible.
