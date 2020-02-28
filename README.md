@@ -231,7 +231,7 @@ utterance-tests:
 When the GitLab Runner is executed, it takes this file and creates a Linux instance with Node.js, executes the commands under the `script` element, and saves the reports as artifacts.
 
 #### **Setting a schedule**
-It is very easy to run your end-to-end tests regularly using GitLab. Once your CI file (`.gitlab-ci.yml`) has been uploaded to the repository just go to "CI/CD => Schedules" from the left menu. Create a new schedule, it looks like this:
+It is very easy to run your end-to-end tests regularly using GitLab. Once your CI file (`.gitlab-ci.yml`) has been uploaded to the repository just go to "CI/CD => Schedules" from the left menu. Creating a new schedule looks like this:
 
 [<img src="docs/images/GitLabCISchedule-1.png" width="50%">](docs/images/GitLabCISchedule-1.png)
 
