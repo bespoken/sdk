@@ -12,6 +12,7 @@ class Device {
 
   async message (voiceId, messages, attempt = 1) {
     const virtualDevice = new vdk.VirtualDevice({
+      asyncMode: true,
       debug: true,
       skipSTT: this._skipSTT,
       token: this._token,
@@ -20,6 +21,7 @@ class Device {
 
     virtualDevice.baseURL = Config.get('virtualDeviceBaseURL', undefined, false, 'https://virtual-device.bespoken.io')
 
+    console.log('BASEURL: ' + virtualDevice.baseURL)
     try {
       const messagesArray = []
       messages.forEach(message => {
@@ -39,9 +41,38 @@ class Device {
         } else {
           messageObject.text = message
         }
+
+        if (message.includes('google')) {
+          messageObject.settings = {
+            'listener.maxDuration': 20,
+            'listener.startSpeechTimeout': 10,
+            'watcher.skip': 100,
+            'watcher.delay': 10
+          }
+        } else {
+          messageObject.settings = {
+            'listener.maxDuration': 10,
+            'watcher.skip': 100,
+            'watcher.delay': 8
+          }
+        }
         messagesArray.push(messageObject)
       })
-      return await virtualDevice.batchMessage(messagesArray)
+      const response = await virtualDevice.batchMessage(messagesArray)
+      console.log('DEVICE MESSAGE initial response: ' + JSON.stringify(response))
+      if (response.conversation_id) {
+        let result = { status: 'IN_PROGRESS' }
+        while (result.status === 'IN_PROGRESS') {
+          try {
+            result = await virtualDevice.getConversationResults(response.conversation_id)
+          } catch (e) {
+            console.error('DEVICE ERROR get conversation: ' + e)
+          }
+          await util.sleep(1000)
+        }
+        console.log('DEVICE MESSAGE final response: ' + JSON.stringify(result))
+        return result.results
+      }
     } catch (e) {
       let error = e
       try {
