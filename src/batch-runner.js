@@ -58,7 +58,7 @@ class BatchRunner {
 
     // Wait for all records to fnish
     while (this._job.processedCount < recordsToProcess) {
-      console.log(`BATCH PROCESS waiting for records to finish processed: ${this._job.processedCount} total: ${recordsToProcess}`)
+      // console.log(`BATCH PROCESS waiting for records to finish processed: ${this._job.processedCount} total: ${recordsToProcess}`)
       await util.sleep(1000)
     }
 

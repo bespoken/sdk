@@ -30,8 +30,15 @@ If you want to use multiple tokens, potentially for different purposes, leverage
 ```json
 {
   "virtualDevices": {
-    "myToken": ["USAccount"],
-    "myOtherToken": ["UKAccount"]
+    "myToken": {
+      "tags": ["USAccount"]
+    },
+    "myOtherToken": {
+      "tags": ["UKAccount"],
+      "settings": {
+        "listener.maxDuration": 5
+      }
+    }
   }
 }
 ```
@@ -41,6 +48,8 @@ The tags can then be assigned to a record with [record.addDeviceTag](https://bes
 record.addDeviceTag('USAccount')
 ```
 Only tokens that have that tag (or tags) will be used to process it.
+
+Additionally, per device settings can be set via the `settings` property. This allows for overriding the behavior of the device as needed.
 
 For more information on the best practices for virtual device management, [read our guide here]([docs/ACCOUNT_SETUP.md]).
 
@@ -53,7 +62,7 @@ Here is a bare minimum configuration file:
   "source": "csv-source",
   "sourceFile": "path/to/my/file.csv",
   "virtualDevices": {
-    "myVirtualDevice": ["my-optional-tags"]
+    "myVirtualDevice": { "tags": ["my-optional-tags"]}
   }
 }
 ```
@@ -61,6 +70,54 @@ Here is a bare minimum configuration file:
 To get started, cut and paste those settings into a new file, such as `batch-test.json`.
 
 More information on configuring the batch test is below.
+
+### **Source Data**
+Source data by default comes from a CSV file (by default, we look at `input/records.csv`).
+
+The structure of the file is:
+
+| Field | Required | Description|
+| --- | --- | --- |
+| utterance | Yes | The utterance to be said to the device
+| device | No | The device value corresponds to the tag set on the device. If this value matches a tag, that device will be eligible to process this utterance.
+| <expected value> | No | There can zero-to-many expected fields defined - these will automatically be compared to fields on the JSON output
+
+#### *device* column
+With regard to the `device` column, if we have two devices, like so:
+```
+  "virtualDevices": {
+    "device1": { "tags": ["google"]},
+    "device2": { "tags": ["alexa"]}
+  }
+```
+
+If our record looks like this:
+```csv
+utterance,device,transcript
+play despacito,alexa,playing the song you requested
+```
+
+The record will only be run with the device2, as it has the tag `alexa` that corresponds to our DEVICE value.
+
+#### *expected value* columns
+The expected field values will automatically be compared to the actual value on the response from the device.
+
+For example, if we have a record like this:
+```csv
+utterance,transcript
+play despacito,playing the song you requested
+```
+
+Our response from the virtual device may look like this:
+```
+{
+  "transcript": "I don't know that one"
+}
+```
+
+The actual transcript value will be compared to the expected one, and the test will be marked a failure or success based on a partial match comparison (i.e., the actual value must include the expected value though they do not need to be an exact match).
+
+More complex field expressions can be handled with the `fields` configuration property, [described below](#fields).
 
 ### **Running the Tester**
 Once the configuration file is created, just enter:
@@ -85,11 +142,17 @@ An example file:
   },
   "interceptor": "./src/my-interceptor",
   "job": "utterance-tester",
+  "limit": 5,
   "metrics": "datadog-metrics",
   "sequence": ["open my audio player"],
   "source": "csv-source",
   "sourceFile": "path/to/my/file.csv",
-  "limit": 5
+  "transcript": true,
+  "virtualDevices": {
+    "VIRTUAL_DEVICE_1": {
+      "tags": ["tag1", "tag2"]
+    }
+  }
 }
 ```
 
@@ -147,6 +210,22 @@ For the `csv-source`, the source file defaults to `input/records.csv`. This can 
 ```
 
 For the `s3-source`, a sourceBucket must be set. Additionally, AWS credentials must be set in the environment that can access this bucket.
+
+### **`transcript`**
+If set to false, speech-to-text is not performed on the audio response from the device
+
+## **`virtualDevices`**
+See the section above for information on [configuring virtual devices](#virtual-device-setup).
+
+## **`virtualDeviceBaseURL`**
+For values other than the default (`https://virtual-device.bespoken.io`), set this property.
+
+## **`voices`**
+Array of voices that should be used to process the records.
+
+If more than one value is supplied, each record will be run once with each voice.
+
+By default, it is just: `[en-US-Wavenet-D]`
 
 ## Advanced Execution
 ### Resuming A Job
