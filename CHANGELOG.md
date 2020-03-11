@@ -1,3 +1,9 @@
+## 0.7.0
+### **Enhancements**
+* **IMPORTANT** Added `settings` property on virtualDevices - [read here](README.md#virtual-device-setup) - the previous virtualDevices that took an array of tags will still work but have been deprecated
+* Added builtin `device` column to csv-source. Automatically filters for devices that match the tag specified in this column, if present
+* Switched to using async endpoint
+
 ## 0.6.3
 ### **Enhancements**
 * Convenience methods for accessing outputFields and actualFields on the result object

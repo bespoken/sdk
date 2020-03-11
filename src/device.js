@@ -4,9 +4,10 @@ const util = require('./util')
 const vdk = require('virtual-device-sdk')
 
 class Device {
-  constructor (token, skipSTT = false) {
+  constructor (token, skipSTT = false, settings) {
     this._token = token
     this._skipSTT = skipSTT
+    this._settings = settings
     this._tags = []
   }
 
@@ -42,22 +43,12 @@ class Device {
           messageObject.text = message
         }
 
-        if (message.includes('google')) {
-          messageObject.settings = {
-            'listener.maxDuration': 20,
-            'listener.startSpeechTimeout': 10,
-            'watcher.skip': 100,
-            'watcher.delay': 10
-          }
-        } else {
-          messageObject.settings = {
-            'listener.maxDuration': 10,
-            'watcher.skip': 100,
-            'watcher.delay': 8
-          }
+        if (this.settings) {
+          messageObject.settings = this.settings
         }
         messagesArray.push(messageObject)
       })
+
       const response = await virtualDevice.batchMessage(messagesArray)
       console.log('DEVICE MESSAGE initial response: ' + JSON.stringify(response))
       if (response.conversation_id) {
@@ -66,7 +57,7 @@ class Device {
           try {
             result = await virtualDevice.getConversationResults(response.conversation_id)
           } catch (e) {
-            console.error('DEVICE ERROR get conversation: ' + e)
+            console.error('DEVICE ERROR get conversation: ' + e.toString())
           }
           await util.sleep(1000)
         }
@@ -119,6 +110,10 @@ class Device {
     return platform
   }
 
+  get settings () {
+    return this._settings
+  }
+
   get tags () {
     return this._tags
   }
@@ -148,9 +143,18 @@ class DevicePool {
     }
     // Create a device for each token
     tokens.forEach(token => {
-      const tags = tokensInfo[token].map(tag => tag.trim())
-      console.log(`DEVICE create token: ${token} skipSTT: ${skipSTT} tags: ${tags}`)
-      const device = new Device(token.trim(), skipSTT)
+      const tokenInfo = tokensInfo[token]
+      let tags
+      if (Array.isArray(tokenInfo)) {
+        tags = tokenInfo
+      } else {
+        tags = tokenInfo.tags
+      }
+
+      // Clean the tags - trim them
+      tags = tags.map(tag => tag.trim())
+      console.log(`DEVICE create token: ${token} skipSTT: ${skipSTT} tags: ${tags} settings: ${JSON.stringify(tokenInfo.settings)}`)
+      const device = new Device(token.trim(), skipSTT, tokenInfo.settings)
 
       // Add the tags to the device
       tags.forEach(tag => device.addTag(tag))
@@ -162,6 +166,12 @@ class DevicePool {
   }
 
   async lock (record) {
+    // Check if there are any devices at all
+    if (this._validDevices(record).length === 0) {
+      console.error(`DEVICE LOCK no device exists to process tags: ${record.deviceTags}`)
+      process.exit(1)
+    }
+
     console.log(`DEVICE LOCK tags: ${record.deviceTags} count: ${this._freeDevices(record).length}`)
     while (this._freeDevices(record).length === 0) {
       await util.sleep(1000)
@@ -185,10 +195,7 @@ class DevicePool {
   }
 
   _freeDevices (record) {
-    // Filter to the devices that have tags that match the record
-    const validDevices = this._devices.filter(device => {
-      return device.hasTags(record.deviceTags)
-    })
+    const validDevices = this._validDevices(record)
 
     // Then filter down to those that are available
     const freeDevices = validDevices.filter(device => {
@@ -199,6 +206,14 @@ class DevicePool {
 
   _freeCount () {
     return this._devices.length - this._devicesInUse.length
+  }
+
+  // Filter to the devices that have tags that match the record
+  _validDevices (record) {
+    const validDevices = this._devices.filter(device => {
+      return device.hasTags(record.deviceTags)
+    })
+    return validDevices
   }
 }
 
