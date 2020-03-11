@@ -33,9 +33,18 @@ class CSVSource extends Source {
         console.log(`CSV-SOURCE LOADALL skipping utterance: ${utterance}`)
         return undefined
       }
+
       const record = new Record(r[utteranceProperty])
+
+      // Add device tags automatically from the column labeled device
+      const deviceProperty = Object.keys(r).find(property => property.trim().toLowerCase() === 'device')
+      const device = r[deviceProperty]
+      if (device) {
+        record.addDeviceTag(device)
+      }
+
       Object.keys(r).forEach(field => {
-        if (field.trim().toLowerCase() === 'utterance') {
+        if (field.trim().toLowerCase() === 'utterance' || field.trim().toLowerCase() === 'device') {
           return
         }
 
