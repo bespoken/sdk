@@ -161,7 +161,9 @@ class BatchRunner {
     let error
     try {
       const responses = await device.message(voiceId, messages)
-      responses.forEach(response => console.log(`RUNNER MESSAGE: ${response.message} TRANSCRIPT: ${response.transcript}`))
+      if (responses) {
+        responses.forEach(response => console.log(`RUNNER MESSAGE: ${response.message} TRANSCRIPT: ${response.transcript}`))
+      }
       lastResponse = _.nth(responses, -1)
     } catch (e) {
       error = e.toString()

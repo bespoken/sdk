@@ -57,7 +57,12 @@ class Device {
           try {
             result = await virtualDevice.getConversationResults(response.conversation_id)
           } catch (e) {
-            console.error('DEVICE ERROR get conversation: ' + e.toString())
+            const error = this._parseError(e)
+            console.error(`DEVICE ERROR get conversation: ${error.toString()} error property: ${error.error}`)
+            // If this is an error from the virtual device, do a retry
+            if (error.error) {
+              return this._retry(error, voiceId, messages, attempt)
+            }
           }
           await util.sleep(1000)
         }
@@ -65,21 +70,32 @@ class Device {
         return result.results
       }
     } catch (e) {
-      let error = e
+      return this._retry(this._parseError(e), voiceId, messages, attempt)
+    }
+  }
+
+  async _retry (error, voiceId, messages, attempt) {
+    const errorMessage = error.error ? error.error : error.toString()
+    if (attempt > 3) {
+      // Give up after three tries
+      throw errorMessage
+    }
+
+    const backoffTime = 10000
+    console.error(`DEVICE MESSAGE error: ${errorMessage} retrying ${backoffTime / 1000} seconds`)
+    await util.sleep(backoffTime)
+    return this.message(voiceId, messages, attempt + 1)
+  }
+
+  _parseError (error) {
+    if (_.isObject(error)) {
+      return error
+    } else {
       try {
-        // Try to parse out the error message, if this is JSON
-        error = JSON.parse(e).error
-      } catch (ee) {}
-
-      if (attempt > 3) {
-        // Give up after three tries
-        throw error
+        return JSON.parse(error)
+      } catch (e) {
+        return e
       }
-
-      const backoffTime = 10000
-      console.error(`DEVICE MESSAGE error: ${error} retrying ${backoffTime / 1000} seconds`)
-      await util.sleep(backoffTime)
-      return this.message(voiceId, messages, attempt + 1)
     }
   }
 
