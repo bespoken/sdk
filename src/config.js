@@ -102,6 +102,10 @@ class Config {
     return _.get(Config.config, key) !== undefined
   }
 
+  static boolean (key, defaultValue = false) {
+    return Config.get(key, undefined, false, defaultValue)
+  }
+
   static instance (key, defaultClass, values) {
     const singleton = Config.singleton(key)
     if (singleton) {
@@ -110,7 +114,7 @@ class Config {
 
     let className = Config.get(key, values, false)
     if (!className) {
-      console.log(`No ${key} provider specified - using default.`)
+      console.log(`CONFIG INSTANCE No ${key} provider specified - using default.`)
       // We can also pass an actual class, instaed of a class name
       if (typeof defaultClass !== 'string') {
         const instance = new defaultClass() // eslint-disable-line
@@ -127,7 +131,7 @@ class Config {
       }
 
       const paths = [process.cwd(), __dirname]
-      console.log(`Config loading class: ${className} using paths: ${paths} for service: ${key}`)
+      console.log(`CONFIG INSTANCE loading class: ${className} using paths: ${paths} for service: ${key}`)
       const modulePath = require.resolve(className, {
         paths: paths
       })

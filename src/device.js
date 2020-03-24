@@ -12,6 +12,7 @@ class Device {
   }
 
   async message (voiceId, messages, attempt = 1) {
+    console.log('DEVICE MESSAGE ' + messages.toString())
     const virtualDevice = new vdk.VirtualDevice({
       asyncMode: true,
       debug: true,
@@ -22,7 +23,6 @@ class Device {
 
     virtualDevice.baseURL = Config.get('virtualDeviceBaseURL', undefined, false, 'https://virtual-device.bespoken.io')
 
-    console.log('BASEURL: ' + virtualDevice.baseURL)
     try {
       const messagesArray = []
       messages.forEach(message => {
@@ -66,7 +66,7 @@ class Device {
           }
           await util.sleep(1000)
         }
-        console.log('DEVICE MESSAGE final response: ' + JSON.stringify(result))
+        console.log('DEVICE MESSAGE final transcript: ' + _.get(_.nth(_.get(result, 'results'), -1), 'transcript'))
         return result.results
       }
     } catch (e) {

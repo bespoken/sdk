@@ -2,7 +2,9 @@
 ### **Enhancements**
 * **IMPORTANT** Added `settings` property on virtualDevices - [read here](README.md#virtual-device-setup) - the previous virtualDevices that took an array of tags will still work but have been deprecated
 * Added builtin `device` column to csv-source. Automatically filters for devices that match the tag specified in this column, if present
-* Switched to using async endpoint
+* Added `sequential` mode to force records to be processed one-by-one - [read about it here](README.md#sequential)
+* Switched to using async endpoint for virtual devices
+* Added improved formatting on log messages
 
 ### **Bug Fixes**
 * Better error-handling when an error is returned from the Virtual Device service

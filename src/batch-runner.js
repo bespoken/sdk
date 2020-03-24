@@ -44,15 +44,26 @@ class BatchRunner {
       // It will run as many records simultaneously as there are tokens available
       const device = await this._devicePool.lock(record)
 
+      // In some cases, we may want to force serial processing
+      // In this case we use a mutex to force only one record a time to be processed
+      const sequential = Config.boolean('sequential')
+      if (sequential) {
+        await util.mutexAcquire('PROCESS-SEQUENTIAL', 1000, 0, 0)
+      }
+
       this._processRecord(device, record).catch((e) => {
-        console.error(`BATCH process error: ${e}\n${e.stack}`)
-      }).finally(() => {
+        console.error(`BATCH PROCESS error: ${e}\n${e.stack}`)
+      }).finally(async () => {
         // Free the device once we are done with it
         this._devicePool.free(device)
 
         // Make sure to increment the processed count every time we do a record
         this._job.addProcessedCount()
         console.log(`BATCH PROCESS processed: ${this._job.processedCount} out of ${recordsToProcess}`)
+
+        if (sequential) {
+          await util.mutexRelease('PROCESS-SEQUENTIAL')
+        }
       })
     }
 
@@ -245,5 +256,27 @@ process.on('unhandledRejection', (e) => {
   console.error('UNHANDLED: ' + e)
   console.error(e.stack)
 })
+
+console.originalLog = console.log
+
+// Special formatting for log messages
+console.log = (message, ...args) => {
+  if (args && args.length > 0) {
+    // If this uses string substitution, just do a passthrough
+    const allArgs = [message].concat(args)
+    console.originalLog.apply(console, allArgs)
+    return
+  }
+
+  const parts = message.split(' ')
+  let formattedMessage = message
+  if (parts.length >= 3) {
+    const module = parts[0]
+    const method = parts[1]
+    const contents = parts.slice(2).join(' ')
+    formattedMessage = _.padEnd(module, 15) + _.padEnd(method, 15) + contents
+  }
+  process.stdout.write(formattedMessage + '\n')
+}
 
 module.exports = BatchRunner

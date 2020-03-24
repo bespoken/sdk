@@ -80,7 +80,7 @@ The structure of the file is:
 | --- | --- | --- |
 | utterance | Yes | The utterance to be said to the device
 | device | No | The device value corresponds to the tag set on the device. If this value matches a tag, that device will be eligible to process this utterance.
-| <expected value> | No | There can zero-to-many expected fields defined - these will automatically be compared to fields on the JSON output
+| [expected values] | No | There can zero-to-many expected fields defined - these will automatically be compared to fields on the JSON output
 
 #### *device* column
 With regard to the `device` column, if we have two devices, like so:
@@ -145,6 +145,7 @@ An example file:
   "limit": 5,
   "metrics": "datadog-metrics",
   "sequence": ["open my audio player"],
+  "sequential": false,
   "source": "csv-source",
   "sourceFile": "path/to/my/file.csv",
   "transcript": true,
@@ -198,6 +199,11 @@ https://bespoken.gitlab.io/batch-tester/Metrics.html
 For tests in which there are multiple steps required before we do the "official" utterance that is being tested, we can specify them here.
 
 Typically, this would involve launching a skill before saying the specific utterance we want to test, but more complex sequences are possible.
+
+### **`sequential`**
+Setting this to true forces records to be processed one after another and not in parallel, regardless of the number of virtual devices that are configured.
+
+This defaults to false.
 
 ### **`source`**
 The source for records. Defaults to `csv-source`. Additional builtin option is `s3-source`.
