@@ -18,15 +18,55 @@ class Evaluator {
 
     for (const field in record.expectedFields) {
       // Skip utterance and meta as protected fields
-      const fieldResult = Evaluator.evaluateField(field, record, response)
+      const fieldResult = Evaluator.evaluateExpectedField(field, record, response)
       result.addActualField(field, fieldResult.actual)
       result.success = fieldResult.success && result.success
     }
+
+    const configFields = Config.get('fields') || []
+    Object.keys(configFields)
+      .filter(field => !(field in record.expectedFields))
+      .forEach(field => {
+        const fieldResult = Evaluator.jsonQuery(field, response).join()
+        result.addOutputField(field, fieldResult)
+      })
+
     return result
   }
 
-  static evaluateField (field, record, response) {
-    let actual = response[field]
+  static evaluateExpectedField (field, record, response) {
+    const actual = Evaluator.jsonQuery(field, response)
+    const expected = record.expectedFields[field]
+    console.log(`EVAL EXPECTED-FIELD: ${field} VALUE: ${actual} EXPECTED: ${expected}`)
+
+    const fieldResult = {
+      actual: actual.join(),
+      expected,
+      success: false
+    }
+
+    // If expected is *, we accept anything
+    if (expected.trim() === '*') {
+      fieldResult.success = true
+      return fieldResult
+    } else if (fieldResult.actual) {
+      let expectedValues = [expected]
+      if (expected.indexOf('|') !== -1) {
+        expectedValues = expected.split('|')
+      }
+
+      expectedValues = expectedValues.map(value => value.trim().toLowerCase())
+
+      // If there is an actual value, do a partial match on it
+      const match = actual.some(value => expectedValues.includes(value.toLowerCase()))
+      fieldResult.success = match
+    }
+
+    return fieldResult
+  }
+
+  static jsonQuery (field, response) {
+    let actual = [response[field]]
     // Check if there is a json path expression defined for the field
     // We can set custom JSON path expressions for fields in the config file like so
     //   "<COLUMN_NAME>": "<JSON_PATH>"
@@ -39,43 +79,15 @@ class Evaluator {
       const expression = Config.get(key)
 
       try {
-        actual = jsonpath.value(response, expression)
-        console.log(`EVAL VALUE: ${actual} JSON-PATH: ${expression}`)
+        actual = jsonpath.query(response, expression)
       } catch (e) {
         console.error(`EVAL INVALID JSONPATH: ${expression}`)
       }
-    }
-    const expected = record.expectedFields[field]
-    console.log(`EVAL FIELD: ${field} VALUE: ${actual} EXPECTED: ${expected}`)
 
-    const fieldResult = {
-      actual,
-      expected,
-      success: false
+      console.log(`EVAL FIELD: ${field} VALUE: ${actual} JSON-PATH: ${expression}`)
     }
 
-    // If expected is *, we accept anything
-    if (expected.trim() === '*') {
-      fieldResult.success = true
-      return fieldResult
-    } else if (actual) {
-      let expectedValues = [expected]
-      if (expected.indexOf('|') !== -1) {
-        expectedValues = expected.split('|')
-      }
-
-      // If there is an actual value, do a partial match on it
-      let match = false
-      for (const expectedValue of expectedValues) {
-        if (actual.toLowerCase().includes(expectedValue.trim().toLowerCase())) {
-          match = true
-          break
-        }
-      }
-      fieldResult.success = match
-    }
-
-    return fieldResult
+    return actual
   }
 }
 

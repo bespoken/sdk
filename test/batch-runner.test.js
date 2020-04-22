@@ -7,12 +7,11 @@ const Record = require('../src/source').Record
 const Source = require('../src/source').Source
 
 describe('batch runner processes records', () => {
+  let config
+
   beforeEach(() => {
     Config.reset()
-  })
-
-  test('process simple file', async () => {
-    const config = {
+    config = {
       customer: 'bespoken',
       job: 'unit-test',
       source: 'csv-source',
@@ -20,48 +19,104 @@ describe('batch runner processes records', () => {
       sourceFile: 'test/test.csv'
     }
     Config.singleton('device-pool', new MockDevicePool())
-    const runner = new BatchRunner(config)
-    try {
-      await runner.process()
-    } catch (e) {
-      console.error(e)
-      throw e
-    }
+  })
+
+  test('process simple file', async () => {
+    const runner = await runnerProccess(config)
     expect(runner.job.results.length).toEqual(1)
 
     const firstResult = runner.job.results[0]
     expect(firstResult.actualFields.transcript).toEqual('my utterance')
-    expect(firstResult.record.expectedFields.transcript).toEqual('my utterance')
+    expect(firstResult.record.expectedFields.transcript).toEqual(
+      'my utterance'
+    )
     expect(firstResult.record.utterance).toEqual('my utterance')
   })
 
   test('filter applied to records', async () => {
-    const config = {
-      customer: 'bespoken',
-      filters: {
-        index: [1, 2, 3],
-        booleanProperty: true
-      },
-      job: 'unit-test',
-      sourceFile: 'test/test.csv',
-      store: 'file-store'
+    config.filters = {
+      index: [1, 2, 3],
+      booleanProperty: true
     }
-    Config.singleton('device-pool', new MockDevicePool())
     Config.singleton('source', new MockSource())
-
-    const runner = new BatchRunner(config)
-    try {
-      await runner.process()
-    } catch (e) {
-      console.error(e)
-      throw e
-    }
+    const runner = await runnerProccess(config)
     expect(runner.job.results.length).toEqual(2)
-
     const firstResult = runner.job.results[0]
     expect(firstResult.record.utterance).toEqual('Utterance1')
   })
+
+  describe('configuration fields', () => {
+    test('field has invalid json path', async () => {
+      config.sourceFile = 'test/fields-test.csv'
+      config.fields = { provider: '$.invalid json path' }
+      const runner = await runnerProccess(config)
+      const firstResult = runner.job.results[0]
+      expect(firstResult.success).toBeFalsy()
+    })
+
+    test('field result is not the expected field', async () => {
+      config.sourceFile = 'test/fields-test.csv'
+      config.fields = { provider: '$.otherProvider' }
+      const runner = await runnerProccess(config)
+      expect(runner.job.results.length).toEqual(1)
+      const firstResult = runner.job.results[0]
+      expect(firstResult.success).toBeFalsy()
+    })
+
+    test('field is an output field', async () => {
+      config.sourceFile = 'test/fields-test.csv'
+      config.fields = {
+        provider: '$.otherProvider',
+        unexpected: '$.unexpected'
+      }
+      const runner = await runnerProccess(config)
+      const firstResult = runner.job.results[0]
+      expect(firstResult.record.expectedFields).toHaveProperty('provider')
+      expect(firstResult.record.expectedFields).not.toHaveProperty('unexpected')
+    })
+
+    describe('handle multiple matches', () => {
+      test('field result includes expected value', async () => {
+        config.sourceFile = 'test/multiple-matches-test.csv'
+        config.fields = { multiple: '$.multiple[*].name' }
+        const runner = await runnerProccess(config)
+        expect(runner.job.results[0].success).toBeTruthy()
+      })
+
+      test('field result does not include expected value', async () => {
+        config.sourceFile = 'test/failed-multiple-matches-test.csv'
+        config.fields = { multiple: '$.multiple[*].name' }
+        const runner = await runnerProccess(config)
+        expect(runner.job.results[0].success).toBeFalsy()
+      })
+
+      test('expected field accepts everything', async () => {
+        config.sourceFile = 'test/expect-anything-test.csv'
+        config.fields = { provider: '$.anything' }
+        const runner = await runnerProccess(config)
+        expect(runner.job.results[0].success).toBeTruthy()
+      })
+
+      test('field result is one of the expected values', async () => {
+        config.sourceFile = 'test/multiple-expected-matches-test.csv'
+        config.fields = { multiple: '$.multiple[*].name' }
+        const runner = await runnerProccess(config)
+        expect(runner.job.results[0].success).toBeTruthy()
+      })
+    })
+  })
 })
+
+async function runnerProccess (config) {
+  const runner = new BatchRunner(config)
+  try {
+    await runner.process()
+  } catch (e) {
+    console.error(e)
+    throw e
+  }
+  return runner
+}
 
 class MockSource extends Source {
   async loadAll () {
