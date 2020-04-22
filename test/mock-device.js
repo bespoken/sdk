@@ -18,7 +18,7 @@ const MockDevice = {
   message: async (voiceId, messages) => {
     console.log('Got messages: ' + messages)
     const responses = messages.map(m => {
-      return { message: m, transcript: m }
+      return { message: m, transcript: m, multiple: [{ name: 'A' }, { name: 'B' }] }
     })
     return Promise.resolve(responses)
   }
