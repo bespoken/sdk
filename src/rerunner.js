@@ -76,7 +76,7 @@ class RerunDevicePool extends DevicePool {
 
 class RerunDevice extends Device {
   constructor (record) {
-    super()
+    super('')
     this.record = record
   }
 
