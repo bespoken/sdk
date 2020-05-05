@@ -1,3 +1,11 @@
+## 0.7.1
+### **Enhancements**
+* Handled multiple matches when JSON path expression returns multiple values
+* Added support for output only fields to test definitions
+
+### **Bug Fixes**
+* Fixed rerunner command, it was calling source file
+
 ## 0.7.0
 ### **Enhancements**
 * **IMPORTANT** Added `settings` property on virtualDevices - [read here](README.md#virtual-device-setup) - the previous virtualDevices that took an array of tags will still work but have been deprecated
