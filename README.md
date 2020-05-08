@@ -159,13 +159,15 @@ An example file:
 
 Each of the properties is explained below:
 ### **`fields`**
-Each field represents a column in the CSV file.
+Each field represents a value in the JSON response. It will be added to the result output.
 
-By default, we take these columns and treat them as expected fields in the response output from the Virtual Device.
+If the field also is a column in the CSV file, then the value in the CSV is compared to the value in the actual response. 
 
-However, in some cases, these fields are rather complicated. In that case, we can have a field with a simple name, like `imageURL`, but then we specify a JSON path expression which is used to resolve that expression on the response payload.
+The fields can be mapped to complex JSON path values, such as: 
+`"imageURL": "$.raw.messageBody.directives[1].payload.content.art.sources[0].url"`
 
-This way we can perform complex verification on our utterances with a nice, clean CSV file.
+The JSON path will be applied to the actual result from the response. If more than one value matches the JSON path expression, 
+then if ANY of the actual values matches the expected the test will pass.
 
 ### **`interceptor`**
 The interceptor allows for the core behavior of the batch runner to be modified.
