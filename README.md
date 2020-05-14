@@ -1,5 +1,5 @@
 # **Bespoken Batch Tester**
-[<p align="center"><a href="#installation">Installation</a> | <a href="#running-the-tester">Execution</a> | <a href="#gitlab-configuration">GitLab</a> | <a href="#datadog-configuration">DataDog</a></p>]()
+[<p align="center"><a href="#installation">Installation</a> | <a href="#running-the-tester">Execution</a> | <a href="#gitlab-configuration">GitLab</a> | <a href="#datadog-configuration">DataDog</a></p>]() | <a href="https://bespoken.gitlab.io/batch-tester">API Docs</a>
 This project enables batch testing of utterances for voice experiences.
 
 It leverages Bespoken's Virtual Devices to run large sets of utterances through Alexa, Google Assistant, and other voice platforms.
@@ -218,6 +218,8 @@ For the `csv-source`, the source file defaults to `input/records.csv`. This can 
 ```
 
 For the `s3-source`, a sourceBucket must be set. Additionally, AWS credentials must be set in the environment that can access this bucket.
+
+To implement your own custom source, [read the API docs](https://bespoken.gitlab.io/batch-tester/Source.html).
 
 ### **`transcript`**
 If set to false, speech-to-text is not performed on the audio response from the device
