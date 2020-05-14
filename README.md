@@ -289,6 +289,18 @@ The run key can be found in the logs for any run - it will appear like this:
 BATCH SAVE completed key: 7f6113df3e2af093f095d2d3b2505770d9af1c057b93d0dff378d83c0434ec61
 ```
 
+### Merge csv results
+We take 2 csv files and combine them into one csv file.
+
+```
+bbt merge <ORIGINAL_RESULTS_PATH> <RERUN_RESULTS_PATH> <OUTPUT_PATH>
+```
+
+The 3 arguments are optionals, they are by default:
+ORIGINAL_RESULTS_PATH = ./output/results.csv
+RERUN_RESULTS_PATH = ./output/rerun.csv
+OUTPUT_PATH = ./output/merged.csv
+
 ## **DataDog Configuration**
 Follow [this guide](./docs/datadog#how-to-signup-and-get-an-api-key) to get started.
 

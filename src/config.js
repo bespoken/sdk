@@ -106,7 +106,7 @@ class Config {
     return Config.get(key, undefined, false, defaultValue)
   }
 
-  static instance (key, defaultClass, values) {
+  static instance (key, defaultClass, values, ...classParams) {
     const singleton = Config.singleton(key)
     if (singleton) {
       return singleton
@@ -117,7 +117,7 @@ class Config {
       console.log(`CONFIG INSTANCE No ${key} provider specified - using default.`)
       // We can also pass an actual class, instaed of a class name
       if (typeof defaultClass !== 'string') {
-        const instance = new defaultClass() // eslint-disable-line
+        const instance = new defaultClass(...classParams) // eslint-disable-line
         Config.singleton(key, instance)
         return instance
       }
@@ -137,7 +137,7 @@ class Config {
       })
 
       const Class = require(modulePath)
-      const instance = new Class()
+      const instance = new Class(...classParams)
       Config.singleton(key, instance)
       return instance
     } catch (e) {
