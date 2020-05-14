@@ -6,7 +6,7 @@ package-lock.json
 node_modules
 .env
 junit.xml
-results.csv
+output/
 public/
 coverage/
 sample.raw

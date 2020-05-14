@@ -1,13 +1,10 @@
-const _ = require('lodash')
 const Config = require('./config')
 const debug = require('debug')('PRINTER')
 const fs = require('fs')
-const Job = require('./job').Job
 const path = require('path')
 const Store = require('./store')
 const stringify = require('csv-stringify')
 
-const OUTPUT_PATH = 'output/results.csv'
 /**
  * The printer class is responsible for outputting results in a human-readable format
  * The default implementation creates a CSV file
@@ -16,20 +13,21 @@ class Printer {
   /**
    * @returns {Printer}
    */
-  static instance () {
-    return Config.instance('printer', 'printer')
+  static instance (outputPath = 'output/results.csv') {
+    return Config.instance('printer', 'printer', undefined, outputPath)
   }
 
-  constructor () {
+  constructor (outputPath) {
+    this.outputPath = outputPath
     // Make the output director if it does not exist
-    const outputDirectory = path.dirname(OUTPUT_PATH)
+    const outputDirectory = path.dirname(outputPath)
     if (!fs.existsSync(outputDirectory)) {
       fs.mkdirSync(outputDirectory)
     }
 
     // If there is already an output file, remove it
-    if (fs.existsSync(OUTPUT_PATH)) {
-      fs.unlinkSync(OUTPUT_PATH)
+    if (fs.existsSync(outputPath)) {
+      fs.unlinkSync(outputPath)
     }
   }
 
@@ -107,7 +105,7 @@ class Printer {
         if (error) {
           reject(error)
         } else {
-          fs.writeFile(OUTPUT_PATH, output, (error) => {
+          fs.writeFile(this.outputPath, output, (error) => {
             if (error) {
               reject(error)
             } else {

@@ -12,8 +12,9 @@ const Store = require('./store')
 const util = require('./util')
 
 class BatchRunner {
-  constructor (config) {
+  constructor (config, outputPath) {
     this._config = config
+    this.outputPath = outputPath
     this._startIndex = 0
     /** @type {Job} */
     this._job = undefined
@@ -236,7 +237,7 @@ class BatchRunner {
     try {
       console.time('BATCH SAVE')
       await Store.instance().save(this._job)
-      await Printer.instance().print(this._job)
+      await Printer.instance(this.outputPath).print(this._job)
       console.timeEnd('BATCH SAVE')
       console.log(`BATCH SAVE completed key: ${this._job.key}`)
     } catch (e) {

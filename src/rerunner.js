@@ -2,38 +2,45 @@ const Config = require('./config')
 const { Device, DevicePool } = require('./device')
 const fs = require('fs')
 const Job = require('./job').Job
-const { Record, Source } = require('./source')
+const { Source } = require('./source')
 const Runner = require('./batch-runner')
 const BespokenStore = require('./bespoken-store')
 const Util = require('./util')
 
 class Rerunner {
-  async rerun (configFile, key, unencryptedKey = false) {
+  constructor (configFile, key, unencryptedKey = false, outputPath) {
+    this.configFile = configFile
+    this.key = key
+    this.unencryptedKey = unencryptedKey
+    this.outputPath = outputPath
+  }
+
+  async rerun () {
     if (!fs.existsSync('data')) {
       fs.mkdirSync('data')
     }
 
-    if (unencryptedKey) {
-      key = Util.encrypt(key)
+    if (this.unencryptedKey) {
+      this.key = Util.encrypt(this.key)
     }
 
-    const dataFile = `data/${key}.json`
+    const dataFile = `data/${this.key}.json`
     let jobJSON
     if (fs.existsSync(dataFile)) {
       jobJSON = JSON.parse(fs.readFileSync(dataFile))
     } else {
       const store = new BespokenStore()
-      jobJSON = await store.fetch(key)
+      jobJSON = await store.fetch(this.key)
       fs.writeFileSync(dataFile, JSON.stringify(jobJSON, null, 2))
     }
 
-    Config.loadFromFile(configFile)
+    Config.loadFromFile(this.configFile)
     const job = Job.fromJSON(jobJSON)
 
     Config.singleton('source', new RerunSource(job))
     Config.singleton('device-pool', new RerunDevicePool())
 
-    const runner = new Runner()
+    const runner = new Runner(undefined, this.outputPath)
     runner.rerun = true
     await runner.process()
   }
