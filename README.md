@@ -1,5 +1,5 @@
 # **Bespoken Batch Tester**
-[<p align="center"><a href="#installation">Installation</a> | <a href="#running-the-tester">Execution</a> | <a href="#gitlab-configuration">GitLab</a> | <a href="#datadog-configuration">DataDog</a></p>]() | <a href="https://bespoken.gitlab.io/batch-tester">API Docs</a>
+[<p align="center"><a href="#installation">Installation</a> | <a href="#running-the-tester">Execution</a> | <a href="#gitlab-configuration">GitLab</a> | <a href="#datadog-configuration">DataDog</a> | <a href="https://bespoken.gitlab.io/batch-tester">API Docs</a></p>]() 
 This project enables batch testing of utterances for voice experiences.
 
 It leverages Bespoken's Virtual Devices to run large sets of utterances through Alexa, Google Assistant, and other voice platforms.
