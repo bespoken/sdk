@@ -290,16 +290,24 @@ BATCH SAVE completed key: 7f6113df3e2af093f095d2d3b2505770d9af1c057b93d0dff378d8
 ```
 
 ### Merge csv results
-We take 2 csv files and combine them into one csv file.
+We take 2 csv files and combine them into one csv file. The result will be located in `output/merged.csv` by default.
 
 ```
-bbt merge <ORIGINAL_RESULTS_PATH> <RERUN_RESULTS_PATH> <OUTPUT_PATH>
+bbt merge [ORIGINAL_RESULTS_PATH] [RERUN_RESULTS_PATH]
 ```
 
-The 3 arguments are optionals, they are by default:
-ORIGINAL_RESULTS_PATH = ./output/results.csv
-RERUN_RESULTS_PATH = ./output/rerun.csv
-OUTPUT_PATH = ./output/merged.csv
+The 2 arguments are optionals, they are by default:
+- ORIGINAL_RESULTS_PATH = ./output/results.csv
+- RERUN_RESULTS_PATH = ./output/rerun.csv
+
+### Select output file
+You can set the output filename using a flag in any of the commands above
+
+```
+bbt process batch-test.json --output_file your_custom_name
+```
+
+You will find the results in `/output/your_custom_name.csv`
 
 ## **DataDog Configuration**
 Follow [this guide](./docs/datadog#how-to-signup-and-get-an-api-key) to get started.

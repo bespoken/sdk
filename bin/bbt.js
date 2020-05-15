@@ -1,46 +1,58 @@
 #!/usr/bin/env node
+const { program } = require('commander')
+const packageJson = require('../package.json')
 const BatchRunner = require('../src/batch-runner')
 const Printer = require('../src/printer')
 const Rerunner = require('../src/rerunner')
 const Store = require('../src/store')
 const Merger = require('../src/merger')
 
-const [, , command, ...args] = process.argv
+program
+  .version(packageJson.version)
 
-console.log('command: ' + command + ' args: ' + args.join(', '))
+program
+  .command('process <config_file>')
+  .description('process config file')
+  .option('--output_file <filename>', 'results filename')
+  .action(function (config, options) {
+    const runner = new BatchRunner(config, options.output_file)
+    runner.process().then(() => {
+      console.log('RUNNER DONE!')
+    })
+  })
 
-if (command === 'process') {
-  const [config, outputPath] = args
-  const runner = new BatchRunner(config, outputPath)
-  runner.process().then(() => {
-    console.log('RUNNER DONE!')
+program
+  .command('reprint <batch_key>')
+  .description('reprint job')
+  .option('--output_file <filename>', 'results filename')
+  .action(function (key, options) {
+    Store.instance().fetch(key).then(async (job) => {
+      await Printer.instance(options.output_file).print(job)
+      console.log('PRINTER REPRINT done')
+    })
   })
-} else if (command === 'reprint') {
-  const [key, outputPath] = args
-  Store.instance().fetch(key).then(async (job) => {
-    await Printer.instance(outputPath).print(job)
-    console.log('PRINTER REPRINT done')
-  })
-} else if (command === 'reprocess') {
-  const [config, key, encrypt, outputPath] = args
-  console.log('KEY: ' + key + ' encrypt: ' + encrypt)
-  const rerunner = new Rerunner(config, key, encrypt, outputPath)
-  rerunner.rerun().then(() => {
-    console.log('RERUN DONE')
-  })
-} else if (command === 'merge') {
-  const merger = new Merger(...args.slice(0, 3))
-  merger.merge().then(() => {
-    console.log('MERGE DONE')
-  })
-} else {
-  printHelp()
-}
 
-function printHelp () {
-  console.error('To run the Bespoken Batch Tester:')
-  console.error('Include a command ["process", "reprint", "reprocess", "merge"] and a configuration file')
-  console.error('For reprint, a second argument is required - the run key')
-  console.error('For reprocess, a second argument is required - the run key')
-  process.exit(1)
-}
+program
+  .command('reprocess <config_file> <batch_key> [encrypt]')
+  .description('reprocess job')
+  .option('--output_file <filename>', 'results filename')
+  .action(function (config, key, encrypt, options) {
+    console.log('KEY: ' + key + ' encrypt: ' + encrypt)
+    const rerunner = new Rerunner(config, key, encrypt, options.output_file)
+    rerunner.rerun().then(() => {
+      console.log('RERUN DONE')
+    })
+  })
+
+program
+  .command('merge [original_results] [rerun_results]')
+  .description('merge two csv files')
+  .option('--output_file <filename>', 'results filename')
+  .action(function (original, rerun, options) {
+    const merger = new Merger(original, rerun, options.output_file)
+    merger.merge().then(() => {
+      console.log('MERGE DONE')
+    })
+  })
+
+program.parse(process.argv)
