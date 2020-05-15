@@ -13,21 +13,21 @@ class Printer {
   /**
    * @returns {Printer}
    */
-  static instance (outputPath = 'output/results.csv') {
+  static instance (outputPath = 'results') {
     return Config.instance('printer', 'printer', undefined, outputPath)
   }
 
   constructor (outputPath) {
-    this.outputPath = outputPath
+    this.outputPath = `output/${outputPath}.csv`
     // Make the output director if it does not exist
-    const outputDirectory = path.dirname(outputPath)
+    const outputDirectory = path.dirname(this.outputPath)
     if (!fs.existsSync(outputDirectory)) {
       fs.mkdirSync(outputDirectory)
     }
 
     // If there is already an output file, remove it
-    if (fs.existsSync(outputPath)) {
-      fs.unlinkSync(outputPath)
+    if (fs.existsSync(this.outputPath)) {
+      fs.unlinkSync(this.outputPath)
     }
   }
 

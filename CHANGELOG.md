@@ -1,3 +1,9 @@
+## 0.7.2
+### **Enhancements**
+* Added merge feature - described [here](README.md#merge-csv-results)
+* Added --output_file flag - described [here](README.md#select-output-file)
+* Improved our command-line interface using commander
+
 ## 0.7.1
 ### **Enhancements**
 * Handled multiple matches when JSON path expression returns multiple values

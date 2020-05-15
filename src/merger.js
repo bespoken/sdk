@@ -7,22 +7,22 @@ class Merger {
   constructor (
     originalResults = './output/results.csv',
     rerunResults = './output/rerun.csv',
-    outputPath = './output/merged.csv'
+    outputPath = 'merged'
   ) {
     this.originalResults = this.readAndParse(originalResults)
     this.rerunResults = this.readAndParse(rerunResults)
     this.headers = Object.keys(this.originalResults[0])
-    this.outputPath = outputPath
+    this.outputPath = `output/${outputPath}.csv`
 
     // Make the output director if it does not exist
-    const outputDirectory = path.dirname(outputPath)
+    const outputDirectory = path.dirname(this.outputPath)
     if (!fs.existsSync(outputDirectory)) {
       fs.mkdirSync(outputDirectory)
     }
 
     // If there is already an output file, remove it
-    if (fs.existsSync(outputPath)) {
-      fs.unlinkSync(outputPath)
+    if (fs.existsSync(this.outputPath)) {
+      fs.unlinkSync(this.outputPath)
     }
 
     this.evaluateFiles()
@@ -60,7 +60,9 @@ class Merger {
 
   readAndParse (file) {
     const csv = fs.readFileSync(file)
-    return parse(csv, { columns: true })
+    const csvJSON = parse(csv, { columns: true })
+    csvJSON.forEach(row => delete row.RERUN)
+    return csvJSON
   }
 
   evaluateFiles () {
