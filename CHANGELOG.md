@@ -1,3 +1,10 @@
+## 0.8.0
+### **Enhancements**
+* **IMPORTANT** Added compression on fetching files - to avoid timeouts when dealing with very large runs
+  * Requires upgrading to new version of batch-tester client to interact with server
+  * Fetch is used by the reprocess, rerun and resume commands
+* Added compression on saving files - to reduce file size and improve transfer speed
+
 ## 0.7.2
 ### **Enhancements**
 * Added merge feature - described [here](README.md#merge-csv-results)

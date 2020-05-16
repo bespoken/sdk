@@ -2,9 +2,11 @@ const _ = require('lodash')
 const fs = require('fs')
 const http = require('http')
 const Job = require('../src/job').Job
+const { Readable } = require('stream')
 const S3Store = require('../src/s3-store')
 const URL = require('url')
 const Util = require('../src/util')
+const zlib = require('zlib')
 
 class Server {
   constructor (listener) {
@@ -22,16 +24,11 @@ class Server {
         })
 
         message.on('end', async () => {
-          let json = {}
-          if (data.length > 0) {
-            json = JSON.parse(data)
-          }
-          this._handleRequest(message, response, json)
+          this._handleRequest(message, response, data)
         })
       })
 
       this.server.listen(port, () => {
-        console.log('SERVER started')
         resolve()
       })
     })
@@ -48,7 +45,7 @@ class Server {
     })
   }
 
-  _handleRequest (message, response, json) {
+  _handleRequest (message, response, data) {
     const url = URL.parse(message.url, true) /* eslint-disable-line */
     const path = url.pathname
 
@@ -57,7 +54,7 @@ class Server {
     } else if (path === '/log') {
       this._log(response, url)
     } else if (path === '/save') {
-      this._save(response, json)
+      this._save(message, response, data)
     } else {
       this._ping(response)
     }
@@ -65,7 +62,13 @@ class Server {
 
   async _fetch (response, url) {
     const job = await this._fetchJob(url)
-    response.end(JSON.stringify(job, null, 2))
+    const jobString = JSON.stringify(job, null, 2)
+
+    // Compress the result - got it from here:
+    // https://stackoverflow.com/questions/3894794/node-js-gzip-compression
+    response.writeHead(200, { 'content-encoding': 'gzip' })
+    const stream = Readable.from(jobString)
+    stream.pipe(zlib.createGzip()).pipe(response)
   }
 
   /**
@@ -94,9 +97,32 @@ class Server {
     response.end(`BATCH-TESTER-DATA VERSION: ${packageJSON.version}`)
   }
 
-  async _save (response, json) {
+  async _save (message, response, data) {
+    if (message.headers['content-encoding']) {
+      return new Promise((resolve, reject) => {
+        zlib.gunzip(data, (error, unzippedData) => {
+          console.log(`SERVER SAVE zipped size: ${Math.round(data.length / 1024 / 1024)}M unzipped: ${Math.round(unzippedData.length / 1024 / 1024)}M`)
+          if (error) {
+            reject(error)
+            return
+          }
+          return this._saveJSON(response, unzippedData)
+        })
+      })
+    } else {
+      return this._saveJSON(response, data)
+    }
+  }
+
+  async _saveJSON (response, jsonData) {
+    let json = {}
+    if (jsonData.length > 0) {
+      json = JSON.parse(jsonData)
+    }
+
     const job = Job.fromJSON(json)
     const key = job.run
+
     console.log(`SERVER HANDLE save key: ${key}`)
     await this.store.save(job)
 
