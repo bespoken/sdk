@@ -203,9 +203,9 @@ class BatchRunner {
           return
         }
       } catch (e) {
-        console.error(`ERROR ${e} SKIPPING RECORD`)
+        console.error(`ERROR ON INTERCEPT-RESULT: ${e} `)
         console.error(e.stack)
-        result.error = e
+        result.error = e.toString()
       }
     }
 

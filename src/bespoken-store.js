@@ -1,26 +1,50 @@
+const _ = require('lodash')
 const axios = require('axios')
 const Config = require('./config')
 const Job = require('./job').Job
+const { Readable } = require('stream')
 const Store = require('./store')
+const zlib = require('zlib')
 
 class BespokenStore extends Store {
   async fetch (run) {
     const url = `${this.accessURL()}/fetch?run=${run}`
     console.log(`BESPOKEN-STORE FETCH run: ${run} url: ${url}`)
 
-    const response = await axios.get(url, {
-      responseType: 'text'
+    const streamResponse = await axios.get(url, {
+      headers: {
+        'accept-encoding': 'gzip'
+      },
+      maxBodyLength: 1024 * 1024 * 1024, // Load up to 1 GB file
+      maxContentLength: 1024 * 1024 * 1024, // Load up to 1 GB file
+      responseType: 'stream'
     })
 
-    const jobJSON = response.data
-    const job = Job.fromJSON(jobJSON)
-    return job
+    let buffer = Buffer.alloc(0)
+    streamResponse.data.on('data', (b) => {
+      buffer = Buffer.concat([buffer, b])
+    })
+
+    return new Promise((resolve) => {
+      streamResponse.data.on('end', () => {
+        const jobJSON = JSON.parse(buffer.toString('utf-8'))
+        const job = Job.fromJSON(jobJSON)
+        resolve(job)
+      })
+    })
   }
 
   async save (job) {
     console.time('BESPOKEN-STORE SAVE')
     const url = `${this.accessURL()}/save`
-    const response = await axios.post(url, job, {
+
+    // Create a stream from the JSON
+    const jsonStream = Readable.from(JSON.stringify(job))
+    const gzipStream = jsonStream.pipe(zlib.createGzip())
+    const response = await axios.post(url, gzipStream, {
+      headers: {
+        'Content-Encoding': 'gzip'
+      },
       maxContentLength: (200 * 1024 * 1024), // up to 200 mb - biggest file so far is 57 MB
       responseType: 'json'
     })
@@ -48,3 +72,20 @@ class BespokenStore extends Store {
 }
 
 module.exports = BespokenStore
+
+if (_.nth(process.argv, 2) === 'test-store') {
+  const FileStore = require('./file-store')
+  const store = new FileStore()
+  const bespokenStore = new BespokenStore()
+  store.fetch('4ffb47e3bec6ce3ddb4ebf2f2707e06aa121b01a6930ebc1e8f752f5201cffb9').then(async (job) => {
+    job._run = job._run + 'V2'
+    const Printer = require('./printer')
+    const printer = new Printer()
+
+    console.time('Print')
+    await printer.print(job)
+    console.timeEnd('Print')
+
+    await bespokenStore.save(job)
+  })
+}

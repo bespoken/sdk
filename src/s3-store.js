@@ -4,11 +4,13 @@ const Store = require('./store')
 
 class S3Store extends Store {
   async fetch (run) {
+    console.time('S3Store.fetch')
     const s3 = new AWS.S3()
     const response = await s3.getObject({
       Bucket: 'batch-runner',
       Key: Store.key(run)
     }).promise()
+    console.timeEnd('S3Store.fetch')
 
     // console.log('S3 JOB KEY: ' + S3Store.key(run) + ' RESPONSE: ' + JSON.stringify(response.Body, null, 2))
     const jobData = response.Body
