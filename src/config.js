@@ -106,6 +106,10 @@ class Config {
     return Config.get(key, undefined, false, defaultValue)
   }
 
+  static int (key) {
+    return parseInt(Config.get(key))
+  }
+
   static instance (key, defaultClass, values, ...classParams) {
     const singleton = Config.singleton(key)
     if (singleton) {

@@ -8,9 +8,6 @@ const Store = require('../src/store')
 const Merger = require('../src/merger')
 
 program
-  .version(packageJson.version)
-
-program
   .command('process <config_file>')
   .description('process config file')
   .option('--output_file <filename>', 'results filename')
