@@ -8,6 +8,9 @@ const Store = require('../src/store')
 const Merger = require('../src/merger')
 
 program
+  .version(packageJson.version)
+
+program
   .command('process <config_file>')
   .description('process config file')
   .option('--output_file <filename>', 'results filename')
@@ -33,7 +36,7 @@ program
   .command('reprocess <config_file> <batch_key> [encrypt]')
   .description('reprocess job')
   .option('--output_file <filename>', 'results filename')
-  .action(function (config, key, encrypt = true, options) {
+  .action(function (config, key, encrypt = false, options) {
     console.log('KEY: ' + key + ' encrypt: ' + encrypt)
     const rerunner = new Rerunner(config, key, encrypt, options.output_file)
     rerunner.rerun().then(() => {
