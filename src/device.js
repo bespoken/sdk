@@ -164,7 +164,7 @@ class DevicePool {
       if (Array.isArray(tokenInfo)) {
         tags = tokenInfo
       } else {
-        tags = tokenInfo.tags
+        tags = tokenInfo.tags ? tokenInfo.tags : []
       }
 
       // Clean the tags - trim them
