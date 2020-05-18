@@ -1,3 +1,9 @@
+## 0.8.5
+### **Enhancements**
+* Adds the `virtualDeviceConfig` property on the configuration json. This allows sending parameters that will be used on all virtual devices.
+* Allows for using Twilio virtual devices with text utterances or prerecorded audio. The last ones can only be passed as URLs.
+
+
 ## 0.8.4
 ### **Bug Fixes**
 * Allow the tag property on a virtual device to be undefined

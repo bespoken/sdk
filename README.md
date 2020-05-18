@@ -153,6 +153,11 @@ An example file:
     "VIRTUAL_DEVICE_1": {
       "tags": ["tag1", "tag2"]
     }
+  },
+  "virtualDeviceConfig": {
+    "phoneNumber": "+1 XXX XXX XXX",
+    "twilio_speech_timeout": 2,
+    "twilio_timeout": 10
   }
 }
 ```
@@ -229,6 +234,9 @@ See the section above for information on [configuring virtual devices](#virtual-
 
 ## **`virtualDeviceBaseURL`**
 For values other than the default (`https://virtual-device.bespoken.io`), set this property.
+
+## **`virtualDeviceConfig`**
+Allows setting properties to all virtual devices. For example, when using Twilio Virtual Devices, setting the `phone_number` to call.
 
 ## **`voices`**
 Array of voices that should be used to process the records.
