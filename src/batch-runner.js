@@ -38,6 +38,9 @@ class BatchRunner {
       recordsToProcess = this._job.records.length
     }
 
+    const saveJobInterval = Config.get('saveInterval', undefined, true, 300) * 1000
+    const saveJob = setInterval(() => this._saveAndPrint('INTERVAL'), saveJobInterval)
+
     for (let i = this._startIndex; i < recordsToProcess; i++) {
       const record = this._job.records[i]
 
@@ -76,6 +79,7 @@ class BatchRunner {
 
     // Do a save once all records are done - in case any writes got skipped due to contention
     console.log('BATCH PROCESS all records done - final save')
+    clearInterval(saveJob)
     await this._saveAndPrint()
   }
 
@@ -243,15 +247,15 @@ class BatchRunner {
     }
   }
 
-  async _saveAndPrint () {
+  async _saveAndPrint (logMessage = 'FINAL') {
     try {
-      console.time('BATCH SAVE')
+      console.time(`BATCH ${logMessage} SAVE`)
       await Store.instance().save(this._job)
       await Printer.instance(this.outputPath).print(this._job)
-      console.timeEnd('BATCH SAVE')
-      console.log(`BATCH SAVE completed key: ${this._job.key}`)
+      console.timeEnd(`BATCH ${logMessage} SAVE`)
+      console.log(`BATCH ${logMessage} SAVE completed key: ${this._job.key}`)
     } catch (e) {
-      console.error('BATCH SAVE error: ' + e)
+      console.error(`BATCH ${logMessage} SAVE error: ` + e)
     }
   }
 
