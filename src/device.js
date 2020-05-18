@@ -4,22 +4,27 @@ const util = require('./util')
 const vdk = require('virtual-device-sdk')
 
 class Device {
-  constructor (token, skipSTT = false, settings) {
+  constructor (token, skipSTT = false, settings, configuration) {
     this._token = token
     this._skipSTT = skipSTT
     this._settings = settings
     this._tags = []
+    this._configuration = configuration
   }
 
   async message (voiceId, messages, attempt = 1) {
     console.log('DEVICE MESSAGE ' + messages.toString())
-    const virtualDevice = new vdk.VirtualDevice({
+    let config = {
       asyncMode: true,
       debug: true,
       skipSTT: this._skipSTT,
       token: this._token,
       voiceID: voiceId
-    })
+    }
+
+    if (this._configuration) { config = _.assign(config, this._configuration) }
+
+    const virtualDevice = new vdk.VirtualDevice(config)
 
     virtualDevice.baseURL = Config.get('virtualDeviceBaseURL', undefined, false, 'https://virtual-device.bespoken.io')
 
@@ -27,13 +32,13 @@ class Device {
       const messagesArray = []
       messages.forEach(message => {
         const messageObject = {}
-        if (message.startsWith('http')) {
+        if (!this.platform === 'twilio' && message.startsWith('http')) {
           messageObject.audio = {
             audioURL: message,
             frameRate: 16000,
             channels: 1
           }
-        } else if (message.endsWith('.raw')) {
+        } else if (!this.platform === 'twilio' && message.endsWith('.raw')) {
           messageObject.audio = {
             audioPath: message,
             frameRate: 16000,
@@ -122,6 +127,8 @@ class Device {
       platform = 'amazon-alexa'
     } else if (this._token.startsWith('google')) {
       platform = 'google-assistant'
+    } else if (this._token.startsWith('twilio')) {
+      platform = 'twilio'
     }
     return platform
   }
@@ -150,6 +157,7 @@ class DevicePool {
 
   initialize () {
     const tokensInfo = Config.get('virtualDevices', undefined, true)
+    const virtualDeviceConfig = Config.get('virtualDeviceConfig', undefined, false)
     const tokens = Object.keys(tokensInfo)
     this._devices = []
 
@@ -170,7 +178,7 @@ class DevicePool {
       // Clean the tags - trim them
       tags = tags.map(tag => tag.trim())
       console.log(`DEVICE create token: ${token} skipSTT: ${skipSTT} tags: ${tags} settings: ${JSON.stringify(tokenInfo.settings)}`)
-      const device = new Device(token.trim(), skipSTT, tokenInfo.settings)
+      const device = new Device(token.trim(), skipSTT, tokenInfo.settings, virtualDeviceConfig)
 
       // Add the tags to the device
       tags.forEach(tag => device.addTag(tag))
