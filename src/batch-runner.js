@@ -76,7 +76,7 @@ class BatchRunner {
 
     // Do a save once all records are done - in case any writes got skipped due to contention
     console.log('BATCH PROCESS all records done - final save')
-    await this._print()
+    await this._saveAndPrint()
   }
 
   async _initialize () {
@@ -240,6 +240,18 @@ class BatchRunner {
       console.timeEnd('BATCH PRINT')
     } catch (e) {
       console.error('BATCH PRINT error: ' + e)
+    }
+  }
+
+  async _saveAndPrint () {
+    try {
+      console.time('BATCH SAVE')
+      await Store.instance().save(this._job)
+      await Printer.instance(this.outputPath).print(this._job)
+      console.timeEnd('BATCH SAVE')
+      console.log(`BATCH SAVE completed key: ${this._job.key}`)
+    } catch (e) {
+      console.error('BATCH SAVE error: ' + e)
     }
   }
 
