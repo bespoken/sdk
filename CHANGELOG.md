@@ -1,3 +1,7 @@
+## 0.8.4
+### **Bug Fixes**
+* Allow the tag property on a virtual device to be undefined
+
 ## 0.8.0
 ### **Enhancements**
 * **IMPORTANT** Added compression on fetching files - to avoid timeouts when dealing with very large runs
