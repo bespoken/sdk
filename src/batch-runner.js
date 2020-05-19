@@ -9,6 +9,7 @@ const Printer = require('./printer')
 const Result = require('./job').Result
 const Source = require('./source').Source
 const Store = require('./store')
+const Synchronizer = require('./synchronizer')
 const util = require('./util')
 
 class BatchRunner {
@@ -24,7 +25,6 @@ class BatchRunner {
   async process () {
     // Initialize the batch runner
     await this._initialize()
-
     // Read in the CSV input records
     await this._read()
 
@@ -38,8 +38,8 @@ class BatchRunner {
       recordsToProcess = this._job.records.length
     }
 
-    const saveJobInterval = Config.get('saveInterval', undefined, true, 300) * 1000
-    const saveJob = setInterval(() => this._saveAndPrint('INTERVAL'), saveJobInterval)
+    const synchronizer = new Synchronizer(this._job, this.outputPath)
+    synchronizer.runSave()
 
     for (let i = this._startIndex; i < recordsToProcess; i++) {
       const record = this._job.records[i]
@@ -77,10 +77,10 @@ class BatchRunner {
       await util.sleep(1000)
     }
 
+    synchronizer.stopSave()
     // Do a save once all records are done - in case any writes got skipped due to contention
     console.log('BATCH PROCESS all records done - final save')
-    clearInterval(saveJob)
-    await this._saveAndPrint()
+    await synchronizer.saveJob('FINAL')
   }
 
   async _initialize () {
@@ -244,18 +244,6 @@ class BatchRunner {
       console.timeEnd('BATCH PRINT')
     } catch (e) {
       console.error('BATCH PRINT error: ' + e)
-    }
-  }
-
-  async _saveAndPrint (logMessage = 'FINAL') {
-    try {
-      console.time(`BATCH ${logMessage} SAVE`)
-      await Store.instance().save(this._job)
-      await Printer.instance(this.outputPath).print(this._job)
-      console.timeEnd(`BATCH ${logMessage} SAVE`)
-      console.log(`BATCH ${logMessage} SAVE completed key: ${this._job.key}`)
-    } catch (e) {
-      console.error(`BATCH ${logMessage} SAVE error: ` + e)
     }
   }
 
