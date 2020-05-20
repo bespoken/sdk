@@ -1,3 +1,7 @@
+## 0.8.6
+### **Enhancements**
+* Added the `Synchronizer` class for saving the batch job depending on the `saveInterval` property from the configuration file, it is set to 300 seconds by default.
+
 ## 0.8.5
 ### **Enhancements**
 * Adds the `virtualDeviceConfig` property on the configuration json. This allows sending parameters that will be used on all virtual devices.

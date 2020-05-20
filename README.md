@@ -142,6 +142,7 @@ An example file:
   },
   "interceptor": "./src/my-interceptor",
   "job": "utterance-tester",
+  "saveInterval": 300,
   "limit": 5,
   "metrics": "datadog-metrics",
   "sequence": ["open my audio player"],
@@ -190,6 +191,11 @@ Using [interceptResult](https://bespoken.gitlab.io/batch-tester/Interceptor.html
 
 You can read all about the Interceptor class here:
 https://bespoken.gitlab.io/batch-tester/Interceptor.html
+
+### **`saveInterval`**
+Time interval where the batch job is saved. It's represented in seconds.
+
+This defaults to 300.
 
 ### **`limit`**
 The numbers of records to test during test execution. Very useful when you want to try just a small subset of utterances.
