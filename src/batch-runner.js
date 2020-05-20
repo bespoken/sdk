@@ -9,6 +9,7 @@ const Printer = require('./printer')
 const Result = require('./job').Result
 const Source = require('./source').Source
 const Store = require('./store')
+const Synchronizer = require('./synchronizer')
 const util = require('./util')
 
 class BatchRunner {
@@ -24,7 +25,6 @@ class BatchRunner {
   async process () {
     // Initialize the batch runner
     await this._initialize()
-
     // Read in the CSV input records
     await this._read()
 
@@ -37,6 +37,9 @@ class BatchRunner {
     if (recordsToProcess > this._job.records.length) {
       recordsToProcess = this._job.records.length
     }
+
+    const synchronizer = new Synchronizer(this._job, this.outputPath)
+    synchronizer.runSave()
 
     for (let i = this._startIndex; i < recordsToProcess; i++) {
       const record = this._job.records[i]
@@ -74,9 +77,10 @@ class BatchRunner {
       await util.sleep(1000)
     }
 
+    synchronizer.stopSave()
     // Do a save once all records are done - in case any writes got skipped due to contention
     console.log('BATCH PROCESS all records done - final save')
-    await this._save()
+    await synchronizer.saveJob('FINAL')
   }
 
   async _initialize () {
@@ -147,7 +151,7 @@ class BatchRunner {
     const acquired = await util.mutexAcquire()
     if (acquired) {
       try {
-        await this._save()
+        await this._print()
       } finally {
         util.mutexRelease()
       }
@@ -233,15 +237,13 @@ class BatchRunner {
     console.log(`BATCH READ pre-filter: ${records.length} post-filter: ${this._job.records.length}`)
   }
 
-  async _save () {
+  async _print () {
     try {
-      console.time('BATCH SAVE')
-      await Store.instance().save(this._job)
+      console.time('BATCH PRINT')
       await Printer.instance(this.outputPath).print(this._job)
-      console.timeEnd('BATCH SAVE')
-      console.log(`BATCH SAVE completed key: ${this._job.key}`)
+      console.timeEnd('BATCH PRINT')
     } catch (e) {
-      console.error('BATCH SAVE error: ' + e)
+      console.error('BATCH PRINT error: ' + e)
     }
   }
 
