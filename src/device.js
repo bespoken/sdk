@@ -58,9 +58,14 @@ class Device {
       console.log('DEVICE MESSAGE initial response: ' + JSON.stringify(response))
       if (response.conversation_id) {
         let result = { status: 'IN_PROGRESS' }
-        while (result.status === 'IN_PROGRESS') {
+        const waitTimeInterval = _.get(this._configuration, 'waitTimeInterval') || 1000
+        const maxWaitTime = _.get(this._configuration, 'maxWaitTime') || 300000
+        let totalTimeWaited = 0
+
+        while (result.status === 'IN_PROGRESS' && totalTimeWaited < maxWaitTime) {
           try {
             result = await virtualDevice.getConversationResults(response.conversation_id)
+            totalTimeWaited += waitTimeInterval
           } catch (e) {
             const error = this._parseError(e)
             console.error(`DEVICE ERROR get conversation: ${error.toString()} error property: ${error.error}`)
@@ -69,7 +74,12 @@ class Device {
               return this._retry(error, voiceId, messages, attempt)
             }
           }
-          await util.sleep(1000)
+          await util.sleep(waitTimeInterval)
+        }
+        if (result.status === 'IN_PROGRESS') {
+          const errorMessage = `DEVICE ERROR maxWaitTime exceed: ${maxWaitTime}`
+          console.error(errorMessage)
+          return this._retry(errorMessage, voiceId, messages, attempt)
         }
         console.log('DEVICE MESSAGE final transcript: ' + _.get(_.nth(_.get(result, 'results'), -1), 'transcript'))
         return result.results
