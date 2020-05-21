@@ -120,7 +120,7 @@ class Job {
   }
 
   /**
-   * @returns {Record[]} The results for the job
+   * @returns {Record[]} The records for the job
    */
   get records () {
     return this._records
@@ -147,6 +147,8 @@ class Job {
 
   /**
    * The date the job was created (UTC)
+   * Saved in ISO 8601 format: YYYY-MM-DDThh:mm:ssZ
+   * Eg. 2020-05-21T15:50:13Z
    * @type {string}
    */
   get date () {
