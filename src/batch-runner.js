@@ -83,7 +83,7 @@ class BatchRunner {
     await synchronizer.saveJob('FINAL')
 
     // Custom code for when the process has finished
-    await Interceptor.instance().interceptPostProcess()
+    await Interceptor.instance().interceptPostProcess(this._job)
   }
 
   async _initialize () {
@@ -100,9 +100,6 @@ class BatchRunner {
     const jobName = Config.get('job', undefined, true)
     this._job = new Job(jobName, undefined, Config.config)
 
-    // Custom code before processing any record
-    await Interceptor.instance().interceptPreProcess()
-
     // Check if we are resuming
     if (process.env.RUN_KEY) {
       const run = process.env.RUN_KEY
@@ -113,6 +110,9 @@ class BatchRunner {
       this._startIndex = this._job.processedCount
       console.log(`BATCH INIT resuming job - starting at: ${this._startIndex}`)
     }
+
+    // Custom code before processing any record
+    await Interceptor.instance().interceptPreProcess(this._job)
 
     this._devicePool = DevicePool.instance() // Manages virtual devices
 

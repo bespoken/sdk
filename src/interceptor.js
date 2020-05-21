@@ -31,17 +31,19 @@ class Interceptor {
 
   /**
    * Allows for calling custom code before the execution of the tests begin
+   * @param {Job} job
    * @returns {Promise<Undefined>} Void promise
    */
-  async interceptPreProcess () {
+  async interceptPreProcess (job) {
 
   }
 
   /**
    * Allows for making changes to a result after it has been processed
+   * @param {Job} job
    * @returns {Promise<Undefined>} Void promise
    */
-  async interceptPostProcess () {
+  async interceptPostProcess (job) {
 
   }
 }
