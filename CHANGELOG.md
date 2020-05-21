@@ -1,3 +1,7 @@
+## 0.8.8
+### **Enhancements**
+* Added `date` property to the Job object. This stores the UTC date in which the job was created in ISO-8691. Eg.: `2020-05-21T18:59:55Z`. The job name is also created with UTC. Eg. `job_name_2020-05-21T18-59-55`
+
 ## 0.8.7
 ### **Enhancements**
 * Added the methods `interceptPreProcess` and  `interceptPostProcess` to add custom code before and after a batch tester execution. For `interceptPreProcess` the user has to be careful if resuming a job.

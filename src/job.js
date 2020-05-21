@@ -34,12 +34,14 @@ class Job {
   }
 
   constructor (name, run, config) {
+    const now = moment().utc()
     this._name = name
     if (run) {
       this._run = run
     } else {
-      this._run = name + '_' + moment().format('YYYY-MM-DDTHH-mm-ss')
+      this._run = name + '_' + now.format('YYYY-MM-DDTHH-mm-ss')
     }
+    this._date = now.format()
     this._config = config
     this._key = undefined
     this._records = []
@@ -118,7 +120,7 @@ class Job {
   }
 
   /**
-   * @returns {Record[]} The results for the job
+   * @returns {Record[]} The records for the job
    */
   get records () {
     return this._records
@@ -141,6 +143,16 @@ class Job {
    */
   get run () {
     return this._run
+  }
+
+  /**
+   * The date the job was created (UTC)
+   * Saved in ISO 8601 format: YYYY-MM-DDThh:mm:ssZ
+   * Eg. 2020-05-21T15:50:13Z
+   * @type {string}
+   */
+  get date () {
+    return this._date
   }
 }
 
