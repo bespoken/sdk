@@ -20,6 +20,13 @@ class BatchRunner {
     /** @type {Job} */
     this._job = undefined
     this.rerun = false
+
+    if (typeof BatchRunner.instance === 'object') {
+      return BatchRunner.instance
+    }
+
+    BatchRunner.instance = this
+    return this
   }
 
   async process () {
