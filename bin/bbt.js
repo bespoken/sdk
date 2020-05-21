@@ -18,6 +18,10 @@ program
     const runner = new BatchRunner(config, options.output_file)
     runner.process().then(() => {
       console.log('RUNNER DONE!')
+    }).catch(() => {
+      if (runner._job.key) {
+        runner._synchronizer.saveJob('ERROR')
+      }
     })
   })
 
