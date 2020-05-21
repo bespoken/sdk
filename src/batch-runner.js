@@ -81,6 +81,9 @@ class BatchRunner {
     // Do a save once all records are done - in case any writes got skipped due to contention
     console.log('BATCH PROCESS all records done - final save')
     await synchronizer.saveJob('FINAL')
+
+    // Custom code for when the process has finished
+    await Interceptor.instance().interceptPostProcess(this._job)
   }
 
   async _initialize () {
@@ -107,6 +110,9 @@ class BatchRunner {
       this._startIndex = this._job.processedCount
       console.log(`BATCH INIT resuming job - starting at: ${this._startIndex}`)
     }
+
+    // Custom code before processing any record
+    await Interceptor.instance().interceptPreProcess(this._job)
 
     this._devicePool = DevicePool.instance() // Manages virtual devices
 
