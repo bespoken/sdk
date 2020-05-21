@@ -1,3 +1,7 @@
+## 0.8.7
+### **Enhancements**
+* Added the methods `interceptPreProcess` and  `interceptPostProcess` to add custom code before and after a batch tester execution. For `interceptPreProcess` the user has to be careful if resuming a job.
+
 ## 0.8.6
 ### **Enhancements**
 * Added the `Synchronizer` class for saving the batch job depending on the `saveInterval` property from the configuration file, it is set to 300 seconds by default.

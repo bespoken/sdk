@@ -81,6 +81,9 @@ class BatchRunner {
     // Do a save once all records are done - in case any writes got skipped due to contention
     console.log('BATCH PROCESS all records done - final save')
     await synchronizer.saveJob('FINAL')
+
+    // Custom code for when the process has finished
+    await Interceptor.instance().interceptPostProcess()
   }
 
   async _initialize () {
@@ -96,6 +99,9 @@ class BatchRunner {
     }
     const jobName = Config.get('job', undefined, true)
     this._job = new Job(jobName, undefined, Config.config)
+
+    // Custom code before processing any record
+    await Interceptor.instance().interceptPreProcess()
 
     // Check if we are resuming
     if (process.env.RUN_KEY) {

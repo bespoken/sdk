@@ -28,6 +28,22 @@ class Interceptor {
   async interceptResult (record, result) {
     return true
   }
+
+  /**
+   * Allows for calling custom code before the execution of the tests begin
+   * @returns {Promise<Undefined>} Void promise
+   */
+  async interceptPreProcess () {
+
+  }
+
+  /**
+   * Allows for making changes to a result after it has been processed
+   * @returns {Promise<Undefined>} Void promise
+   */
+  async interceptPostProcess () {
+
+  }
 }
 
 module.exports = Interceptor
