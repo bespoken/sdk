@@ -34,12 +34,14 @@ class Job {
   }
 
   constructor (name, run, config) {
+    const now = moment().utc()
     this._name = name
     if (run) {
       this._run = run
     } else {
-      this._run = name + '_' + moment().format('YYYY-MM-DDTHH-mm-ss')
+      this._run = name + '_' + now.format('YYYY-MM-DDTHH-mm-ss')
     }
+    this._date = now.format()
     this._config = config
     this._key = undefined
     this._records = []
@@ -141,6 +143,14 @@ class Job {
    */
   get run () {
     return this._run
+  }
+
+  /**
+   * The date the job was created (UTC)
+   * @type {string}
+   */
+  get date () {
+    return this._date
   }
 }
 
