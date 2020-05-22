@@ -108,6 +108,7 @@ describe('batch runner processes records', () => {
 })
 
 async function runnerProccess (config) {
+  delete BatchRunner.instance
   const runner = new BatchRunner(config)
   try {
     await runner.process()
