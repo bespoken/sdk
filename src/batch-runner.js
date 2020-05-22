@@ -260,6 +260,12 @@ class BatchRunner {
     }
   }
 
+  _saveOnError () {
+    if (this._job.key) {
+      this._synchronizer.saveJob('ON ERROR')
+    }
+  }
+
   /**
    * @returns {Job} The job created and processed by this runner
    */
@@ -269,7 +275,14 @@ class BatchRunner {
 }
 
 process.on('unhandledRejection', (e) => {
+  BatchRunner.instance._saveOnError()
   console.error('UNHANDLED: ' + e)
+  console.error(e.stack)
+})
+
+process.on('uncaughtException', (e) => {
+  BatchRunner.instance._saveOnError()
+  console.error('UNCAUGHT: ' + e)
   console.error(e.stack)
 })
 
