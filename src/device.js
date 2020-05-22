@@ -76,12 +76,14 @@ class Device {
           }
           await util.sleep(waitTimeInterval)
         }
+
         if (result.status === 'IN_PROGRESS') {
-          // Server timed out, result keeps in progress after max wait time exceed
+          // Server timed out, try again up the max attempts
           const errorMessage = `DEVICE ERROR maxWaitTime exceed: ${maxWaitTime}`
           console.error(errorMessage)
           return this._retry(errorMessage, voiceId, messages, attempt)
         }
+
         console.log('DEVICE MESSAGE final transcript: ' + _.get(_.nth(_.get(result, 'results'), -1), 'transcript'))
         return result.results
       }
