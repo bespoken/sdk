@@ -20,6 +20,11 @@ class BatchRunner {
     /** @type {Job} */
     this._job = undefined
     this.rerun = false
+    Config.singleton('runner', this)
+  }
+
+  static instance () {
+    return Config.instance('runner')
   }
 
   async process () {
@@ -38,8 +43,8 @@ class BatchRunner {
       recordsToProcess = this._job.records.length
     }
 
-    const synchronizer = new Synchronizer(this._job, this.outputPath)
-    synchronizer.runSave()
+    await this._synchronizer.saveJob('INITIAL')
+    this._synchronizer.runSave()
 
     for (let i = this._startIndex; i < recordsToProcess; i++) {
       const record = this._job.records[i]
@@ -77,11 +82,11 @@ class BatchRunner {
       await util.sleep(1000)
     }
 
-    synchronizer.stopSave()
+    this._synchronizer.stopSave()
     // Do a save once all records are done - in case any writes got skipped due to contention
     console.log('BATCH PROCESS all records done - final save')
-    await synchronizer.saveJob('FINAL')
 
+    await this._synchronizer.saveJob('FINAL')
     // Custom code for when the process has finished
     await Interceptor.instance().interceptPostProcess(this._job)
   }
@@ -115,7 +120,7 @@ class BatchRunner {
     await Interceptor.instance().interceptPreProcess(this._job)
 
     this._devicePool = DevicePool.instance() // Manages virtual devices
-
+    this._synchronizer = new Synchronizer(this._job, this.outputPath)
     this._metrics = Metrics.instance()
     return this._metrics.initialize(this._job)
   }
@@ -253,6 +258,12 @@ class BatchRunner {
     }
   }
 
+  _saveOnError () {
+    if (this._job.key) {
+      this._synchronizer.saveJob('ON ERROR')
+    }
+  }
+
   /**
    * @returns {Job} The job created and processed by this runner
    */
@@ -262,7 +273,14 @@ class BatchRunner {
 }
 
 process.on('unhandledRejection', (e) => {
+  BatchRunner.instance()._saveOnError()
   console.error('UNHANDLED: ' + e)
+  console.error(e.stack)
+})
+
+process.on('uncaughtException', (e) => {
+  BatchRunner.instance()._saveOnError()
+  console.error('UNCAUGHT: ' + e)
   console.error(e.stack)
 })
 

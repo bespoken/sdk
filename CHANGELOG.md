@@ -1,3 +1,9 @@
+## 0.8.9
+### **Enhancements**
+* Added batch runner instance for saving job after errors
+### **Bug Fixes**
+* Fixed RAW DATA URL column values with batch job key for `reprocess` and `reprint` commands
+
 ## 0.8.8
 ### **Enhancements**
 * Added `date` property to the Job object. This stores the UTC date in which the job was created in ISO-8691. Eg.: `2020-05-21T18:59:55Z`. The job name is also created with UTC. Eg. `job_name_2020-05-21T18-59-55`
