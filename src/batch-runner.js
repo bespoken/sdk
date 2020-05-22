@@ -20,13 +20,11 @@ class BatchRunner {
     /** @type {Job} */
     this._job = undefined
     this.rerun = false
+    Config.singleton('runner', this)
+  }
 
-    if (typeof BatchRunner.instance === 'object') {
-      return BatchRunner.instance
-    }
-
-    BatchRunner.instance = this
-    return this
+  static instance () {
+    return Config.instance('runner')
   }
 
   async process () {
@@ -275,13 +273,13 @@ class BatchRunner {
 }
 
 process.on('unhandledRejection', (e) => {
-  BatchRunner.instance._saveOnError()
+  BatchRunner.instance()._saveOnError()
   console.error('UNHANDLED: ' + e)
   console.error(e.stack)
 })
 
 process.on('uncaughtException', (e) => {
-  BatchRunner.instance._saveOnError()
+  BatchRunner.instance()._saveOnError()
   console.error('UNCAUGHT: ' + e)
   console.error(e.stack)
 })
