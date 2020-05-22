@@ -1,3 +1,7 @@
+## 0.8.11
+### **Enhancements**
+* Added request interceptor
+
 ## 0.8.10
 ### **Enhancements**
 * Added timeouts to get results from virtual device 
