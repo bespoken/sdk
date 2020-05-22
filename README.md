@@ -158,7 +158,9 @@ An example file:
   "virtualDeviceConfig": {
     "phoneNumber": "+1 XXX XXX XXX",
     "twilio_speech_timeout": 2,
-    "twilio_timeout": 10
+    "twilio_timeout": 10,
+    "waitTimeInterval": 2000,
+    "maxWaitTime": 300000 
   }
 }
 ```

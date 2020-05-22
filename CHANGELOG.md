@@ -1,3 +1,7 @@
+## 0.8.10
+### **Enhancements**
+* Added timeouts to get results from virtual device 
+
 ## 0.8.9
 ### **Enhancements**
 * Added batch runner instance for saving job after errors
