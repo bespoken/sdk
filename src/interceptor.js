@@ -46,6 +46,15 @@ class Interceptor {
   async interceptPostProcess (job) {
 
   }
+
+  /**
+   * Allows for making changes to a request payload
+   * @param {Object} request payload
+   * @returns {Promise<Undefined>} Void promise
+   */
+  async interceptRequest (request) {
+
+  }
 }
 
 module.exports = Interceptor
