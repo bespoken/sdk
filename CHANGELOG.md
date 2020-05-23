@@ -1,3 +1,7 @@
+## 0.8.12
+### **Enhancements**
+* Added timestamp to each result record
+
 ## 0.8.11
 ### **Enhancements**
 * Added request interceptor
