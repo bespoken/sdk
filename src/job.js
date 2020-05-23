@@ -173,6 +173,7 @@ class Result {
     this._actualFields = {}
     this._outputFields = {}
     this._tags = {}
+    this._timestamp = Date.now()
   }
 
   /**
@@ -252,6 +253,10 @@ class Result {
 
   get tags () {
     return this._tags
+  }
+
+  get timestamp () {
+    return this._timestamp
   }
 }
 

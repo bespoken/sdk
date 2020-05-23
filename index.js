@@ -7,5 +7,6 @@ const Printer = require('./src/printer')
 const Record = require('./src/source').Record
 const Result = require('./src/job').Result
 const Source = require('./src/source').Source
+const Store = require('./src/store')
 
-module.exports = { BatchRunner, Config, Interceptor, Job, Printer, Record, Result, Source }
+module.exports = { BatchRunner, Config, Interceptor, Job, Printer, Record, Result, Source, Store }
