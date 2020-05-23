@@ -1,3 +1,7 @@
+## 0.8.13
+### **Enhancements**
+* Added conversationId to the lastResponse object
+
 ## 0.8.12
 ### **Enhancements**
 * Added timestamp to each result record
