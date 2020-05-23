@@ -86,6 +86,12 @@ class Device {
           return this._retry(errorMessage, voiceId, messages, attempt)
         }
 
+        // Adds the conversation id to the retuls
+        // Can be found for debugging under Result.lastResponse().conversationId
+        for (const item of result.results) {
+          item.conversationId = response.conversation_id
+        }
+
         console.log('DEVICE MESSAGE final transcript: ' + _.get(_.nth(_.get(result, 'results'), -1), 'transcript'))
         return result.results
       }
