@@ -166,10 +166,11 @@ class Result {
    * @param {string} [voiceId]
    * @param {Object} lastResponse
    */
-  constructor (record, voiceId, lastResponse) {
+  constructor (record, voiceId, lastResponse, responses) {
     this._record = record
     this._voiceId = voiceId
     this._lastResponse = lastResponse
+    this._responses = responses
     this._actualFields = {}
     this._outputFields = {}
     this._tags = {}
@@ -230,6 +231,10 @@ class Result {
 
   get lastResponse () {
     return this._lastResponse
+  }
+
+  get responses () {
+    return this._responses
   }
 
   get outputFields () {

@@ -1,3 +1,7 @@
+## 0.8.14
+### **Enhancements**
+* Saves all the results from a response in the record object
+
 ## 0.8.13
 ### **Enhancements**
 * Added conversationId to the lastResponse object

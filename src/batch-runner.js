@@ -184,10 +184,11 @@ class BatchRunner {
     messages.push(utterance)
 
     // Call the virtual device, and grab the last response from the set of messages
+    let responses
     let lastResponse
     let error
     try {
-      const responses = await device.message(voiceId, messages)
+      responses = await device.message(voiceId, messages)
       if (responses) {
         responses.forEach(response => console.log(`RUNNER MESSAGE: ${response.message} TRANSCRIPT: ${response.transcript}`))
       }
@@ -200,7 +201,8 @@ class BatchRunner {
     const result = new Result(
       record,
       voiceId,
-      lastResponse
+      lastResponse,
+      responses
     )
 
     // Add a tag for the platform being used for the test
