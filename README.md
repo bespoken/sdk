@@ -180,11 +180,12 @@ then if ANY of the actual values matches the expected the test will pass.
 ### **`interceptor`**
 The interceptor allows for the core behavior of the batch runner to be modified.
 
-There are four main methods:  
+There are five main methods:  
 * interceptRecord - Called before the record is processed
 * interceptResult - Called before the result is finalized
-* interceptPreProcess - Called after the records have been loaded but before any of them is processed. 
-* interceptPostProcess - Called after all the records have been executed.
+* interceptPreProcess - Called after the records have been loaded but before any of them is processed
+* interceptPostProcess - Called after all the records have been executed
+* interceptRequest - Called before the request is sent to a virtual device
 
 Using [interceptRecord](https://bespoken.gitlab.io/batch-tester/Interceptor.html#interceptRecord), changes can be made to the utterance or the meta data of a record before it is used in a test.
 
@@ -201,6 +202,11 @@ Be aware that this function will be called when resuming too.
 Using `interceptPostProcess` custom code can be called after the execution of the records. This can involve:
 * Calling an API
 * Saving objects to a local storage.
+
+Using `interceptRequest` the request can be modified before calling the virtual device. This can involve:
+* Adding more messages (before or after the main one)
+* Adding phrases for better speech recognition
+* Doing operations related to the virtual device about to be used
 
 You can read all about the Interceptor class here:
 https://bespoken.gitlab.io/batch-tester/Interceptor.html
