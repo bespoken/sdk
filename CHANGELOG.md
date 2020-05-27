@@ -1,3 +1,7 @@
+## 0.8.15
+### **Enhancements**
+* Intercept request now has the device as a parameter
+
 ## 0.8.14
 ### **Enhancements**
 * Saves all the results from a response in the record object
