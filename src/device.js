@@ -102,7 +102,7 @@ class Device {
 
   async _retry (error, voiceId, messages, attempt) {
     const errorMessage = error.error ? error.error : error.toString()
-    if (attempt > 3) {
+    if (attempt > Config.get('maxAttempts', undefined, true, 3)) {
       // Give up after three tries
       throw errorMessage
     }
