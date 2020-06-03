@@ -1,3 +1,7 @@
+## 0.8.17
+### **Enhancements**
+* Adds maxAttempts to the config
+
 ## 0.8.16
 ### **Enhancements**
 * Adds the conversation id to the timeout messages
