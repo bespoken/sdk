@@ -1,3 +1,7 @@
+## 0.8.16
+### **Enhancements**
+* Adds the conversation id to the timeout messages
+
 ## 0.8.15
 ### **Enhancements**
 * Intercept request now has the device as a parameter

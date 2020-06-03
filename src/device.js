@@ -70,7 +70,7 @@ class Device {
             totalTimeWaited += waitTimeInterval
           } catch (e) {
             const error = this._parseError(e)
-            console.error(`DEVICE ERROR get conversation: ${error.toString()} error property: ${error.error}`)
+            console.error(`DEVICE ERROR get conversation: ${error.toString()} conversation id: ${response.conversation_id} error property: ${error.error}`)
             // If this is an error from the virtual device, do a retry
             if (error.error) {
               return this._retry(error, voiceId, messages, attempt)
@@ -81,7 +81,7 @@ class Device {
 
         if (result.status === 'IN_PROGRESS') {
           // Server timed out, try again up the max attempts
-          const errorMessage = `DEVICE ERROR maxWaitTime exceed: ${maxWaitTime}`
+          const errorMessage = `DEVICE ERROR maxWaitTime exceed: ${maxWaitTime} conversation id: ${response.conversation_id}`
           console.error(errorMessage)
           return this._retry(errorMessage, voiceId, messages, attempt)
         }
