@@ -144,6 +144,7 @@ An example file:
   "job": "utterance-tester",
   "saveInterval": 300,
   "limit": 5,
+  "maxAttempts": 3,
   "metrics": "datadog-metrics",
   "sequence": ["open my audio player"],
   "sequential": false,
@@ -218,6 +219,9 @@ This defaults to 300.
 
 ### **`limit`**
 The numbers of records to test during test execution. Very useful when you want to try just a small subset of utterances.
+
+### **`maxAttempts`**
+The number of attempts to try if a request has errors. Defaults to 3.
 
 ### **`metrics`**
 We have builtin two classes for metrics: `datadog-metrics` and `cloudwatch-metrics`.
