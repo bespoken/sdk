@@ -30,7 +30,7 @@ const Util = {
       await Util.sleep(waitTime)
       return Util.mutexAcquire(lockName, waitTime, attempt + 1, maxAttempts)
     }
-    console.log(`UTIL MUTEX-ACQUIRE acquired: ${lockName}`)
+    // console.log(`UTIL MUTEX-ACQUIRE acquired: ${lockName}`)
     Util.locks[lockName] = true
     return true
   },

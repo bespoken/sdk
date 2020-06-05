@@ -14,7 +14,7 @@ class Device {
   }
 
   async message (voiceId, messages, attempt = 1) {
-    console.log('DEVICE MESSAGE ' + messages.toString())
+    // console.log('DEVICE MESSAGE ' + messages.toString())
     let config = {
       asyncMode: true,
       debug: true,
@@ -56,7 +56,7 @@ class Device {
       })
       await Interceptor.instance().interceptRequest(messagesArray, this)
       const response = await virtualDevice.batchMessage(messagesArray)
-      console.log('DEVICE MESSAGE initial response: ' + JSON.stringify(response))
+      // console.log('DEVICE MESSAGE initial response: ' + JSON.stringify(response))
       if (response.conversation_id) {
         let result = { status: 'IN_PROGRESS' }
         const waitTimeInterval = _.get(this._configuration, 'waitTimeInterval') || 1000
@@ -91,7 +91,7 @@ class Device {
           item.conversationId = response.conversation_id
         }
 
-        console.log('DEVICE MESSAGE final transcript: ' + _.get(_.nth(_.get(result, 'results'), -1), 'transcript'))
+        // console.log('DEVICE MESSAGE final transcript: ' + _.get(_.nth(_.get(result, 'results'), -1), 'transcript'))
         return result.results
       }
     } catch (e) {
@@ -216,7 +216,7 @@ class DevicePool {
       process.exit(1)
     }
 
-    console.log(`DEVICE LOCK tags: ${record.deviceTags} count: ${this._freeDevices(record).length}`)
+    // console.log(`DEVICE LOCK tags: ${record.deviceTags} count: ${this._freeDevices(record).length}`)
     while (this._freeDevices(record).length === 0) {
       await util.sleep(1000)
     }
@@ -227,7 +227,7 @@ class DevicePool {
     })
 
     this._devicesInUse.push(device)
-    console.log(`DEVICE LOCK acquire tags: ${record.deviceTags} available: ${this._freeDevices(record).length} token: ${device.token}`)
+    // console.log(`DEVICE LOCK acquire tags: ${record.deviceTags} available: ${this._freeDevices(record).length} token: ${device.token}`)
 
     return device
   }
@@ -235,7 +235,7 @@ class DevicePool {
   async free (device) {
     // Remove the token we used from our tokens in list use - i.e., return it to the free pool
     this._devicesInUse = _.pull(this._devicesInUse, device)
-    console.log('DEVICE FREE ' + device._token + ' tokens available: ' + this._freeCount())
+    // console.log('DEVICE FREE ' + device._token + ' tokens available: ' + this._freeCount())
   }
 
   _freeDevices (record) {
