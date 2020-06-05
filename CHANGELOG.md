@@ -1,3 +1,7 @@
+## 0.8.18
+### **Enhancements**
+* Removes request log to reduce clutter
+
 ## 0.8.17
 ### **Enhancements**
 * Adds maxAttempts to the config
