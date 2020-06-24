@@ -361,17 +361,16 @@ We use overwritten versions of console log, debug, warn and info functions in co
 On this project, calling `console.log` is equivalent to calling `console.debug`, while `trace` and `fatal` are not in use. Here's how a typical log looks:
 
 <img src="docs/images/pinoJs.png" width="25%">
-![<img src="docs/images/pinoJs.png" width="25%">](docs/images/pinoJs.png)
 
 To set a log level, simply set the following env variable: `echo LOG_LEVEL=debug`. If not set, `info` is assumed.
 
 We can also colorize the outputs by setting the env variable `COLORIZE`.
 
-![<img src="docs/images/pinoJsColorized.png" width="25%">](docs/images/pinoJsColorized.png)
+<img src="docs/images/pinoJsColorized.png" width="25%">
 
 Finally, we can add timestamps to the outputs by setting the env variable `DISPLAY_LOG_TIME`.
 
-![<img src="docs/images/pinoJsTimestamp.png" width="25%">](docs/images/pinoJsTimestamp.png)
+<img src="docs/images/pinoJsTimestamp.png" width="25%">
 
 ## **DataDog Configuration**
 Follow [this guide](./docs/datadog#how-to-signup-and-get-an-api-key) to get started.
