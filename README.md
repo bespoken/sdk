@@ -370,7 +370,7 @@ We can also colorize the outputs by setting the env variable `COLORIZE`.
 
 Finally, we can add timestamps to the outputs by setting the env variable `DISPLAY_LOG_TIME`.
 
-<img src="docs/images/pinoJsTimestamp.png" width="25%">
+<img src="docs/images/pinoJsTimestamp.png" width="50%">
 
 ## **DataDog Configuration**
 Follow [this guide](./docs/datadog#how-to-signup-and-get-an-api-key) to get started.
