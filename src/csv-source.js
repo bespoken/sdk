@@ -8,7 +8,7 @@ class CSVSource extends Source {
   async loadAll () {
     let sourceFile = Config.get('sourceFile')
     if (!sourceFile) {
-      console.log('CSV-SOURCE LOADALL no sourceFile specified in config - using default')
+      console.warn('CSV-SOURCE LOADALL no sourceFile specified in config - using default')
       sourceFile = 'input/records.csv'
     }
     console.log(`CSV-SOURCE LOADALL input file: ${sourceFile}`)

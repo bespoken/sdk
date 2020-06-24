@@ -9,7 +9,7 @@ const zlib = require('zlib')
 class BespokenStore extends Store {
   async fetch (run) {
     const url = `${this.accessURL()}/fetch?run=${run}`
-    console.log(`BESPOKEN-STORE FETCH run: ${run} url: ${url}`)
+    console.info(`BESPOKEN-STORE FETCH run: ${run} url: ${url}`)
 
     const streamResponse = await axios.get(url, {
       headers: {

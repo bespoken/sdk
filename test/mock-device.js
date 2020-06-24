@@ -16,7 +16,7 @@ module.exports = class MockDevicePool extends DevicePool {
 
 const MockDevice = {
   message: async (voiceId, messages) => {
-    console.log('Got messages: ' + messages)
+    console.info('Got messages: ' + messages)
     const responses = messages.map(m => {
       return { message: m, transcript: m, multiple: [{ name: 'A' }, { name: 'B' }] }
     })
