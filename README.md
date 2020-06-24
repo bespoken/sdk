@@ -360,6 +360,7 @@ We use overwritten versions of console log, debug, warn and info functions in co
 
 On this project, calling `console.log` is equivalent to calling `console.debug`, while `trace` and `fatal` are not in use. Here's how a typical log looks:
 
+<img src="docs/images/pinoJs.png" width="25%">
 ![<img src="docs/images/pinoJs.png" width="25%">](docs/images/pinoJs.png)
 
 To set a log level, simply set the following env variable: `echo LOG_LEVEL=debug`. If not set, `info` is assumed.
