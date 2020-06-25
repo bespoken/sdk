@@ -1,3 +1,7 @@
+## 0.8.21
+### **Enhancements**
+* Prevent saving of data on re-runs
+
 ## 0.8.20
 ### **Enhancements**
 * Implements pino.js for logging. Default log level is set to 'info', except for the server where it's still 'debug'.
