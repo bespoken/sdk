@@ -192,7 +192,7 @@ class BatchRunner {
     let lastResponse
     let error
     try {
-      responses = await device.message(voiceId, messages)
+      responses = await device.message(voiceId, messages, record)
       if (responses) {
         responses.forEach(response => console.log(`RUNNER MESSAGE: ${response.message} TRANSCRIPT: ${response.transcript}`))
       }
@@ -235,7 +235,7 @@ class BatchRunner {
 
     if (Config.has('postSequence')) {
       const commands = Config.get('postSequence')
-      device.message(voiceId, commands)
+      device.message(voiceId, commands, record)
     }
 
     if (Config.has('pause')) {
