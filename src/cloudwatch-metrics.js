@@ -29,7 +29,7 @@ class CloudWatchMetrics extends Metrics {
    */
   async _publishImpl (job, result, tries = 0) {
     if (!process.env.AWS_ACCESS_KEY_ID) {
-      console.log('CloudWatch NOT configured - set AWS credentials in environment to use CloudWatch')
+      console.error('CloudWatch NOT configured - set AWS credentials in environment to use CloudWatch')
       return
     }
 

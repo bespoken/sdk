@@ -53,7 +53,7 @@ class RerunSource extends Source {
   }
 
   async loadAll () {
-    console.log('RERUN-SOURCE LOADALL records: ' + this.job.results.length)
+    console.info('RERUN-SOURCE LOADALL records: ' + this.job.results.length)
     // Take the results, and turn them back into records
     // Set the response from the assistant on the record
     const records = this.job.results.map((result) => {

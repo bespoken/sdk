@@ -17,7 +17,7 @@ program
   .action(function (config, options) {
     const runner = new BatchRunner(config, options.output_file)
     runner.process().then(() => {
-      console.log('RUNNER DONE!')
+      console.info('RUNNER DONE!')
     })
   })
 
@@ -28,7 +28,7 @@ program
   .action(function (key, options) {
     Store.instance().fetch(key).then(async (job) => {
       await Printer.instance(options.output_file).print(job)
-      console.log('PRINTER REPRINT done')
+      console.info('PRINTER REPRINT done')
     })
   })
 
@@ -40,7 +40,7 @@ program
     console.log('KEY: ' + key + ' encrypt: ' + encrypt)
     const rerunner = new Rerunner(config, key, encrypt, options.output_file)
     rerunner.rerun().then(() => {
-      console.log('RERUN DONE')
+      console.info('RERUN DONE')
     })
   })
 
@@ -51,7 +51,7 @@ program
   .action(function (original, rerun, options) {
     const merger = new Merger(original, rerun, options.output_file)
     merger.merge().then(() => {
-      console.log('MERGE DONE')
+      console.info('MERGE DONE')
     })
   })
 

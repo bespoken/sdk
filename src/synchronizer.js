@@ -16,7 +16,7 @@ class Synchronizer {
       await Store.instance().save(this.job)
       await Printer.instance(this.outputPath).print(this.job)
       console.timeEnd(`BATCH ${logMessage} SAVE`)
-      console.log(`BATCH ${logMessage} SAVE completed key: ${this.job.key}`)
+      console.info(`BATCH ${logMessage} SAVE completed key: ${this.job.key}`)
     } catch (e) {
       console.error(`BATCH ${logMessage} SAVE error: ` + e)
     }

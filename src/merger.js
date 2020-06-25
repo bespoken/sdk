@@ -29,7 +29,7 @@ class Merger {
   }
 
   async merge () {
-    console.log('MERGER MERGE merging records')
+    console.info('MERGER MERGE merging records')
     const mergedRecords = this.originalResults.map(original => {
       const record = this.rerunResults.find(result => result.UTTERANCE === original.UTTERANCE)
       if (record) {
@@ -40,7 +40,7 @@ class Merger {
       }
     })
 
-    console.log('MERGER MERGE printing results')
+    console.info('MERGER MERGE printing results')
     return new Promise((resolve, reject) => {
       stringify([this.headers, ...mergedRecords], {}, (error, output) => {
         if (error) {
