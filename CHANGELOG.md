@@ -1,3 +1,7 @@
+## 0.8.22
+### **Enhancements**
+* Adds a conversationId getter and setter to the record object. 
+
 ## 0.8.21
 ### **Enhancements**
 * Prevent saving of data on re-runs
