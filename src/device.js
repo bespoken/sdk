@@ -13,7 +13,7 @@ class Device {
     this._configuration = configuration
   }
 
-  async message (voiceId, messages, attempt = 1) {
+  async message (voiceId, messages, record, attempt = 1) {
     console.log('DEVICE MESSAGE ' + messages.toString())
     let config = {
       asyncMode: true,
@@ -63,16 +63,18 @@ class Device {
         const maxWaitTime = _.get(this._configuration, 'maxWaitTime') || 300000
         let totalTimeWaited = 0
 
+        record.conversationId = response.conversation_id
+
         while (result.status === 'IN_PROGRESS' && totalTimeWaited < maxWaitTime) {
           try {
             result = await virtualDevice.getConversationResults(response.conversation_id)
             totalTimeWaited += waitTimeInterval
           } catch (e) {
             const error = this._parseError(e)
-            console.error(`DEVICE ERROR get conversation: ${error.toString()} conversation id: ${response.conversation_id} error property: ${error.error}`)
+            console.error(`DEVICE ERROR GET CONVERSATION ID: ${response.conversation_id} error property: ${error.error}`)
             // If this is an error from the virtual device, do a retry
             if (error.error) {
-              return this._retry(error, voiceId, messages, attempt)
+              return this._retry(error, voiceId, messages, record, attempt)
             }
           }
           await util.sleep(waitTimeInterval)
@@ -82,24 +84,18 @@ class Device {
           // Server timed out, try again up the max attempts
           const errorMessage = `DEVICE ERROR maxWaitTime exceed: ${maxWaitTime} conversation id: ${response.conversation_id}`
           console.error(errorMessage)
-          return this._retry(errorMessage, voiceId, messages, attempt)
-        }
-
-        // Adds the conversation id to the retuls
-        // Can be found for debugging under Result.lastResponse().conversationId
-        for (const item of result.results) {
-          item.conversationId = response.conversation_id
+          return this._retry(errorMessage, voiceId, messages, record, attempt)
         }
 
         console.log('DEVICE MESSAGE final transcript: ' + _.get(_.nth(_.get(result, 'results'), -1), 'transcript'))
         return result.results
       }
     } catch (e) {
-      return this._retry(this._parseError(e), voiceId, messages, attempt)
+      return this._retry(this._parseError(e), voiceId, messages, record, attempt)
     }
   }
 
-  async _retry (error, voiceId, messages, attempt) {
+  async _retry (error, voiceId, messages, record, attempt) {
     const errorMessage = error.error ? error.error : error.toString()
     if (attempt > Config.get('maxAttempts', undefined, true, 3)) {
       // Give up after three tries
@@ -109,7 +105,7 @@ class Device {
     const backoffTime = 10000
     console.error(`DEVICE MESSAGE error: ${errorMessage} retrying ${backoffTime / 1000} seconds`)
     await util.sleep(backoffTime)
-    return this.message(voiceId, messages, attempt + 1)
+    return this.message(voiceId, messages, record, attempt + 1)
   }
 
   _parseError (error) {

@@ -114,6 +114,7 @@ class Record {
     this._expectedFields = expectedFields
     this._meta = meta
     this._deviceTags = []
+    this._conversationId = undefined
   }
 
   /**
@@ -162,6 +163,18 @@ class Record {
 
   set meta (object) {
     this._meta = object
+  }
+
+  /**
+   * Property to get the latest conversation id while processing the record
+   * @type {Object}
+   */
+  get conversationId () {
+    return this._conversationId
+  }
+
+  set conversationId (conversationId) {
+    this._conversationId = conversationId
   }
 
   /**
