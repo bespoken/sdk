@@ -41,7 +41,9 @@ class Rerunner {
     Config.singleton('device-pool', new RerunDevicePool())
 
     const runner = new Runner(undefined, this.outputPath)
+
     runner.rerun = true
+    runner.rerunKey = this.key
     await runner.process()
   }
 }
