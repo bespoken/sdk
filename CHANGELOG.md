@@ -1,3 +1,11 @@
+## 0.8.20
+### **Enhancements**
+* Implements pino.js for logging. Default log level is set to 'info', except for the server where it's still 'debug'.
+
+## 0.8.19
+### **Enhancements**
+* Removes several console.logs calls
+
 ## 0.8.18
 ### **Enhancements**
 * Removes request log to reduce clutter

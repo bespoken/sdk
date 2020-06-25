@@ -258,16 +258,16 @@ To implement your own custom source, [read the API docs](https://bespoken.gitlab
 ### **`transcript`**
 If set to false, speech-to-text is not performed on the audio response from the device
 
-## **`virtualDevices`**
+### **`virtualDevices`**
 See the section above for information on [configuring virtual devices](#virtual-device-setup).
 
-## **`virtualDeviceBaseURL`**
+### **`virtualDeviceBaseURL`**
 For values other than the default (`https://virtual-device.bespoken.io`), set this property.
 
-## **`virtualDeviceConfig`**
+### **`virtualDeviceConfig`**
 Allows setting properties to all virtual devices. For example, when using Twilio Virtual Devices, setting the `phone_number` to call.
 
-## **`voices`**
+### **`voices`**
 Array of voices that should be used to process the records.
 
 If more than one value is supplied, each record will be run once with each voice.
@@ -345,6 +345,32 @@ bbt process batch-test.json --output_file your_custom_name
 ```
 
 You will find the results in `/output/your_custom_name.csv`
+
+### Output logging
+We use overwritten versions of console log, debug, warn and info functions in conjunction with [pino.js](https://github.com/pinojs/pino) for logging. This allows us to change the verbosity of our logs (as well as the logs of projects that use the bespoken batch tester) by using the following log levels:
+
+```
+- trace
+- debug
+- info
+- warn
+- error
+- fatal
+```
+
+On this project, calling `console.log` is equivalent to calling `console.debug`, while `trace` and `fatal` are not in use. Here's how a typical log looks:
+
+<img src="docs/images/pinoJs.png" width="50%">
+
+To set a log level, simply set the following env variable: `echo LOG_LEVEL=debug`. If not set, `info` is assumed.
+
+We can also colorize the outputs by setting the env variable `COLORIZE`.
+
+<img src="docs/images/pinoJsColorized.png" width="50%">
+
+Finally, we can add timestamps to the outputs by setting the env variable `DISPLAY_LOG_TIME`.
+
+<img src="docs/images/pinoJsTimestamp.png" width="70%">
 
 ## **DataDog Configuration**
 Follow [this guide](./docs/datadog#how-to-signup-and-get-an-api-key) to get started.

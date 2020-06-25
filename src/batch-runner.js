@@ -11,6 +11,7 @@ const Source = require('./source').Source
 const Store = require('./store')
 const Synchronizer = require('./synchronizer')
 const util = require('./util')
+const logger = require('./logger')
 
 class BatchRunner {
   constructor (config, outputPath) {
@@ -68,7 +69,7 @@ class BatchRunner {
 
         // Make sure to increment the processed count every time we do a record
         this._job.addProcessedCount()
-        console.log(`BATCH PROCESS processed: ${this._job.processedCount} out of ${recordsToProcess}`)
+        console.info(`BATCH PROCESS processed: ${this._job.processedCount} out of ${recordsToProcess}`)
 
         if (sequential) {
           await util.mutexRelease('PROCESS-SEQUENTIAL')
@@ -84,7 +85,7 @@ class BatchRunner {
 
     this._synchronizer.stopSave()
     // Do a save once all records are done - in case any writes got skipped due to contention
-    console.log('BATCH PROCESS all records done - final save')
+    console.info('BATCH PROCESS all records done - final save')
 
     await this._synchronizer.saveJob('FINAL')
     // Custom code for when the process has finished
@@ -113,7 +114,7 @@ class BatchRunner {
         throw new Error('BATCH INIT Could not find job to resume: ' + run)
       }
       this._startIndex = this._job.processedCount
-      console.log(`BATCH INIT resuming job - starting at: ${this._startIndex}`)
+      console.info(`BATCH INIT resuming job - starting at: ${this._startIndex}`)
     } else if (this.rerunKey) {
       // If this is a re-run, set the key to be the same as the previous job
       this._job.key = this.rerunKey
@@ -170,7 +171,7 @@ class BatchRunner {
         util.mutexRelease()
       }
     } else {
-      console.log('BATCH SAVE skipping')
+      console.info('BATCH SAVE skipping')
     }
   }
 
@@ -230,7 +231,7 @@ class BatchRunner {
     }
 
     this._job.addResult(result)
-    console.log(`BATCH PROCESS record completed. URL: ${Store.instance().logURL(this._job)}`)
+    console.info(`BATCH URL ${Store.instance().logURL(this._job)}`)
 
     if (Config.has('postSequence')) {
       const commands = Config.get('postSequence')
@@ -250,14 +251,14 @@ class BatchRunner {
     const records = await source.loadAll()
     // Apply the filter to the records
     this._job.records = source.filter(records)
-    console.log(`BATCH READ pre-filter: ${records.length} post-filter: ${this._job.records.length}`)
+    console.info(`BATCH READ pre-filter: ${records.length} post-filter: ${this._job.records.length}`)
   }
 
   async _print () {
     try {
-      console.time('BATCH PRINT')
+      // console.time('BATCH PRINT')
       await Printer.instance(this.outputPath).print(this._job)
-      console.timeEnd('BATCH PRINT')
+      // console.timeEnd('BATCH PRINT')
     } catch (e) {
       console.error('BATCH PRINT error: ' + e)
     }
@@ -292,6 +293,7 @@ process.on('uncaughtException', (e) => {
 console.originalLog = console.log
 
 // Special formatting for log messages
+// Log and debug
 console.log = (message, ...args) => {
   if (args && args.length > 0) {
     // If this uses string substitution, just do a passthrough
@@ -299,16 +301,27 @@ console.log = (message, ...args) => {
     console.originalLog.apply(console, allArgs)
     return
   }
+  logger.debug(message)
+}
 
-  const parts = message.split(' ')
-  let formattedMessage = message
-  if (parts.length >= 3) {
-    const module = parts[0]
-    const method = parts[1]
-    const contents = parts.slice(2).join(' ')
-    formattedMessage = _.padEnd(module, 15) + _.padEnd(method, 15) + contents
-  }
-  process.stdout.write(formattedMessage + '\n')
+// Debug
+console.debug = (message, ...args) => {
+  logger.debug(message, args)
+}
+
+// Info
+console.info = (message, ...args) => {
+  logger.info(message, args)
+}
+
+// Warn
+console.warn = (message, ...args) => {
+  logger.warn(message, args)
+}
+
+// Error
+console.error = (message, ...args) => {
+  logger.error(message, args)
 }
 
 module.exports = BatchRunner

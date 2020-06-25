@@ -197,7 +197,7 @@ class DevicePool {
 
       // Clean the tags - trim them
       tags = tags.map(tag => tag.trim())
-      console.log(`DEVICE create token: ${token} skipSTT: ${skipSTT} tags: ${tags} settings: ${JSON.stringify(tokenInfo.settings)}`)
+      console.info(`DEVICE CREATE token: ${token} skipSTT: ${skipSTT} tags: ${tags} settings: ${JSON.stringify(tokenInfo.settings)}`)
       const device = new Device(token.trim(), skipSTT, tokenInfo.settings, virtualDeviceConfig)
 
       // Add the tags to the device
