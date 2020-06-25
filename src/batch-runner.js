@@ -115,6 +115,9 @@ class BatchRunner {
       }
       this._startIndex = this._job.processedCount
       console.info(`BATCH INIT resuming job - starting at: ${this._startIndex}`)
+    } else if (this.rerunKey) {
+      // If this is a re-run, set the key to be the same as the previous job
+      this._job.key = this.rerunKey
     }
 
     // Custom code before processing any record
