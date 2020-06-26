@@ -55,5 +55,5 @@
     "test": "jest"
   },
   "standard": {},
-  "version": "0.8.22"
+  "version": "0.8.23"
 }
