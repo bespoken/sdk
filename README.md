@@ -368,9 +368,11 @@ We can also colorize the outputs by setting the env variable `COLORIZE`.
 
 <img src="docs/images/pinoJsColorized.png" width="50%">
 
-Finally, we can add timestamps to the outputs by setting the env variable `DISPLAY_LOG_TIME`.
+Timestamps can be added to the outputs by setting the env variable `DISPLAY_LOG_TIME`.
 
 <img src="docs/images/pinoJsTimestamp.png" width="70%">
+
+Finally, logs can be saved to a file by setting the env variable `SAVE_LOG_FILE`. The file will be placed in the `output` folder and named `batch-tester.log`. It uses pino.js default format.
 
 ## **DataDog Configuration**
 Follow [this guide](./docs/datadog#how-to-signup-and-get-an-api-key) to get started.
