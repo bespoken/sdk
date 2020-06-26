@@ -1,3 +1,7 @@
+## 0.8.23
+### **Enhancements**
+* Adds the option to save the logs to a `batch-tester.log` file on the output folder by setting the `SAVE_LOG_FILE` env variable. It uses pino default format.
+
 ## 0.8.22
 ### **Enhancements**
 * Adds a conversationId getter and setter to the record object. 
