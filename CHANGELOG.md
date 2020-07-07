@@ -1,3 +1,7 @@
+## 0.8.25
+### **Enhancements**
+* The limit of records can be set in an env variable `LIMIT`. If present, tt takes priority over the config file.
+
 ## 0.8.24
 ### **Enhancements**
 * Increase CPU for batch-tester server to 512

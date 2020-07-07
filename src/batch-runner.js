@@ -39,7 +39,7 @@ class BatchRunner {
       process.exit(1)
     }
 
-    let recordsToProcess = Config.get('limit', [], false, this._job.records.length)
+    let recordsToProcess = process.env.LIMIT || Config.get('limit', [], false, this._job.records.length)
     if (recordsToProcess > this._job.records.length) {
       recordsToProcess = this._job.records.length
     }
