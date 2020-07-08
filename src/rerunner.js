@@ -8,28 +8,46 @@ const BespokenStore = require('./bespoken-store')
 const Util = require('./util')
 
 class Rerunner {
-  constructor (configFile, key, unencryptedKey = false, outputPath) {
+  constructor (configFile, key, outputPath) {
     this.configFile = configFile
     this.key = key
-    this.unencryptedKey = unencryptedKey
     this.outputPath = outputPath
   }
 
+  async rerunMany (runName, status = 'COMPLETED') {
+    const store = new BespokenStore()
+    const jobs = await store.filter(runName)
+    console.info('JOBS: ' + JSON.stringify(jobs, null, 2))
+    const filteredJobs = jobs.filter(j => j.status === status)
+    for (const job of filteredJobs) {
+      const rerunner = new Rerunner(this.configFile, job.key, `output/${job.run}.csv`)
+      await rerunner.rerun()
+    }
+  }
+
   async rerun () {
+    const store = new BespokenStore()
     if (!fs.existsSync('data')) {
       fs.mkdirSync('data')
     }
 
-    if (this.unencryptedKey) {
-      this.key = Util.encrypt(this.key)
+    // If there is NOT a dash, means this key is in encrypted UUID format
+    // We decrypt by calling our server
+    let decryptedKey = this.key
+    if (!this.key.includes('-')) {
+      decryptedKey = await store.decrypt(this.key)
+      console.info('RERUNNER RERUN decrypted key: ' + this.key)
     }
 
-    const dataFile = `data/${this.key}.json`
+    let dataFile = `data/${decryptedKey}`
+    if (!dataFile.endsWith('.json')) {
+      dataFile = `${dataFile}.json`
+    }
+
     let jobJSON
     if (fs.existsSync(dataFile)) {
       jobJSON = JSON.parse(fs.readFileSync(dataFile))
     } else {
-      const store = new BespokenStore()
       jobJSON = await store.fetch(this.key)
       fs.writeFileSync(dataFile, JSON.stringify(jobJSON, null, 2))
     }
@@ -60,7 +78,8 @@ class RerunSource extends Source {
     // Set the response from the assistant on the record
     const records = this.job.results.map((result) => {
       const record = result.record
-      record.lastResponse = result.lastResponse
+      record.rerun = true
+      record.responses = result.responses
       return record
     })
     return records
@@ -90,7 +109,7 @@ class RerunDevice extends Device {
   }
 
   async message (message) {
-    return [this.record.lastResponse]
+    return this.record.responses
   }
 }
 

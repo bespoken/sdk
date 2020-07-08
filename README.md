@@ -416,8 +416,8 @@ We have setup this project to make use of a few different types of reporting to 
 
 The reporting comes in these forms:
 * CSV File that summarizes results of utterance tests
-* Reporting via AWS Cloudwatch
 * Reporting via DataDog
+* Reporting via SQLite and Metabase
 
 Each is discussed in more detail below.
 
@@ -441,6 +441,11 @@ In general, we are using next metrics:
 The metrics can be easily reported on through a DataDog Dashboard. They also can be used to setup notifcations when certain conditions are triggered.
 
 Read more about configuring DataDog in our [walkthrough](./docs/datadog.md).
+
+### **SQLite and Metabase**
+SQLite allows for reporting and querying via SQL. It can be combinted with Metabase for easy exploration and visualization of the data.
+
+Read more about using these tools in our [walkthrough](./docs/SQLITE.md).
 
 ## **Additional Topics**
 * [Working With CloudWatch](./docs/cloudwatch.md)

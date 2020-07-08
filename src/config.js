@@ -119,6 +119,9 @@ class Config {
     let className = Config.get(key, values, false)
     if (!className) {
       console.log(`CONFIG INSTANCE No ${key} provider specified - using default.`)
+      if (!defaultClass) {
+        return undefined
+      }
       // We can also pass an actual class, instaed of a class name
       if (typeof defaultClass !== 'string') {
         const instance = new defaultClass(...classParams) // eslint-disable-line

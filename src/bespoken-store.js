@@ -8,6 +8,7 @@ const zlib = require('zlib')
 
 class BespokenStore extends Store {
   async fetch (run) {
+    console.time('BESPOKEN-STORE FETCH')
     const url = `${this.accessURL()}/fetch?run=${run}`
     console.info(`BESPOKEN-STORE FETCH run: ${run} url: ${url}`)
 
@@ -23,10 +24,12 @@ class BespokenStore extends Store {
     let buffer = Buffer.alloc(0)
     streamResponse.data.on('data', (b) => {
       buffer = Buffer.concat([buffer, b])
+      console.info(`BESPOKEN-STORE FETCH downloaded: ${(buffer.length / 1024 / 1024)}M`)
     })
 
     return new Promise((resolve) => {
       streamResponse.data.on('end', () => {
+        console.timeEnd('BESPOKEN-STORE FETCH')
         const jobJSON = JSON.parse(buffer.toString('utf-8'))
         const job = Job.fromJSON(jobJSON)
         resolve(job)
@@ -34,9 +37,19 @@ class BespokenStore extends Store {
     })
   }
 
+  async filter (runName) {
+    console.time('BESPOKEN-STORE FILTER')
+    const url = `${this.accessURL()}/filter?run=${runName}`
+
+    const response = await axios.get(url)
+    const jobs = response.data.jobs
+    console.timeEnd('BESPOKEN-STORE FILTER')
+    return jobs
+  }
+
   async save (job) {
     console.time('BESPOKEN-STORE SAVE')
-    const url = `${this.accessURL()}/save`
+    const url = `${this.accessURL()}/save?run=${job.run}`
 
     // Create a stream from the JSON
     const jsonStream = Readable.from(JSON.stringify(job))
@@ -55,7 +68,13 @@ class BespokenStore extends Store {
   }
 
   accessURL () {
-    return Config.get('storeURL', undefined, false, 'https://batch-tester.bespoken.io')
+    return process.env.STORE_URL ? process.env.STORE_URL : 'https://batch-tester.bespoken.io'
+  }
+
+  async decrypt (key) {
+    const url = `${this.accessURL()}/decrypt?key=${key}`
+    const response = await axios.get(url)
+    return response.data.decryptedKey
   }
 
   logURL (job, index) {
@@ -74,10 +93,9 @@ class BespokenStore extends Store {
 module.exports = BespokenStore
 
 if (_.nth(process.argv, 2) === 'test-store') {
-  const FileStore = require('./file-store')
-  const store = new FileStore()
   const bespokenStore = new BespokenStore()
-  store.fetch('4ffb47e3bec6ce3ddb4ebf2f2707e06aa121b01a6930ebc1e8f752f5201cffb9').then(async (job) => {
+  // bespokenStore.fetch('b0dd06d0de84bf4127b911716fa58868c8b802927829a560094ba83e1b603f50').then(async (job) => {
+  bespokenStore.fetch('e3ddeac12879bd475a7648c5370e06dae18af24ec5ecdad0e6ba33221e967466').then(async (job) => {
     job._run = job._run + 'V2'
     const Printer = require('./printer')
     const printer = new Printer()
