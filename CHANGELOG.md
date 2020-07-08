@@ -1,3 +1,11 @@
+## 0.9.0
+### **Enhancements**
+* **IMPORTANT** Using streams to fetch and store S3 files - all clients must upgrade once server is deployed
+* Removed lastResponse instance variable (still preserved get property though)
+* Added SQLite printer for printing output to SQLite database
+* Added `rerun` flag to records as convenience method for simpler code in interceptors
+* Added `reprocessAll` capability for rerunning multiple jobs based on filters
+
 ## 0.8.25
 ### **Enhancements**
 * The limit of records can be set in an env variable `LIMIT`. If present, tt takes priority over the config file.

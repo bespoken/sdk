@@ -1,3 +1,4 @@
+const _ = require('lodash')
 const Record = require('./source').Record
 const moment = require('moment')
 
@@ -145,6 +146,19 @@ class Job {
     return this._run
   }
 
+  get status () {
+    let recordsToProcess = this.records.length
+    const limit = _.get(this, 'config.limit')
+    if (limit && limit < recordsToProcess) {
+      recordsToProcess = limit
+    }
+    if (this.records.length === recordsToProcess) {
+      return 'COMPLETED'
+    } else {
+      return 'NOT_COMPLETED'
+    }
+  }
+
   /**
    * The date the job was created (UTC)
    * Saved in ISO 8601 format: YYYY-MM-DDThh:mm:ssZ
@@ -166,10 +180,9 @@ class Result {
    * @param {string} [voiceId]
    * @param {Object} lastResponse
    */
-  constructor (record, voiceId, lastResponse, responses) {
+  constructor (record, voiceId, responses) {
     this._record = record
     this._voiceId = voiceId
-    this._lastResponse = lastResponse
     this._responses = responses
     this._actualFields = {}
     this._outputFields = {}
@@ -230,7 +243,7 @@ class Result {
   }
 
   get lastResponse () {
-    return this._lastResponse
+    return _.nth(this.responses, -1)
   }
 
   get responses () {

@@ -33,14 +33,26 @@ program
   })
 
 program
-  .command('reprocess <config_file> <batch_key> [encrypt]')
+  .command('reprocess <config_file> <batch_key>')
   .description('reprocess job')
   .option('--output_file <filename>', 'results filename')
-  .action(function (config, key, encrypt = false, options) {
-    console.log('KEY: ' + key + ' encrypt: ' + encrypt)
-    const rerunner = new Rerunner(config, key, encrypt, options.output_file)
+  .action(function (config, key, options) {
+    console.log('BBT REPROCESS key: ' + key)
+    const rerunner = new Rerunner(config, key, options.output_file)
     rerunner.rerun().then(() => {
-      console.info('RERUN DONE')
+      console.info('BBT REPROCESS done')
+    })
+  })
+
+program
+  .command('reprocessAll <config_file> <run> [ISO-DATE]')
+  .description('reprocess all jobs that match filter')
+  .option('--output_file <filename>', 'results filename')
+  .action(function (config, run, options) {
+    console.log('BBT REPROCESS-ALL run: ' + run)
+    const rerunner = new Rerunner(config)
+    rerunner.rerunMany(run).then(() => {
+      console.info('BBT REPROCESS done')
     })
   })
 

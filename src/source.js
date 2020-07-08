@@ -115,6 +115,7 @@ class Record {
     this._meta = meta
     this._deviceTags = []
     this._conversationId = undefined
+    this._rerun = false
   }
 
   /**
@@ -175,6 +176,18 @@ class Record {
 
   set conversationId (conversationId) {
     this._conversationId = conversationId
+  }
+
+  /**
+   * Whether this record is being rerun
+   * @type {boolean}
+   */
+  get rerun () {
+    return this._rerun
+  }
+
+  set rerun (rerun) {
+    this._rerun = rerun
   }
 
   /**

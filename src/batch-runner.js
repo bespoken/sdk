@@ -189,14 +189,12 @@ class BatchRunner {
 
     // Call the virtual device, and grab the last response from the set of messages
     let responses
-    let lastResponse
     let error
     try {
       responses = await device.message(voiceId, messages, record)
       if (responses) {
         responses.forEach(response => console.log(`RUNNER MESSAGE: ${response.message} TRANSCRIPT: ${response.transcript}`))
       }
-      lastResponse = _.nth(responses, -1)
     } catch (e) {
       error = e.toString()
     }
@@ -205,7 +203,6 @@ class BatchRunner {
     const result = new Result(
       record,
       voiceId,
-      lastResponse,
       responses
     )
 
@@ -216,7 +213,7 @@ class BatchRunner {
       result.error = error
     } else {
       // Test the spoken response from Alexa
-      Evaluator.evaluate(record, result, lastResponse)
+      Evaluator.evaluate(record, result, result.lastResponse)
 
       try {
         const include = await Interceptor.instance().interceptResult(record, result)
@@ -279,13 +276,13 @@ class BatchRunner {
 }
 
 process.on('unhandledRejection', (e) => {
-  BatchRunner.instance()._saveOnError()
+  if (BatchRunner.instance()) BatchRunner.instance()._saveOnError()
   console.error('UNHANDLED: ' + e)
   console.error(e.stack)
 })
 
 process.on('uncaughtException', (e) => {
-  BatchRunner.instance()._saveOnError()
+  if (BatchRunner.instance()) BatchRunner.instance()._saveOnError()
   console.error('UNCAUGHT: ' + e)
   console.error(e.stack)
 })

@@ -1,8 +1,10 @@
 const _ = require('lodash')
+const AWS = require('aws-sdk')
 const fs = require('fs')
 const http = require('http')
 const Job = require('../src/job').Job
 const { Readable } = require('stream')
+const Store = require('../src/store')
 const S3Store = require('../src/s3-store')
 const URL = require('url')
 const Util = require('../src/util')
@@ -17,15 +19,22 @@ class Server {
   async start (port = 3000) {
     return new Promise((resolve) => {
       this.server = http.createServer((message, response) => {
-        let data = Buffer.alloc(0)
+        const dataStream = zlib.createGunzip()
+
+        // If we are sending data, means we are saving a job
+        // We create a pipe to send it to S3
         this.buffer = message.on('data', (chunk) => {
-          // console.log('Buffer: ' + chunk)
-          data = Buffer.concat([data, chunk])
+          dataStream.write(chunk)
         })
 
-        message.on('end', async () => {
-          this._handleRequest(message, response, data)
+        // Close the pipe if done writing
+        message.on('end', () => {
+          if (message.method === 'POST') {
+            dataStream.end()
+          }
         })
+
+        this._handleRequest(message, response, dataStream)
       })
 
       this.server.listen(port, () => {
@@ -45,30 +54,62 @@ class Server {
     })
   }
 
-  _handleRequest (message, response, data) {
+  _handleRequest (message, response, dataStream) {
     const url = URL.parse(message.url, true) /* eslint-disable-line */
     const path = url.pathname
 
-    if (path === '/fetch') {
+    if (path === '/decrypt') {
+      this._decrypt(response, url)
+    } else if (path === '/fetch') {
       this._fetch(response, url)
+    } else if (path === '/filter') {
+      this._filter(response, url)
     } else if (path === '/log') {
       this._log(response, url)
     } else if (path === '/save') {
-      this._save(message, response, data)
+      this._save(message, url, response, dataStream)
     } else {
       this._ping(response)
     }
   }
 
+  /**
+   * High-performance fetching routine
+   * Loads a stream from S3, compresses, and chunks and sends back to the client
+   * @param {*} response
+   * @param {*} url
+   */
   async _fetch (response, url) {
-    const job = await this._fetchJob(url)
-    const jobString = JSON.stringify(job, null, 2)
+    const encryptedRun = url.query.run
+    // If the encrypted run contains a dash, means it is actually not encrypted
+    const run = Util.decrypt(encryptedRun)
+    console.info(`SERVER HANDLE fetch: ${run}`)
+
+    const s3 = new AWS.S3()
+    const s3Stream = await s3.getObject({
+      Bucket: 'batch-runner',
+      Key: Store.key(run)
+    }).createReadStream()
 
     // Compress the result - got it from here:
     // https://stackoverflow.com/questions/3894794/node-js-gzip-compression
     response.writeHead(200, { 'content-encoding': 'gzip' })
-    const stream = Readable.from(jobString)
-    stream.pipe(zlib.createGzip()).pipe(response)
+    s3Stream.pipe(zlib.createGzip()).pipe(response)
+  }
+
+  async _filter (response, url) {
+    const run = url.query.run
+
+    const results = await this.store.filter(run)
+    console.info(`SERVER FILTER run ${run}`)
+    response.end(JSON.stringify({ jobs: results }, null, 2))
+  }
+
+  async _decrypt (response, url) {
+    const encryptedKey = url.query.key
+    const key = Util.decrypt(encryptedKey)
+    console.log(`SERVER HANDLE decrypt: ${encryptedKey} as: ${key}`)
+    response.end(JSON.stringify({ decryptedKey: key }, null, 2))
   }
 
   /**
@@ -79,7 +120,7 @@ class Server {
   async _fetchJob (url) {
     const encryptedRun = url.query.run
     const run = Util.decrypt(encryptedRun)
-    console.log(`SERVER HANDLE fetch: ${run}`)
+    console.info(`SERVER HANDLE fetch: ${run}`)
     return this.store.fetch(run)
   }
 
@@ -97,38 +138,26 @@ class Server {
     response.end(`BATCH-TESTER-DATA VERSION: ${packageJSON.version}`)
   }
 
-  async _save (message, response, data) {
-    if (message.headers['content-encoding']) {
-      return new Promise((resolve, reject) => {
-        zlib.gunzip(data, (error, unzippedData) => {
-          console.log(`SERVER SAVE zipped size: ${Math.round(data.length / 1024 / 1024)}M unzipped: ${Math.round(unzippedData.length / 1024 / 1024)}M`)
-          if (error) {
-            reject(error)
-            return
-          }
-          return this._saveJSON(response, unzippedData)
-        })
-      })
-    } else {
-      return this._saveJSON(response, data)
-    }
-  }
+  /**
+   * Saves the data to S3 by piping data from request to AWS
+   * @param {*} message
+   * @param {*} url
+   * @param {*} response
+   * @param {*} dataStream
+   */
+  async _save (message, url, response, dataStream) {
+    const run = url.query.run
+    const encryptedRun = Util.encrypt(run)
 
-  async _saveJSON (response, jsonData) {
-    let json = {}
-    if (jsonData.length > 0) {
-      json = JSON.parse(jsonData)
-    }
+    const s3 = new AWS.S3()
+    await s3.upload({
+      Body: dataStream,
+      Bucket: 'batch-runner',
+      Key: Store.key(run)
+    }).promise()
 
-    const job = Job.fromJSON(json)
-    const key = job.run
-
-    console.log(`SERVER HANDLE save key: ${key}`)
-    await this.store.save(job)
-
-    const encryptedKey = Util.encrypt(key)
     response.end(JSON.stringify({
-      key: encryptedKey,
+      key: encryptedRun,
       success: true
     }))
   }
