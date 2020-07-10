@@ -3,17 +3,23 @@ const mysql = require('mysql')
 
 class MySQLPrinter extends SQLPrinter {
   async print (job) {
-    console.trace()
     this.tableName = this._name(job.name)
     try {
-      return await super.print(job)
+      return await super.print(job, true)
+    } catch (e) {
+      console.error('MYSQL-PRINTER PRINT print error: ' + e.toString())
+      throw e
     } finally {
       try {
         await this._close()
       } catch (e) {
-
+        console.error('MYSQL-PRINTER PRINT close error: ' + e.toString())
       }
     }
+  }
+
+  reset (job) {
+    this._query(`DELETE FROM ${this.tableName} WHERE RUN = ?`, [job.run])
   }
 
   async _connect () {
@@ -47,13 +53,9 @@ class MySQLPrinter extends SQLPrinter {
     })
   }
 
-  reset (job) {
-    this._query(`DELETE FROM ${this.tableName} WHERE RUN = ${job.run}`)
-  }
-
   _query (sql, params) {
     return new Promise((resolve, reject) => {
-      console.info('SQL: ' + sql)
+      // console.info('SQL: ' + sql)
       const options = {
         sql: sql,
         timeout: 40000
@@ -77,7 +79,7 @@ class MySQLPrinter extends SQLPrinter {
   async _hasColumn (columnName) {
     if (!this.columnNames) {
       const rows = await this._query(`SHOW COLUMNS FROM ${this.tableName};`)
-      console.info('ROWS: ' + JSON.stringify(rows, null, 2))
+      // console.info('ROWS: ' + JSON.stringify(rows, null, 2))
       this.columnNames = rows.map(r => r.Field)
     }
 

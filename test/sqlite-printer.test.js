@@ -28,8 +28,7 @@ describe('configuration tests', () => {
     job.addResult(result)
     job.records = [record]
 
-    await reset(printer)
-    await printer.print(job)
+    await printer.print(job, true)
     const results = await printer._all('SELECT * FROM results')
     expect(results[0].OUTPUT1).toBe('output1')
     expect(results[0].OUTPUT_TWO).toBe('output2')
@@ -54,8 +53,7 @@ describe('configuration tests', () => {
     job.addResult(result)
     job.records = [record]
 
-    await reset(printer)
-    await printer.print(job)
+    await printer.print(job, true)
 
     printer = new Printer()
     job = new Job('UnitTest')
@@ -73,11 +71,3 @@ describe('configuration tests', () => {
     expect(hasColumn).toBe(true)
   })
 })
-
-async function reset (printer) {
-  try {
-    await printer.drop()
-  } catch (e) {
-
-  }
-}

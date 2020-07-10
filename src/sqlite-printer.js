@@ -1,4 +1,5 @@
 const sqlite3 = require('sqlite3').verbose()
+const Store = require('./store')
 
 /**
  * Sends results of tests to SQLite database
@@ -17,11 +18,15 @@ class SQLPrinter {
   }
 
   async print (job, reset = false) {
+    this._connect()
     if (reset) {
-      this.reset(job)
+      try {
+        this.reset(job)
+      } catch (e) {
+        console.error('SQL-PRINTER PRINT reset error: ' + e.toString())
+      }
     }
 
-    this._connect()
     if (!this.fields) {
       await this._setup(job)
     }
@@ -29,6 +34,8 @@ class SQLPrinter {
     const insertSQL = `INSERT INTO ${this.tableName} (${this.fields.map(f => f.name).join(',\n')}) values (${this.fields.map(f => '?').join(', ')})`
     console.log('SQLLITE PRINT insert-sql: ' + insertSQL)
     const statement = this._prepare(insertSQL)
+
+    let index = 0
     for (const result of job.results) {
       const params = [result.record.utteranceRaw, job.run, job.name]
 
@@ -51,13 +58,12 @@ class SQLPrinter {
       }
       params.push(result.error)
 
-      await statement.run(params)
-
-      // // Push a link to the logs
-      // const index = resultsArray.length - 1
-      // resultArray.push(`${Store.instance().logURL(job, index)}`)
+      // Push a link to the logs
+      params.push(`${Store.instance().logURL(job, index)}`)
 
       // resultsArray.push(resultArray)
+      await statement.run(params)
+      index++
     }
 
     await statement.finalize()
@@ -85,6 +91,7 @@ class SQLPrinter {
       this._addField(`${fieldName}`, 'text')
     }
     this._addField('ERROR', 'text')
+    this._addField('LOG_URL', 'text')
 
     const tableSQL = `CREATE TABLE ${this.tableName} (${this.fields.map(f => f.name + ' ' + f.type).join(',\n')})`
     let tableExists = false
