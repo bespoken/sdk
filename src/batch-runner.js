@@ -44,8 +44,10 @@ class BatchRunner {
       recordsToProcess = this._job.records.length
     }
 
-    await this._synchronizer.saveJob('INITIAL')
-    this._synchronizer.runSave()
+    if (!this.rerun) {
+      await this._synchronizer.saveJob('INITIAL')
+      this._synchronizer.runSave()
+    }
 
     for (let i = this._startIndex; i < recordsToProcess; i++) {
       const record = this._job.records[i]

@@ -5,67 +5,30 @@ const sqlite3 = require('sqlite3').verbose()
  */
 class SQLPrinter {
   constructor () {
-    this._connect()
+    this.tableName = 'RESULTS'
   }
 
-  async drop () {
-    await this._run('DROP TABLE results')
+  async reset () {
+    await this._run(`DROP TABLE ${this.tableName}`)
   }
 
   _connect () {
     this.db = new sqlite3.Database('output/results.db')
-    this.fields = []
   }
 
-  async print (job) {
+  async print (job, reset = false) {
+    if (reset) {
+      this.reset(job)
+    }
+
     this._connect()
-    this._addField('UTTERANCE', 'text')
-    this._addField('RUN', 'text')
-    this._addField('JOB', 'text')
-
-    const expectedFieldNames = job.expectedFieldNames()
-    for (const fieldName of expectedFieldNames) {
-      this._addField(`ACTUAL_${fieldName}`, 'text')
+    if (!this.fields) {
+      await this._setup(job)
     }
 
-    this._addField('SUCCESS', 'text')
-
-    for (const fieldName of expectedFieldNames) {
-      this._addField(`EXPECTED_${fieldName}`, 'text')
-    }
-
-    // Add extra output fields
-    for (const fieldName of job.outputFieldNames()) {
-      this._addField(`${fieldName}`, 'text')
-    }
-    this._addField('ERROR', 'text')
-
-    const tableSQL = `CREATE TABLE results (${this.fields.map(f => f.name + ' ' + f.type).join(',\n')})`
-    let tableExists = false
-    try {
-      await this._run(tableSQL)
-    } catch (e) {
-      // Check if the table already exists, and print a message if so
-      if (!e.message.includes('already exists')) {
-        throw e
-      } else {
-        tableExists = true
-      }
-    }
-
-    if (tableExists) {
-      // Loop through all the fields, and see that they are all on the table
-      for (const field of this.fields) {
-        if (!await this._hasColumn(field.name)) {
-          const sql = `ALTER TABLE results ADD ${field.name} ${field.type}`
-          await this._run(sql)
-        }
-      }
-    }
-
-    const insertSQL = `INSERT INTO results (${this.fields.map(f => f.name).join(',\n')}) values (${this.fields.map(f => '?').join(', ')})`
+    const insertSQL = `INSERT INTO ${this.tableName} (${this.fields.map(f => f.name).join(',\n')}) values (${this.fields.map(f => '?').join(', ')})`
     console.log('SQLLITE PRINT insert-sql: ' + insertSQL)
-    const statement = this.db.prepare(insertSQL)
+    const statement = this._prepare(insertSQL)
     for (const result of job.results) {
       const params = [result.record.utteranceRaw, job.run, job.name]
 
@@ -88,7 +51,7 @@ class SQLPrinter {
       }
       params.push(result.error)
 
-      await this._runStatement(statement, params)
+      await statement.run(params)
 
       // // Push a link to the logs
       // const index = resultsArray.length - 1
@@ -97,20 +60,57 @@ class SQLPrinter {
       // resultsArray.push(resultArray)
     }
 
-    return new Promise((resolve, reject) => {
-      statement.finalize((error) => {
-        if (error) {
-          console.error('SQLITE FINALIZE ERROR: ' + error)
-          reject(error)
-        }
-
-        console.info('SQLITE FINALIZE')
-        resolve()
-      })
-    })
+    await statement.finalize()
   }
 
-  _all (sql) {
+  async _setup (job) {
+    this.fields = []
+    this._addField('UTTERANCE', 'text')
+    this._addField('RUN', 'text')
+    this._addField('JOB', 'text')
+
+    const expectedFieldNames = job.expectedFieldNames()
+    for (const fieldName of expectedFieldNames) {
+      this._addField(`ACTUAL_${fieldName}`, 'text')
+    }
+
+    this._addField('SUCCESS', 'text')
+
+    for (const fieldName of expectedFieldNames) {
+      this._addField(`EXPECTED_${fieldName}`, 'text')
+    }
+
+    // Add extra output fields
+    for (const fieldName of job.outputFieldNames()) {
+      this._addField(`${fieldName}`, 'text')
+    }
+    this._addField('ERROR', 'text')
+
+    const tableSQL = `CREATE TABLE ${this.tableName} (${this.fields.map(f => f.name + ' ' + f.type).join(',\n')})`
+    let tableExists = false
+    try {
+      await this._run(tableSQL)
+    } catch (e) {
+      // Check if the table already exists, and print a message if so
+      if (!e.message.includes('already exists')) {
+        throw e
+      } else {
+        tableExists = true
+      }
+    }
+
+    if (tableExists) {
+      // Loop through all the fields, and see that they are all on the table
+      for (const field of this.fields) {
+        if (!await this._hasColumn(field.name)) {
+          const sql = `ALTER TABLE ${this.tableName} ADD ${field.name} ${field.type}`
+          await this._run(sql)
+        }
+      }
+    }
+  }
+
+  _query (sql) {
     return new Promise((resolve, reject) => {
       this.db.all(sql, function (error, rows) {
         if (error) {
@@ -125,9 +125,13 @@ class SQLPrinter {
   }
 
   async _hasColumn (columnName) {
-    const rows = await this._all('PRAGMA table_info(results);')
+    const rows = await this._query(`PRAGMA table_info(${this.tableName});`)
     const columnNames = rows.map(r => r.name)
     return columnNames.includes(columnName)
+  }
+
+  _prepare (sql) {
+    return new Statement(this, sql)
   }
 
   _run (sql) {
@@ -145,9 +149,33 @@ class SQLPrinter {
     })
   }
 
-  _runStatement (ps, params) {
+  _addField (fieldName, type) {
+    console.info('ADD FIELD: ' + fieldName)
+    fieldName = this._name(fieldName)
+    this.fields.push({
+      name: fieldName,
+      type: type
+    })
+  }
+
+  _name (fieldName) {
+    fieldName = fieldName.split(' ').join('_').toUpperCase()
+    fieldName = fieldName.split('/').join('_').toUpperCase()
+    fieldName = fieldName.split('-').join('_').toUpperCase()
+    return fieldName
+  }
+}
+
+class Statement {
+  constructor (printer, sql) {
+    this.printer = printer
+    this.sql = sql
+    this.statement = printer.db.prepare(sql)
+  }
+
+  async run (params) {
     return new Promise((resolve, reject) => {
-      ps.run(params, function (error) {
+      this.statement.run(params, function (error) {
         if (error) {
           console.error('SQLITE RUN ERROR ' + error)
           reject(error)
@@ -159,21 +187,22 @@ class SQLPrinter {
     })
   }
 
-  _addField (fieldName, type) {
-    fieldName = this._name(fieldName)
-    this.fields.push({
-      name: fieldName,
-      type: type
-    })
-  }
+  async finalize () {
+    return new Promise((resolve, reject) => {
+      this.statement.finalize((error) => {
+        if (error) {
+          console.error('SQLITE FINALIZE ERROR: ' + error)
+          reject(error)
+        }
 
-  _name (fieldName) {
-    fieldName = fieldName.split(' ').join('_').toUpperCase()
-    fieldName = fieldName.split('/').join('_').toUpperCase()
-    return fieldName
+        console.info('SQLITE FINALIZE')
+        resolve()
+      })
+    })
   }
 }
 
+SQLPrinter.Statement = Statement
 module.exports = SQLPrinter
 // TODO
 // Add timestamp for file to each record? or just add to table?
