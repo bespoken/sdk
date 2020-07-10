@@ -1,3 +1,7 @@
+## 0.9.2
+### **Enhancements**
+* Added support for MySQL
+
 ## 0.9.0
 ### **Enhancements**
 * **IMPORTANT** Using streams to fetch and store S3 files - all clients must upgrade once server is deployed

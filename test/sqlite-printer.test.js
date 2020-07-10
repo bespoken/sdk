@@ -16,6 +16,8 @@ describe('configuration tests', () => {
     }
 
     Config.loadFromJSON(config)
+    // We need the store for creating log urls for the rows
+    Config.singleton('store', new (require('../src/bespoken-store'))())
     const printer = new Printer()
     const job = new Job('UnitTest')
     const record = new Record('Utterance')
@@ -29,7 +31,7 @@ describe('configuration tests', () => {
     job.records = [record]
 
     await printer.print(job, true)
-    const results = await printer._all('SELECT * FROM results')
+    const results = await printer._query('SELECT * FROM results')
     expect(results[0].OUTPUT1).toBe('output1')
     expect(results[0].OUTPUT_TWO).toBe('output2')
     expect(results[0].ACTUAL_FIELD1).toBe('actual1')

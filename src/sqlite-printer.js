@@ -21,7 +21,7 @@ class SQLPrinter {
     this._connect()
     if (reset) {
       try {
-        this.reset(job)
+        await this.reset(job)
       } catch (e) {
         console.error('SQL-PRINTER PRINT reset error: ' + e.toString())
       }
@@ -132,7 +132,7 @@ class SQLPrinter {
   }
 
   async _hasColumn (columnName) {
-    const rows = await this._query(`PRAGMA table_info(${this.tableName});`)
+    const rows = await this._query(`PRAGMA table_info('${this.tableName}');`)
     const columnNames = rows.map(r => r.name)
     return columnNames.includes(columnName)
   }
@@ -146,7 +146,7 @@ class SQLPrinter {
       console.info('SQLITE RUN sql ' + sql)
       this.db.run(sql, function (error) {
         if (error) {
-          console.error('SQLITE RUN ERROR ' + error)
+          console.error('SQLITE RUN ERROR ' + error + ' on sql: ' + sql)
           reject(error)
           return
         }
