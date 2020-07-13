@@ -19,7 +19,7 @@ class MySQLPrinter extends SQLPrinter {
   }
 
   reset (job) {
-    this._query(`DELETE FROM ${this.tableName} WHERE RUN = ?`, [job.run])
+    return this._query(`DELETE FROM ${this.tableName} WHERE RUN = ?`, [job.run])
   }
 
   async _connect () {

@@ -10,7 +10,7 @@ class SQLPrinter {
   }
 
   async reset () {
-    await this._run(`DROP TABLE ${this.tableName}`)
+    return this._run(`DROP TABLE ${this.tableName}`)
   }
 
   _connect () {
@@ -169,6 +169,11 @@ class SQLPrinter {
     fieldName = fieldName.split(' ').join('_').toUpperCase()
     fieldName = fieldName.split('/').join('_').toUpperCase()
     fieldName = fieldName.split('-').join('_').toUpperCase()
+
+    // Replace keywords
+    if (fieldName === 'PRIMARY') {
+      fieldName = 'IS_PRIMARY'
+    }
     return fieldName
   }
 }

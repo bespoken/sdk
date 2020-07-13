@@ -18,6 +18,7 @@ program
     const rerunner = new Rerunner()
     rerunner.list(run, limit).then(() => {
       console.info('BBT LIST done')
+      process.exit(0)
     })
   })
 
@@ -29,6 +30,7 @@ program
     const runner = new BatchRunner(config, options.output_file)
     runner.process().then(() => {
       console.info('RUNNER DONE!')
+      process.exit(0)
     })
   })
 
@@ -52,6 +54,7 @@ program
     const rerunner = new Rerunner(config, key, options.output_file)
     rerunner.rerun().then(() => {
       console.info('BBT REPROCESS done')
+      process.exit(0)
     })
   })
 
@@ -63,6 +66,7 @@ program
     const rerunner = new Rerunner(config)
     rerunner.rerunMany(run).then(() => {
       console.info('BBT REPROCESS-ALL done')
+      process.exit(0)
     })
   })
 
