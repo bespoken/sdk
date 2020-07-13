@@ -13,6 +13,12 @@ class Synchronizer {
   async saveJob (logMessage) {
     try {
       console.time(`BATCH ${logMessage} SAVE`)
+
+      // On re-runs, we only save at the end, and we only save to file (i.e., via the printer)
+      const runner = require('./batch-runner').instance()
+      if (!runner.rerun) {
+        await Store.instance().save(this.job)
+      }
       await Printer.instance(this.outputPath).print(this.job)
       console.timeEnd(`BATCH ${logMessage} SAVE`)
       console.info(`BATCH ${logMessage} SAVE completed key: ${this.job.key}`)

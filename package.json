@@ -16,6 +16,7 @@
     "lodash": "^4.17.15",
     "moment": "^2.0.0",
     "mysql": "github:mysqljs/mysql",
+    "node-cache": "^5.1.2",
     "pino": "^6.3.2",
     "pino-multi-stream": "^5.0.0",
     "pino-pretty": "^4.0.0",

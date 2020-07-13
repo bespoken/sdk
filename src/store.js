@@ -58,6 +58,9 @@ class Store {
   }
 
   static key (run) {
+    if (run.endsWith('.json')) {
+      return run
+    }
     return run + '.json'
   }
 }
