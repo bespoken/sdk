@@ -24,7 +24,7 @@ class S3Store extends Store {
     return job
   }
 
-  async filter (run) {
+  async filter (run, limit) {
     console.time('S3-STORE FILTER')
     const s3 = new AWS.S3()
     const response = await s3.listObjectsV2({
@@ -33,8 +33,16 @@ class S3Store extends Store {
     }).promise()
     const matching = response.Contents
 
+    // Sort records by descending date
+    let matchingSorted = matching.sort((o1, o2) => {
+      return o2.LastModified.getTime() - o1.LastModified.getTime()
+    })
+
+    if (limit) {
+      matchingSorted = matchingSorted.slice(0, limit)
+    }
     const promises = []
-    for (const object of matching) {
+    for (const object of matchingSorted) {
       console.info(JSON.stringify(object, null, 2))
       promises.push(s3.getObject({
         Bucket: 'batch-runner',
@@ -55,10 +63,12 @@ class S3Store extends Store {
     // Create an array of metadata about the jobs - we don't return the full payload
     return jobs.map(j => {
       return {
-        key: j.key,
+        key: j._key,
         processedCount: j.processedCount,
+        recordCount: j.records.length,
         run: j.run,
-        status: j.status
+        status: j.status,
+        timestamp: j.date
       }
     })
   }

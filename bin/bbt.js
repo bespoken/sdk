@@ -11,6 +11,17 @@ program
   .version(packageJson.version)
 
 program
+  .command('list <run> [limit]')
+  .description('list all jobs that match filter - up to [limit] jobs that defaults to 10')
+  .action(function (run, limit, options) {
+    console.info('BBT LIST filter: ' + run)
+    const rerunner = new Rerunner()
+    rerunner.list(run, limit).then(() => {
+      console.info('BBT LIST done')
+    })
+  })
+
+program
   .command('process <config_file>')
   .description('process config file')
   .option('--output_file <filename>', 'results filename')
@@ -45,14 +56,13 @@ program
   })
 
 program
-  .command('reprocessAll <config_file> <run> [ISO-DATE]')
+  .command('reprocessAll <config_file> <run>')
   .description('reprocess all jobs that match filter')
-  .option('--output_file <filename>', 'results filename')
   .action(function (config, run, options) {
     console.log('BBT REPROCESS-ALL run: ' + run)
     const rerunner = new Rerunner(config)
     rerunner.rerunMany(run).then(() => {
-      console.info('BBT REPROCESS done')
+      console.info('BBT REPROCESS-ALL done')
     })
   })
 

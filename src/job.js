@@ -152,7 +152,7 @@ class Job {
     if (limit && limit < recordsToProcess) {
       recordsToProcess = limit
     }
-    if (this.records.length === recordsToProcess) {
+    if (this.processedCount === recordsToProcess) {
       return 'COMPLETED'
     } else {
       return 'NOT_COMPLETED'

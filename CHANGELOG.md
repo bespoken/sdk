@@ -1,6 +1,7 @@
 ## 0.9.2
 ### **Enhancements**
 * Added support for MySQL
+* Added support for list command - lists jobs that match run name
 
 ## 0.9.0
 ### **Enhancements**
