@@ -1,7 +1,7 @@
 /* eslint-env jest */
 const Config = require('../src/config')
 const { Job, Result } = require('../src/job')
-const Printer = require('../src/sqlite-printer')
+const Printer = require('../src/sql-printer')
 const Record = require('../src/source').Record
 
 describe('configuration tests', () => {
@@ -16,6 +16,8 @@ describe('configuration tests', () => {
     }
 
     Config.loadFromJSON(config)
+    // We need the store for creating log urls for the rows
+    Config.singleton('store', new (require('../src/bespoken-store'))())
     const printer = new Printer()
     const job = new Job('UnitTest')
     const record = new Record('Utterance')
@@ -28,9 +30,8 @@ describe('configuration tests', () => {
     job.addResult(result)
     job.records = [record]
 
-    await reset(printer)
-    await printer.print(job)
-    const results = await printer._all('SELECT * FROM results')
+    await printer.print(job, true)
+    const results = await printer._query('SELECT * FROM results')
     expect(results[0].OUTPUT1).toBe('output1')
     expect(results[0].OUTPUT_TWO).toBe('output2')
     expect(results[0].ACTUAL_FIELD1).toBe('actual1')
@@ -54,8 +55,7 @@ describe('configuration tests', () => {
     job.addResult(result)
     job.records = [record]
 
-    await reset(printer)
-    await printer.print(job)
+    await printer.print(job, true)
 
     printer = new Printer()
     job = new Job('UnitTest')
@@ -73,11 +73,3 @@ describe('configuration tests', () => {
     expect(hasColumn).toBe(true)
   })
 })
-
-async function reset (printer) {
-  try {
-    await printer.drop()
-  } catch (e) {
-
-  }
-}

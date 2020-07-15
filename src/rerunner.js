@@ -1,3 +1,4 @@
+const _ = require('lodash')
 const Config = require('./config')
 const { Device, DevicePool } = require('./device')
 const fs = require('fs')
@@ -12,6 +13,16 @@ class Rerunner {
     this.configFile = configFile
     this.key = key
     this.outputPath = outputPath
+  }
+
+  async list (runName, limit) {
+    const store = new BespokenStore()
+    const jobs = await store.filter(runName, limit)
+
+    process.stdout.write(`${_.padEnd('JOB', 40)}${_.padEnd('RECORDS', 10)}${_.padEnd('PROCESSED', 10)}${_.padEnd('STATUS', 15)} KEY\n`)
+    jobs.forEach((job) => {
+      process.stdout.write(`${_.padEnd(job.run, 40)}${_.padEnd(job.recordCount, 10)}${_.padEnd(job.processedCount, 10)}${_.padEnd(job.status, 15)} ${job.key}\n`)
+    })
   }
 
   async rerunMany (runName, status = 'COMPLETED') {
@@ -36,7 +47,7 @@ class Rerunner {
     let decryptedKey = this.key
     if (!this.key.includes('-')) {
       decryptedKey = await store.decrypt(this.key)
-      console.info('RERUNNER RERUN decrypted key: ' + this.key)
+      console.info('RERUNNER RERUN decrypted key: ' + decryptedKey)
     }
 
     let dataFile = `data/${decryptedKey}`
@@ -60,8 +71,7 @@ class Rerunner {
 
     const runner = new Runner(undefined, this.outputPath)
 
-    runner.rerun = true
-    runner.rerunKey = this.key
+    runner.originalJob = job
     await runner.process()
   }
 }

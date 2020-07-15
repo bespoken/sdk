@@ -13,11 +13,8 @@ class Synchronizer {
   async saveJob (logMessage) {
     try {
       console.time(`BATCH ${logMessage} SAVE`)
-      const runner = require('./batch-runner').instance()
-      if (!runner.rerun) {
-        await Store.instance().save(this.job)
-      }
-      await Printer.instance(this.outputPath).print(this.job)
+
+      await Store.instance().save(this.job)
       console.timeEnd(`BATCH ${logMessage} SAVE`)
       console.info(`BATCH ${logMessage} SAVE completed key: ${this.job.key}`)
     } catch (e) {
