@@ -5,6 +5,7 @@ const Evaluator = require('./evaluator')
 const Interceptor = require('./interceptor')
 const Job = require('./job').Job
 const Metrics = require('./metrics')
+const MySQLPrinter = require('./mysql-printer')
 const Printer = require('./printer')
 const Result = require('./job').Result
 const Source = require('./source').Source
@@ -20,7 +21,7 @@ class BatchRunner {
     this._startIndex = 0
     /** @type {Job} */
     this._job = undefined
-    this.rerun = false
+
     Config.singleton('runner', this)
   }
 
@@ -44,8 +45,11 @@ class BatchRunner {
       recordsToProcess = this._job.records.length
     }
 
-    await this._synchronizer.saveJob('INITIAL')
-    this._synchronizer.runSave()
+    // We do not save the job intermittently for reruns
+    if (!this._job.rerun) {
+      await this._synchronizer.saveJob('INITIAL')
+      this._synchronizer.runSave()
+    }
 
     for (let i = this._startIndex; i < recordsToProcess; i++) {
       const record = this._job.records[i]
@@ -87,7 +91,13 @@ class BatchRunner {
     // Do a save once all records are done - in case any writes got skipped due to contention
     console.info('BATCH PROCESS all records done - final save')
 
-    await this._synchronizer.saveJob('FINAL')
+    if (!this._job.rerun) {
+      await this._synchronizer.saveJob('FINAL')
+    }
+
+    // Print out the results
+    await this._print()
+
     // Custom code for when the process has finished
     await Interceptor.instance().interceptPostProcess(this._job)
   }
@@ -115,9 +125,10 @@ class BatchRunner {
       }
       this._startIndex = this._job.processedCount
       console.info(`BATCH INIT resuming job - starting at: ${this._startIndex}`)
-    } else if (this.rerunKey) {
+    } else if (this.rerun) {
       // If this is a re-run, set the key to be the same as the previous job
-      this._job.key = this.rerunKey
+      this._job.key = this.originalJob.key
+      this._job.run = this.originalJob.run
     }
 
     // Custom code before processing any record
@@ -153,25 +164,6 @@ class BatchRunner {
       }
     } else {
       await this._processVariation(device, record)
-    }
-
-    // If this is a rerun, we don't save until the end
-    if (this.rerun) {
-      return
-    }
-
-    // Save the results after each record is done
-    // We synchronize these operatons with a mutex - so only one write happens at a time
-    // If another record is trying to write at the same time, we just move on
-    const acquired = await util.mutexAcquire()
-    if (acquired) {
-      try {
-        await this._print()
-      } finally {
-        util.mutexRelease()
-      }
-    } else {
-      console.info('BATCH SAVE skipping')
     }
   }
 
@@ -253,9 +245,17 @@ class BatchRunner {
 
   async _print () {
     try {
-      // console.time('BATCH PRINT')
-      await Printer.instance(this.outputPath).print(this._job)
-      // console.timeEnd('BATCH PRINT')
+      console.time('BATCH PRINT')
+      // We print out records to file
+      const printer = new Printer(this.outputPath)
+      await printer.print(this._job)
+
+      // If there are mysql credentials, we print out to MySQL
+      if (process.env.MYSQL_HOST) {
+        const mysqlPrinter = new MySQLPrinter()
+        await mysqlPrinter.print(this._job)
+      }
+      console.timeEnd('BATCH PRINT')
     } catch (e) {
       console.error('BATCH PRINT error: ' + e)
     }
@@ -272,6 +272,18 @@ class BatchRunner {
    */
   get job () {
     return this._job
+  }
+
+  get originalJob () {
+    return this._originalJob
+  }
+
+  set originalJob (job) {
+    this._originalJob = job
+  }
+
+  get rerun () {
+    return this._originalJob !== undefined
   }
 }
 

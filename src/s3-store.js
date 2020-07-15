@@ -1,17 +1,30 @@
 const AWS = require('aws-sdk')
 const Job = require('./job').Job
+const NodeCache = require('node-cache')
 const Store = require('./store')
-const { Route53Resolver } = require('aws-sdk')
 
 class S3Store extends Store {
+  constructor () {
+    super()
+    // Cache for completed jobs
+    this.jobCache = new NodeCache({
+      stdTTL: 60 * 60 // Standard TTL is 1 hour
+    })
+  }
+
   async fetch (run) {
-    console.time('S3Store.fetch')
+    const cachedJob = this.jobCache.get(Store.key(run))
+    if (cachedJob) {
+      return cachedJob
+    }
+
+    console.time('S3Store.fetch' + run)
     const s3 = new AWS.S3()
     const response = await s3.getObject({
       Bucket: 'batch-runner',
       Key: Store.key(run)
     }).promise()
-    console.timeEnd('S3Store.fetch')
+    console.timeEnd('S3Store.fetch' + run)
 
     // console.log('S3 JOB KEY: ' + S3Store.key(run) + ' RESPONSE: ' + JSON.stringify(response.Body, null, 2))
     const jobData = response.Body
@@ -21,10 +34,15 @@ class S3Store extends Store {
 
     const jobJSON = JSON.parse(jobData)
     const job = Job.fromJSON(jobJSON)
+
+    // Added completed jobs to the cache
+    if (job.status === 'COMPLETED') {
+      this.jobCache.set(Store.key(run), job)
+    }
     return job
   }
 
-  async filter (run) {
+  async filter (run, limit) {
     console.time('S3-STORE FILTER')
     const s3 = new AWS.S3()
     const response = await s3.listObjectsV2({
@@ -33,19 +51,17 @@ class S3Store extends Store {
     }).promise()
     const matching = response.Contents
 
+    // Sort records by descending date
+    let matchingSorted = matching.sort((o1, o2) => {
+      return o2.LastModified.getTime() - o1.LastModified.getTime()
+    })
+
+    if (limit) {
+      matchingSorted = matchingSorted.slice(0, limit)
+    }
     const promises = []
-    for (const object of matching) {
-      console.info(JSON.stringify(object, null, 2))
-      promises.push(s3.getObject({
-        Bucket: 'batch-runner',
-        Key: object.Key
-      }).promise().then((response) => {
-        const jobData = response.Body
-        const jobJSON = JSON.parse(jobData)
-        const job = Job.fromJSON(jobJSON)
-        console.info(`S3STORE FILTER job: ${job._run} records: ${job.records.length} processed: ${job.processedCount} limit: ${job._config.limit}`)
-        return Promise.resolve(job)
-      }))
+    for (const object of matchingSorted) {
+      promises.push(this.fetch(object.Key))
     }
 
     // Wait until all objects are loaded
@@ -55,10 +71,12 @@ class S3Store extends Store {
     // Create an array of metadata about the jobs - we don't return the full payload
     return jobs.map(j => {
       return {
-        key: j.key,
+        key: j._key,
         processedCount: j.processedCount,
+        recordCount: j.records.length,
         run: j.run,
-        status: j.status
+        status: j.status,
+        timestamp: j.date
       }
     })
   }
