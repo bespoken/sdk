@@ -99,8 +99,9 @@ class Server {
 
   async _filter (response, url) {
     const run = url.query.run
+    const limit = url.query.limit
 
-    const results = await this.store.filter(run)
+    const results = await this.store.filter(run, limit)
     console.info(`SERVER FILTER run ${run}`)
     response.end(JSON.stringify({ jobs: results }, null, 2))
   }

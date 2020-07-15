@@ -442,10 +442,10 @@ The metrics can be easily reported on through a DataDog Dashboard. They also can
 
 Read more about configuring DataDog in our [walkthrough](./docs/datadog.md).
 
-### **SQLite and Metabase**
-SQLite allows for reporting and querying via SQL. It can be combinted with Metabase for easy exploration and visualization of the data.
+### **MySQL and Metabase**
+MySQL allows for reporting and querying via SQL. It can be combined with Metabase for easy exploration and visualization of the data.
 
-Read more about using these tools in our [walkthrough](./docs/SQLITE.md).
+Read more about using these tools in our [walkthrough](./docs/SQL.md).
 
 ## **Additional Topics**
 * [Working With CloudWatch](./docs/cloudwatch.md)

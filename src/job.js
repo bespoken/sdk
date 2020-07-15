@@ -146,13 +146,17 @@ class Job {
     return this._run
   }
 
+  set run (run) {
+    this._run = run
+  }
+
   get status () {
     let recordsToProcess = this.records.length
     const limit = _.get(this, 'config.limit')
     if (limit && limit < recordsToProcess) {
       recordsToProcess = limit
     }
-    if (this.records.length === recordsToProcess) {
+    if (this.processedCount === recordsToProcess) {
       return 'COMPLETED'
     } else {
       return 'NOT_COMPLETED'

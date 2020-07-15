@@ -1,3 +1,13 @@
+## 0.9.3
+### **Enhancements**
+* Added support for printing to MySQL by default if environment variables are set
+* Only printing at the end of runs as opposed to with each record
+
+## 0.9.2
+### **Enhancements**
+* Added support for MySQL
+* Added support for list command - lists jobs that match run name
+
 ## 0.9.0
 ### **Enhancements**
 * **IMPORTANT** Using streams to fetch and store S3 files - all clients must upgrade once server is deployed

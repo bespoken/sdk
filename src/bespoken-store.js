@@ -37,9 +37,9 @@ class BespokenStore extends Store {
     })
   }
 
-  async filter (runName) {
+  async filter (runName, limit = 10) {
     console.time('BESPOKEN-STORE FILTER')
-    const url = `${this.accessURL()}/filter?run=${runName}`
+    const url = `${this.accessURL()}/filter?run=${runName}&limit=${limit}`
 
     const response = await axios.get(url)
     const jobs = response.data.jobs
