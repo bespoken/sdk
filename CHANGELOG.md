@@ -1,4 +1,4 @@
-## 0.9.3
+## 0.9.5
 ### **Enhancements**
 * Added support for printing to MySQL by default if environment variables are set
 * Only printing at the end of runs as opposed to with each record
