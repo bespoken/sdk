@@ -5,14 +5,7 @@ We want to make it easy to process runs using SQL and reporting.
 To that end, we make it easy to push data to MySQL and visualize reports using Metabase.
 
 ## Configuration
-To send data to MySQL, set the `printer` attribute to `mysql-printer`, like so:
-```
-{
-  "printer": "mysql-printer"
-}
-```
-
-Additionally, a few environment variables must be set - they are:
+To send data to MySQL, set these environment variables:
 ```
 MYSQL_HOST=<ASK_BESPOKEN>
 MYSQL_USER=<ASK_BESPOKEN>
@@ -20,7 +13,7 @@ MYSQL_PASSWORD=<ASK_BESPOKEN>
 MYSQL_DATABASE=<ASK_BESPOKEN>
 ```
 
-This will automatically create a table labeled with the job name with data from the run.
+This will automatically create a table labeled with the job name with data from the run. The data will be published to MySQL at the end conclusion of the run.
 
 The table will always have the following columns: `utterance`, `run`, `job` and `success`.
 
