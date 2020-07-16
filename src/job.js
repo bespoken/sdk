@@ -78,6 +78,7 @@ class Job {
   }
 
   outputFieldNames () {
+    // Add output fields from the records as well as the results
     const fields = this._uniqueFields(this._results, 'outputFields')
     // console.log(`JOB ouputFields: ${fields}`)
     return fields
@@ -200,7 +201,7 @@ class Result {
    * @returns {string} The value for the field
    */
   actualField (field) {
-    return this._outputFields[field]
+    return this._actualFields[field]
   }
 
   /**
@@ -231,7 +232,7 @@ class Result {
    * @returns {string} The value of the field
    */
   outputField (field) {
-    return this._outputFields[field]
+    return this.outputFields[field]
   }
 
   get actualFields () {
@@ -255,7 +256,13 @@ class Result {
   }
 
   get outputFields () {
-    return this._outputFields
+    // We concatenate the output fields from the record and the result
+    const outputFields = {}
+    if (this.record) {
+      Object.assign(outputFields, this.record.outputFields)
+    }
+    Object.assign(outputFields, this._outputFields)
+    return outputFields
   }
 
   get record () {

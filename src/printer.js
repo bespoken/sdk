@@ -13,11 +13,11 @@ class Printer {
   /**
    * @returns {Printer}
    */
-  static instance (outputPath = 'results') {
+  static instance (outputPath) {
     return Config.instance('printer', 'printer', undefined, outputPath)
   }
 
-  constructor (outputPath) {
+  constructor (outputPath = 'results') {
     this.outputPath = `output/${outputPath}.csv`
     // Make the output director if it does not exist
     const outputDirectory = path.dirname(this.outputPath)
@@ -76,7 +76,7 @@ class Printer {
 
       // Add extra output fields
       for (const fieldName of job.outputFieldNames()) {
-        const expected = result.outputFields[fieldName]
+        const expected = result.outputField(fieldName)
         resultArray.push(expected)
       }
 

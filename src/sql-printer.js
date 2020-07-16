@@ -53,7 +53,7 @@ class SQLPrinter {
 
       // Add extra output fields
       for (const fieldName of job.outputFieldNames()) {
-        const expected = result.outputFields[fieldName]
+        const expected = result.outputField(fieldName)
         params.push(expected)
       }
       params.push(result.error)

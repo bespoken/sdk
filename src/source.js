@@ -112,6 +112,7 @@ class Record {
     this._utterance = utterance
     this._utteranceRaw = utterance // Save off the original utterance in case we change it during processing
     this._expectedFields = expectedFields
+    this._outputFields = {}
     this._meta = meta
     this._deviceTags = []
     this._conversationId = undefined
@@ -135,8 +136,17 @@ class Record {
     this._expectedFields[name] = value
   }
 
-  expectedField (name) {
-    return this._expectedFields[name]
+  /**
+   * Adds an output field to the record
+   * @param {string} name
+   * @param {string} value
+   */
+  addOutputField (name, value) {
+    this._outputFields[name] = value
+  }
+
+  outputField (name) {
+    return this._outputFields[name]
   }
 
   /**
@@ -164,6 +174,14 @@ class Record {
 
   set meta (object) {
     this._meta = object
+  }
+
+  /**
+   * The output field values for the record - gets combinted with the outputfields on the result
+   * @type {Object.<string, string>}
+   */
+  get outputFields () {
+    return this._outputFields
   }
 
   /**

@@ -1,3 +1,11 @@
+## 0.9.6
+### **Bug Fixes**
+* Fix for improperly outputting results.csv file (file was being created as undefined.csv by default)
+* Fix for improper error-handling when the configuration file is not set propertly
+
+### **Enhancements**
+* Added outputFields property to record, so outputFields can be defined in the source classes
+
 ## 0.9.5
 ### **Enhancements**
 * Added support for printing to MySQL by default if environment variables are set

@@ -50,7 +50,7 @@ program
   .description('reprocess job')
   .option('--output_file <filename>', 'results filename')
   .action(function (config, key, options) {
-    console.log('BBT REPROCESS key: ' + key)
+    console.info('BBT REPROCESS key: ' + key)
     const rerunner = new Rerunner(config, key, options.output_file)
     rerunner.rerun().then(() => {
       console.info('BBT REPROCESS done')

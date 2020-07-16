@@ -32,7 +32,7 @@ class DataDogMetrics extends Metrics {
 
     // Add the output fields to the tags
     for (const field of Object.keys(result.outputFields)) {
-      const value = result.outputFields[field]
+      const value = result.outputField(field)
       tags.push(`${field}:${value}`)
     }
 

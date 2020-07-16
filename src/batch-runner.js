@@ -258,11 +258,12 @@ class BatchRunner {
       console.timeEnd('BATCH PRINT')
     } catch (e) {
       console.error('BATCH PRINT error: ' + e)
+      console.error(e.stack)
     }
   }
 
   _saveOnError () {
-    if (this._job.key) {
+    if (this.job && this.job.key) {
       this._synchronizer.saveJob('ON ERROR')
     }
   }
