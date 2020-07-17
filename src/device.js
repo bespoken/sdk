@@ -175,6 +175,7 @@ class DevicePool {
     const tokensInfo = Config.get('virtualDevices', undefined, true)
     const virtualDeviceConfig = Config.get('virtualDeviceConfig', undefined, false)
     const tokens = Object.keys(tokensInfo)
+    const maxTokens = process.env.VIRTUAL_DEVICE_LIMIT || tokens.length
     this._devices = []
 
     let skipSTT = false
@@ -182,7 +183,7 @@ class DevicePool {
       skipSTT = Config.get('transcript') === false
     }
     // Create a device for each token
-    tokens.forEach(token => {
+    tokens.slice(0, maxTokens).forEach(token => {
       const tokenInfo = tokensInfo[token]
       let tags
       if (Array.isArray(tokenInfo)) {

@@ -1,3 +1,7 @@
+## 0.9.7
+### **Enhancements**
+*  The limit of virtual devices can be set in an env variable `VIRTUAL_DEVICE_LIMIT`. If present, it takes the first "n" devices from the config file, otherwise it will use all of them.
+
 ## 0.9.6
 ### **Bug Fixes**
 * Fix for improperly outputting results.csv file (file was being created as undefined.csv by default)
