@@ -20,7 +20,7 @@ We use dotenv when running locally, which takes environment variables from a loc
 
 To set this up, just make a copy of `example.env` and name it `.env`. Replace the values inside there with the correct values for your configuration.
 
-For running with continuous integration (such as Jenkins, Circle CI or Gitlab), these values should instead come from actual environment variables.
+For running with continuous integration (such as Jenkins, Circle CI or Gitlab), these values should instead be set as actual values within the CI environment.
 
 ### **Virtual Device Setup**
 * Create a virtual device with our [easy-to-follow guide here](https://read.bespoken.io/end-to-end/setup/#creating-a-virtual-device).
