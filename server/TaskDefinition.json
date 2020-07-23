@@ -1,0 +1,36 @@
+{
+  "containerDefinitions": [{
+    "cpu": 5,
+    "memoryReservation": 512,
+    "environment": [],
+    "essential": true,
+    "image": "metabase/metabase",
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "metabase",
+        "awslogs-region": "us-east-1",
+        "awslogs-stream-prefix": "metabase"
+      }
+    },
+    "name": "metabase",
+    "portMappings": [
+      {
+        "containerPort": 3000,
+        "hostPort": 0,
+        "protocol": "tcp"
+      }
+    ],
+    "repositoryCredentials": {
+      "credentialsParameter": "${dockerHubSecretArn}"
+    }
+  }
+],
+"family": "${serviceName}",
+"executionRoleArn": "${roleArn}",
+"networkMode": "bridge",
+"requiresCompatibilities": [
+  "${launchType}"
+],
+"taskRoleArn": "${roleArn}"
+}

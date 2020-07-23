@@ -1,3 +1,9 @@
+## 0.9.8
+### **Bug Fixes**
+* Forced pino to use 6.3.x version as we see weird `originalMsg` output in logs
+### **Enhancements**
+* Created Metabase ECS service
+
 ## 0.9.7
 ### **Enhancements**
 *  The limit of virtual devices can be set in an env variable `VIRTUAL_DEVICE_LIMIT`. If present, it takes the first "n" devices from the config file, otherwise it will use all of them.
