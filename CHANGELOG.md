@@ -1,3 +1,9 @@
+## 0.9.9
+### **Bug Fixes**
+* Fix oversaving of data on reruns when there is an error
+### **Enhancements**
+* Better progress info on file downloads
+
 ## 0.9.8
 ### **Bug Fixes**
 * Forced pino to use 6.3.x version as we see weird `originalMsg` output in logs

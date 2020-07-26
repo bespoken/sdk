@@ -1,4 +1,3 @@
-const _ = require('lodash')
 const Config = require('./config')
 const DevicePool = require('./device').DevicePool
 const Evaluator = require('./evaluator')
@@ -263,7 +262,7 @@ class BatchRunner {
   }
 
   _saveOnError () {
-    if (this.job && this.job.key) {
+    if (this.job && !this.job.rerun && this.job.key) {
       this._synchronizer.saveJob('ON ERROR')
     }
   }

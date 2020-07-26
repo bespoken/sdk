@@ -1,6 +1,5 @@
 const _ = require('lodash')
 const axios = require('axios')
-const Config = require('./config')
 const Job = require('./job').Job
 const { Readable } = require('stream')
 const Store = require('./store')
@@ -22,9 +21,16 @@ class BespokenStore extends Store {
     })
 
     let buffer = Buffer.alloc(0)
+
+    // Print out the download progress in 1 MB intervals
+    let previousLength = 0
     streamResponse.data.on('data', (b) => {
       buffer = Buffer.concat([buffer, b])
-      console.info(`BESPOKEN-STORE FETCH downloaded: ${(buffer.length / 1024 / 1024)}M`)
+      const bufferLength = _.round(buffer.length / 1024 / 1024, 0)
+      if (bufferLength !== previousLength) {
+        console.info(`BESPOKEN-STORE FETCH downloaded: ${bufferLength}M`)
+        previousLength = bufferLength
+      }
     })
 
     return new Promise((resolve) => {

@@ -1,6 +1,5 @@
 const Config = require('./config')
 const Store = require('./store')
-const Printer = require('./printer')
 
 class Synchronizer {
   constructor (job, outputPath) {
@@ -11,6 +10,12 @@ class Synchronizer {
   }
 
   async saveJob (logMessage) {
+    // We have this check in other places, but just to make sure, we put it here as well
+    // We do NOT want to accidentally overwrite our data on reruns
+    if (this.job.rerun) {
+      return
+    }
+
     try {
       console.time(`BATCH ${logMessage} SAVE`)
 
