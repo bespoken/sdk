@@ -1,3 +1,7 @@
+## 0.9.10
+### **Bug Fixes**
+* More fixes to prevent oversaving of data
+
 ## 0.9.9
 ### **Bug Fixes**
 * Fix oversaving of data on reruns when there is an error

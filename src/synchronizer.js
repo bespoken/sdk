@@ -28,11 +28,20 @@ class Synchronizer {
   }
 
   runSave () {
+    // We do not save intermittently for re-runs
+    if (this.job.rerun) {
+      return
+    }
+
     this.stopSave()
     this.periodicSave = setInterval(() => this.saveJob('INTERVAL'), this.interval)
   }
 
   stopSave () {
+    if (!this.periodicSave) {
+      return
+    }
+
     clearInterval(this.periodicSave)
   }
 }

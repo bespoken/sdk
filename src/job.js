@@ -49,6 +49,7 @@ class Job {
     this._results = []
     this._processedCount = 0
     this.totalCount = 0
+    this._rerun = false
   }
 
   /**
@@ -130,6 +131,14 @@ class Job {
 
   set records (records) {
     this._records = records
+  }
+
+  get rerun () {
+    return this._rerun
+  }
+
+  set rerun (rerun) {
+    return this._rerun = rerun
   }
 
   /**

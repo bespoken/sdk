@@ -44,11 +44,8 @@ class BatchRunner {
       recordsToProcess = this._job.records.length
     }
 
-    // We do not save the job intermittently for reruns
-    if (!this._job.rerun) {
-      await this._synchronizer.saveJob('INITIAL')
-      this._synchronizer.runSave()
-    }
+    await this._synchronizer.saveJob('INITIAL')
+    this._synchronizer.runSave()
 
     for (let i = this._startIndex; i < recordsToProcess; i++) {
       const record = this._job.records[i]
@@ -72,7 +69,11 @@ class BatchRunner {
 
         // Make sure to increment the processed count every time we do a record
         this._job.addProcessedCount()
-        console.info(`BATCH PROCESS processed: ${this._job.processedCount} out of ${recordsToProcess}`)
+
+        // Print out our progress every 100 records for reruns, or with every record for regular runs
+        if (this._job.processedCount % 100 === 0 || !this.rerun) {
+          console.info(`BATCH PROCESS processed: ${this._job.processedCount} out of ${recordsToProcess}`)
+        }
 
         if (sequential) {
           await util.mutexRelease('PROCESS-SEQUENTIAL')
@@ -90,9 +91,7 @@ class BatchRunner {
     // Do a save once all records are done - in case any writes got skipped due to contention
     console.info('BATCH PROCESS all records done - final save')
 
-    if (!this._job.rerun) {
-      await this._synchronizer.saveJob('FINAL')
-    }
+    await this._synchronizer.saveJob('FINAL')
 
     // Print out the results
     await this._print()
@@ -128,6 +127,7 @@ class BatchRunner {
       // If this is a re-run, set the key to be the same as the previous job
       this._job.key = this.originalJob.key
       this._job.run = this.originalJob.run
+      this._job.rerun = true
     }
 
     // Custom code before processing any record
@@ -219,7 +219,11 @@ class BatchRunner {
     }
 
     this._job.addResult(result)
-    console.info(`BATCH URL ${Store.instance().logURL(this._job)}`)
+
+    // For regular runs, print out the URL for each record as we process it
+    if (!this.rerun) {
+      console.info(`BATCH URL ${Store.instance().logURL(this._job)}`)
+    }
 
     if (Config.has('postSequence')) {
       const commands = Config.get('postSequence')
@@ -262,7 +266,7 @@ class BatchRunner {
   }
 
   _saveOnError () {
-    if (this.job && !this.job.rerun && this.job.key) {
+    if (this.job && this.job.key) {
       this._synchronizer.saveJob('ON ERROR')
     }
   }
