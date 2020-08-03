@@ -2,9 +2,9 @@
 const { program } = require('commander')
 const packageJson = require('../package.json')
 const BatchRunner = require('../src/batch-runner')
+const Job = require('../src/job').Job
 const Printer = require('../src/printer')
 const Rerunner = require('../src/rerunner')
-const Store = require('../src/store')
 const Merger = require('../src/merger')
 
 program
@@ -38,9 +38,16 @@ program
   .command('reprint <batch_key>')
   .description('reprint job')
   .option('--output_file <filename>', 'results filename')
+  .option('--sql', 'print to sql')
   .action(function (key, options) {
-    Store.instance().fetch(key).then(async (job) => {
+    Job.lazyFetchJobForKey(key).then(async (job) => {
       await Printer.instance(options.output_file).print(job)
+      console.info(JSON.stringify(options.sql, null, 2))
+      if (options.sql) {
+        const SQLPrinter = require('../src/mysql-printer')
+        const sqlPrinter = new SQLPrinter()
+        sqlPrinter.print(job)
+      }
       console.info('PRINTER REPRINT done')
     })
   })
