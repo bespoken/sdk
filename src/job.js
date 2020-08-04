@@ -1,4 +1,5 @@
 const _ = require('lodash')
+const fs = require('fs')
 const Record = require('./source').Record
 const moment = require('moment')
 
@@ -6,6 +7,44 @@ const moment = require('moment')
  * Class that manages info and execution of a particular job
  */
 class Job {
+  /**
+   * This routine loads a Job
+   * It checks first for it locally - if it's not there, it loads it remotely
+   * It then saves it locally for faster access
+   * @param {string} key
+   */
+  static async lazyFetchJobForKey (key) {
+    const BespokenStore = require('./bespoken-store')
+    const store = new BespokenStore()
+    if (!fs.existsSync('data')) {
+      fs.mkdirSync('data')
+    }
+
+    // If there is NOT a dash, means this key is in encrypted UUID format
+    // We decrypt by calling our server
+    let decryptedKey = key
+    if (!key.includes('-')) {
+      decryptedKey = await store.decrypt(key)
+      console.info('JOB LAZYFETCH decrypted key: ' + decryptedKey)
+    }
+
+    let dataFile = `data/${decryptedKey}`
+    if (!dataFile.endsWith('.json')) {
+      dataFile = `${dataFile}.json`
+    }
+
+    let jobJSON
+    if (fs.existsSync(dataFile)) {
+      jobJSON = JSON.parse(fs.readFileSync(dataFile))
+    } else {
+      jobJSON = await store.fetch(key)
+      fs.writeFileSync(dataFile, JSON.stringify(jobJSON, null, 2))
+    }
+
+    const job = Job.fromJSON(jobJSON)
+    return job
+  }
+
   /**
    * Creates a new Job object from JSON
    * @param {Object} json

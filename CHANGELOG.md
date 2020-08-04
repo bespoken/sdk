@@ -1,3 +1,9 @@
+## 0.9.11
+### **Enhancements**
+* Better support for reprint
+* SQL printer can now override table name with MYSQL_TABLE environment variable
+* Clean up boolean values in SQL printer
+
 ## 0.9.10
 ### **Bug Fixes**
 * More fixes to prevent oversaving of data

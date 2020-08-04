@@ -37,35 +37,8 @@ class Rerunner {
   }
 
   async rerun () {
-    const store = new BespokenStore()
-    if (!fs.existsSync('data')) {
-      fs.mkdirSync('data')
-    }
-
-    // If there is NOT a dash, means this key is in encrypted UUID format
-    // We decrypt by calling our server
-    let decryptedKey = this.key
-    if (!this.key.includes('-')) {
-      decryptedKey = await store.decrypt(this.key)
-      console.info('RERUNNER RERUN decrypted key: ' + decryptedKey)
-    }
-
-    let dataFile = `data/${decryptedKey}`
-    if (!dataFile.endsWith('.json')) {
-      dataFile = `${dataFile}.json`
-    }
-
-    let jobJSON
-    if (fs.existsSync(dataFile)) {
-      jobJSON = JSON.parse(fs.readFileSync(dataFile))
-    } else {
-      jobJSON = await store.fetch(this.key)
-      fs.writeFileSync(dataFile, JSON.stringify(jobJSON, null, 2))
-    }
-
+    const job = Job.lazyFetchJobForKey(this.key)
     Config.loadFromFile(this.configFile)
-    const job = Job.fromJSON(jobJSON)
-
     Config.singleton('source', new RerunSource(job))
     Config.singleton('device-pool', new RerunDevicePool())
 

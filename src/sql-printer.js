@@ -1,3 +1,4 @@
+const _ = require('lodash')
 const sqlite3 = require('sqlite3').verbose()
 const Store = require('./store')
 
@@ -181,6 +182,36 @@ class SQLPrinter {
     }
     return fieldName
   }
+
+  // Clean values
+  _value (value) {
+    if (value === undefined) {
+      return undefined
+    }
+
+    // handle a boolean value
+    if (value === false) {
+      return 'false'
+    } else if (value === true) {
+      return 'true'
+    }
+
+    // Handle array values
+    if (_.isArray(value)) {
+      value = value.map(v => v.toString()).join(',')
+    }
+
+    // Handle objects
+    if (_.isObject(value)) {
+      value = value.toString()
+    }
+
+    // Escape apostrophes
+    if (_.isString(value)) {
+      value.split('\'').join('\'\'')
+    }
+    return value
+  }
 }
 
 class Statement {
@@ -192,6 +223,7 @@ class Statement {
 
   async run (params) {
     return new Promise((resolve, reject) => {
+      params = params.map(param => this.printer._value(param))
       this.statement.run(params, function (error) {
         if (error) {
           console.error('SQLITE RUN ERROR ' + error)
