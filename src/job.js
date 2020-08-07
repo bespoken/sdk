@@ -177,7 +177,7 @@ class Job {
   }
 
   set rerun (rerun) {
-    return this._rerun = rerun
+    this._rerun = rerun
   }
 
   /**

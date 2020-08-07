@@ -37,7 +37,7 @@ class Rerunner {
   }
 
   async rerun () {
-    const job = Job.lazyFetchJobForKey(this.key)
+    const job = await Job.lazyFetchJobForKey(this.key)
     Config.loadFromFile(this.configFile)
     Config.singleton('source', new RerunSource(job))
     Config.singleton('device-pool', new RerunDevicePool())

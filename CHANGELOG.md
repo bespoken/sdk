@@ -1,3 +1,7 @@
+## 0.9.12
+### **Bug Fixes**
+* Fix issue with loading data on reprocess
+
 ## 0.9.11
 ### **Enhancements**
 * Better support for reprint
