@@ -1,3 +1,8 @@
+## 0.9.13
+### **Enhancements**
+* Add `fuzzyMatch` to search a string in an array of phrases
+* Add `sanitizedOcrLines` property to `Result` class
+
 ## 0.9.12
 ### **Bug Fixes**
 * Fix issue with loading data on reprocess
