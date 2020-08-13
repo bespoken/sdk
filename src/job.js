@@ -1,5 +1,6 @@
 const _ = require('lodash')
 const fs = require('fs')
+const Config = require('./config')
 const Record = require('./source').Record
 const moment = require('moment')
 
@@ -315,6 +316,22 @@ class Result {
 
   get record () {
     return this._record
+  }
+
+  get sanitizedOcrLines () {
+    const homophones = Config.get('homophones', undefined, false, {})
+    const ocrLines = _.get(this.lastResponse, 'raw.ocrJSON.TextDetections', [])
+      .filter(text => text.Type === 'LINE')
+
+    Object.keys(homophones).forEach(expectedString => {
+      homophones[expectedString].forEach(homophone => {
+        ocrLines.forEach((item, index) => {
+          ocrLines[index].DetectedText = item.DetectedText.replace(new RegExp(homophone, 'gi'), expectedString)
+        })
+      })
+    })
+
+    return ocrLines
   }
 
   /**
