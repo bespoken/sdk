@@ -5,6 +5,7 @@ const Config = require('../src/config')
 const MockDevicePool = require('./mock-device')
 const Record = require('../src/source').Record
 const Source = require('../src/source').Source
+const Interceptor = require('../src/interceptor')
 
 describe('batch runner processes records', () => {
   let config
@@ -105,6 +106,14 @@ describe('batch runner processes records', () => {
       })
     })
   })
+
+  describe('retry results', () => {
+    test('result has retry count', async () => {
+      Config.singleton('interceptor', new MockInterceptor())
+      const runner = await runnerProccess(config)
+      expect(runner.job.results[0].retryCount).toEqual(2)
+    })
+  })
 })
 
 async function runnerProccess (config) {
@@ -135,5 +144,12 @@ class MockSource extends Source {
       booleanProperty: booleanProperty
     }
     return record
+  }
+}
+
+class MockInterceptor extends Interceptor {
+  async interceptResult (_record, result) {
+    result.shouldRetry = true
+    return true
   }
 }
