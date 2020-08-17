@@ -224,7 +224,9 @@ class BatchRunner {
       }
     }
 
-    this._job.addResult(result)
+    if (!result.shouldRetry || result.retryCount === 2) {
+      this._job.addResult(result)
+    }
 
     // For regular runs, print out the URL for each record as we process it
     if (!this.rerun) {
