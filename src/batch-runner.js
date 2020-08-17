@@ -209,12 +209,12 @@ class BatchRunner {
 
       try {
         const include = await Interceptor.instance().interceptResult(record, result)
-        while (result.shouldRetry && result.retryCount < 2) {
+        const hasRetry = result.shouldRetry && result.retryCount < 2
+        if (hasRetry) {
           await this._processVariation(device, record, voiceId, retryCount + 1)
-          result.retryCount += 1
         }
 
-        if (include === false) {
+        if (include === false || hasRetry) {
           return
         }
       } catch (e) {
