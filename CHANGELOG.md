@@ -1,3 +1,7 @@
+## 0.9.14
+### **Enhancements**
+* Add shouldRetry property to Result class to retry a record using the interceptResult method
+
 ## 0.9.13
 ### **Enhancements**
 * Add `fuzzyMatch` to search a string in an array of phrases
