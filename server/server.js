@@ -130,7 +130,10 @@ class Server {
     const job = await this._fetchJob(url)
     const result = _.nth(job.results, index)
     console.log(`SERVER HANDLE log: ${index}`)
-    response.end(JSON.stringify(result, null, 2))
+
+    const readable = Readable.from(JSON.stringify(result, null, 2))
+    console.info('SERVER HANDLE log piping')
+    readable.pipe(response)
   }
 
   async _ping (response) {

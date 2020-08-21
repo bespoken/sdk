@@ -8,7 +8,8 @@ class S3Store extends Store {
     super()
     // Cache for completed jobs
     this.jobCache = new NodeCache({
-      stdTTL: 60 * 60 // Standard TTL is 1 hour
+      stdTTL: 60 * 60, // Standard TTL is 1 hour
+      useClones: false
     })
   }
 
@@ -32,12 +33,16 @@ class S3Store extends Store {
       return undefined
     }
 
+    console.time('S3Store.parse' + run)
     const jobJSON = JSON.parse(jobData)
+    console.timeEnd('S3Store.parse' + run)
     const job = Job.fromJSON(jobJSON)
 
     // Added completed jobs to the cache
     if (job.status === 'COMPLETED') {
+      console.time('S3Store.cache' + run)
       this.jobCache.set(Store.key(run), job)
+      console.timeEnd('S3Store.cache' + run)
     }
     return job
   }
