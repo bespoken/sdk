@@ -1,3 +1,7 @@
+## 0.9.13
+### **Bug Fixes**
+* Add memory and CPU to avoid crashes on server
+
 ## 0.9.12
 ### **Bug Fixes**
 * Fix issue with loading data on reprocess
