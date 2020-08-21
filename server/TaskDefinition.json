@@ -1,7 +1,7 @@
 {
   "containerDefinitions": [{
     "cpu": 10,
-    "memoryReservation": 1024,
+    "memoryReservation": 512,
     "environment": [],
     "essential": true,
     "image": "metabase/metabase",
