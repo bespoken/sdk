@@ -166,7 +166,7 @@ class BatchRunner {
     }
   }
 
-  async _processVariation (device, record, voiceId = 'en-US-Wavenet-D') {
+  async _processVariation (device, record, voiceId = 'en-US-Wavenet-D', retryCount = 0) {
     const utterance = record.utterance
 
     const messages = []
@@ -194,7 +194,8 @@ class BatchRunner {
     const result = new Result(
       record,
       voiceId,
-      responses
+      responses,
+      retryCount
     )
 
     // Add a tag for the platform being used for the test
@@ -208,7 +209,12 @@ class BatchRunner {
 
       try {
         const include = await Interceptor.instance().interceptResult(record, result)
-        if (include === false) {
+        const hasRetry = result.shouldRetry && result.retryCount < 2
+        if (hasRetry) {
+          await this._processVariation(device, record, voiceId, retryCount + 1)
+        }
+
+        if (include === false || hasRetry) {
           return
         }
       } catch (e) {
@@ -218,7 +224,9 @@ class BatchRunner {
       }
     }
 
-    this._job.addResult(result)
+    if (!result.shouldRetry || result.retryCount === 2) {
+      this._job.addResult(result)
+    }
 
     // For regular runs, print out the URL for each record as we process it
     if (!this.rerun) {

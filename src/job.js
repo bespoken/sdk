@@ -1,5 +1,6 @@
 const _ = require('lodash')
 const fs = require('fs')
+const Config = require('./config')
 const Record = require('./source').Record
 const moment = require('moment')
 
@@ -233,7 +234,7 @@ class Result {
    * @param {string} [voiceId]
    * @param {Object} lastResponse
    */
-  constructor (record, voiceId, responses) {
+  constructor (record, voiceId, responses, retryCount = 0) {
     this._record = record
     this._voiceId = voiceId
     this._responses = responses
@@ -241,6 +242,8 @@ class Result {
     this._outputFields = {}
     this._tags = {}
     this._timestamp = Date.now()
+    this._shouldRetry = false
+    this._retryCount = retryCount
   }
 
   /**
@@ -317,6 +320,22 @@ class Result {
     return this._record
   }
 
+  get sanitizedOcrLines () {
+    const homophones = Config.get('homophones', undefined, false, {})
+    const ocrLines = _.get(this.lastResponse, 'raw.ocrJSON.TextDetections', [])
+      .filter(text => text.Type === 'LINE')
+
+    Object.keys(homophones).forEach(expectedString => {
+      homophones[expectedString].forEach(homophone => {
+        ocrLines.forEach((item, index) => {
+          ocrLines[index].DetectedText = item.DetectedText.replace(new RegExp(homophone, 'gi'), expectedString)
+        })
+      })
+    })
+
+    return ocrLines
+  }
+
   /**
    * @type {boolean}
    */
@@ -334,6 +353,22 @@ class Result {
 
   get timestamp () {
     return this._timestamp
+  }
+
+  get shouldRetry () {
+    return this._shouldRetry
+  }
+
+  set shouldRetry (shouldRetry) {
+    this._shouldRetry = shouldRetry
+  }
+
+  get retryCount () {
+    return this._retryCount
+  }
+
+  set retryCount (retryCount) {
+    this._retryCount = retryCount
   }
 }
 

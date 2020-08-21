@@ -1,6 +1,14 @@
-## 0.9.13
+## 0.9.15
 ### **Bug Fixes**
 * Add memory and CPU to avoid crashes on server
+
+## 0.9.14
+### **Enhancements**
+* Add shouldRetry property to Result class to retry a record using the interceptResult method
+
+## 0.9.13
+* Add `fuzzyMatch` to search a string in an array of phrases
+* Add `sanitizedOcrLines` property to `Result` class
 
 ## 0.9.12
 ### **Bug Fixes**
