@@ -98,6 +98,10 @@ class BatchRunner {
 
     // Custom code for when the process has finished
     await Interceptor.instance().interceptPostProcess(this._job)
+
+    if (this.canSendEmail) {
+      this.sendEmail()
+    }
   }
 
   async _initialize () {
@@ -273,6 +277,18 @@ class BatchRunner {
     }
   }
 
+  sendEmail () {
+    const subject = `Bespoken Batch Tester Job: ${this.job.name} completed`
+    const body = `The job ${this.job.name} has completed.
+
+    Review the results here:
+    ${process.env.CI_JOB_URL}
+    `
+    console.info('EMAIL NOTIFICATION')
+    console.info(subject)
+    console.info(body)
+  }
+
   /**
    * @returns {Job} The job created and processed by this runner
    */
@@ -290,6 +306,11 @@ class BatchRunner {
 
   get rerun () {
     return this._originalJob !== undefined
+  }
+
+  get canSendEmail () {
+    const canSend = process.env.NOTIFICATION_EMAILS && process.env.NOTIFICATION_ACCESS_KEY_ID && process.env.NOTIFICATION_SECRET_ACCESS_KEY
+    return canSend && !this.job.rerun
   }
 }
 
