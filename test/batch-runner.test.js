@@ -141,7 +141,7 @@ describe('batch runner processes records', () => {
       const notifier = EmailNotifier.instance()
       const spy = jest.spyOn(notifier, 'send')
       await runnerProccess(config)
-      expect(spy).toHaveBeenCalled()
+      expect(await spy).toHaveBeenCalled()
       process.env = OLD_ENV
     })
   })

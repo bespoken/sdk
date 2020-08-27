@@ -102,7 +102,7 @@ class BatchRunner {
 
     const emailNotifier = EmailNotifier.instance()
     if (!this.job.rerun && emailNotifier.canSend) {
-      emailNotifier.send()
+      await emailNotifier.send()
     }
   }
 

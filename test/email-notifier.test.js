@@ -35,14 +35,14 @@ describe('Email Notifier', () => {
 
     test('from console', () => {
       process.env.CI_JOB_URL = undefined
-      const email = EmailNotifier.instance().send()
+      const email = EmailNotifier.instance().content()
       expect(email.subject).toEqual('Bespoken Batch Tester Job: test completed')
       expect(email.body).toEqual('The job test has completed.')
     })
 
     test('from gitlab', () => {
       process.env.CI_JOB_URL = 'https://gitlab.com/bespoken/batch-tester/-/pipelines/12341234'
-      const email = EmailNotifier.instance().send()
+      const email = EmailNotifier.instance().content()
       expect(email.subject).toEqual('Bespoken Batch Tester Job: test completed')
       expect(email.body).toEqual('The job test has completed.\n\nReview the results here:\nhttps://gitlab.com/bespoken/batch-tester/-/pipelines/12341234')
     })

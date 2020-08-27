@@ -1,11 +1,14 @@
+const AWS = require('aws-sdk')
 const Config = require('./config')
+
+const SES = new AWS.SES()
 
 class EmailNotifier {
   static instance () {
     return Config.instance('email-notifier', EmailNotifier)
   }
 
-  send () {
+  content () {
     const jobName = Config.get('job', undefined, true)
     const subject = `Bespoken Batch Tester Job: ${jobName} completed`
     let body = `The job ${jobName} has completed.`
@@ -15,6 +18,30 @@ class EmailNotifier {
     return {
       subject,
       body
+    }
+  }
+
+  async send () {
+    const { subject, body } = this.content()
+    const addresses = process.env.NOTIFICATION_EMAILS.split(',')
+    const params = {
+      Destination: {
+        ToAddresses: addresses
+      },
+      Message: {
+        Body: {
+          Text: { Data: body }
+        },
+        Subject: { Data: subject }
+      },
+      Source: 'notifier@bespoken.io'
+    }
+
+    try {
+      await SES.sendEmail(params).promise()
+      console.info('EMAIL NOTIFICATION SENT')
+    } catch (error) {
+      console.error('EMAIL NOTIFICATION ERROR: ', error)
     }
   }
 
