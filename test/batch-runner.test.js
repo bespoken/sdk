@@ -6,6 +6,7 @@ const MockDevicePool = require('./mock-device')
 const Record = require('../src/source').Record
 const Source = require('../src/source').Source
 const Interceptor = require('../src/interceptor')
+const EmailNotifier = require('../src/email-notifier')
 
 describe('batch runner processes records', () => {
   let config
@@ -126,8 +127,8 @@ describe('batch runner processes records', () => {
 
   describe('send email', () => {
     test('email is not sent', async () => {
-      const runner = new BatchRunner(config)
-      const spy = jest.spyOn(runner, 'sendEmail')
+      const notifier = EmailNotifier.instance()
+      const spy = jest.spyOn(notifier, 'send')
       await runnerProccess(config)
       expect(spy).not.toHaveBeenCalled()
     })
@@ -137,9 +138,9 @@ describe('batch runner processes records', () => {
       process.env.NOTIFICATION_EMAILS = 'support@bespoken.io,bespoken@bespoken.io'
       process.env.NOTIFICATION_ACCESS_KEY_ID = '12341234'
       process.env.NOTIFICATION_SECRET_ACCESS_KEY = '12314234'
-      const runner = new BatchRunner(config)
-      const spy = jest.spyOn(runner, 'sendEmail')
-      await runner.process()
+      const notifier = EmailNotifier.instance()
+      const spy = jest.spyOn(notifier, 'send')
+      await runnerProccess(config)
       expect(spy).toHaveBeenCalled()
       process.env = OLD_ENV
     })
