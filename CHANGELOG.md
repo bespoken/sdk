@@ -1,3 +1,11 @@
+## 0.9.17
+### **Enhancements**
+* Enhancements on docs and behavior for fuzzyMatch
+
+## 0.9.16
+### **Bug Fixes**
+* Changed cache behavior so that it does NOT clone objects
+
 ## 0.9.15
 ### **Bug Fixes**
 * Add memory and CPU to avoid crashes on server
