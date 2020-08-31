@@ -156,10 +156,10 @@ class BatchRunner {
       return
     }
 
-    await this._processVariation(device, record)
+    await this._processWithRetries(device, record)
   }
 
-  async _processVariation (device, record, retryCount = 0) {
+  async _processWithRetries (device, record, retryCount = 0) {
     const utterance = record.utterance
 
     const messages = []
@@ -205,7 +205,7 @@ class BatchRunner {
         const include = await Interceptor.instance().interceptResult(record, result)
         const hasRetry = result.shouldRetry && result.retryCount < 2
         if (hasRetry) {
-          await this._processVariation(device, record, retryCount + 1)
+          await this._processWithRetries(device, record, retryCount + 1)
         }
 
         if (include === false || hasRetry) {
