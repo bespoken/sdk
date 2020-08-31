@@ -156,17 +156,10 @@ class BatchRunner {
       return
     }
 
-    // If we have several voices configured, run through each one
-    if (Config.has('voices')) {
-      for (const voice of Config.get('voices')) {
-        await this._processVariation(device, record, voice)
-      }
-    } else {
-      await this._processVariation(device, record)
-    }
+    await this._processVariation(device, record)
   }
 
-  async _processVariation (device, record, voiceId = 'en-US-Wavenet-D', retryCount = 0) {
+  async _processVariation (device, record, retryCount = 0) {
     const utterance = record.utterance
 
     const messages = []
@@ -182,7 +175,7 @@ class BatchRunner {
     let responses
     let error
     try {
-      responses = await device.message(voiceId, messages, record)
+      responses = await device.message(record, messages)
       if (responses) {
         responses.forEach(response => console.log(`RUNNER MESSAGE: ${response.message} TRANSCRIPT: ${response.transcript}`))
       }
@@ -190,6 +183,7 @@ class BatchRunner {
       error = e.toString()
     }
 
+    const voiceId = record.voiceID || Config.get('voiceID', undefined, false, 'en-US-Wavenet-D')
     // Create a result object
     const result = new Result(
       record,
@@ -211,7 +205,7 @@ class BatchRunner {
         const include = await Interceptor.instance().interceptResult(record, result)
         const hasRetry = result.shouldRetry && result.retryCount < 2
         if (hasRetry) {
-          await this._processVariation(device, record, voiceId, retryCount + 1)
+          await this._processVariation(device, record, retryCount + 1)
         }
 
         if (include === false || hasRetry) {
@@ -235,7 +229,7 @@ class BatchRunner {
 
     if (Config.has('postSequence')) {
       const commands = Config.get('postSequence')
-      device.message(voiceId, commands, record)
+      device.message(record, commands)
     }
 
     if (Config.has('pause')) {

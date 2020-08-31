@@ -13,14 +13,15 @@ class Device {
     this._configuration = configuration
   }
 
-  async message (voiceId, messages, record, attempt = 1) {
+  async message (record, messages, attempt = 1) {
     console.log('DEVICE MESSAGE ' + messages.toString())
+    const voiceID = record.voiceID || Config.get('voiceID', undefined, false, 'en-US-Wavenet-D')
     let config = {
       asyncMode: true,
       debug: true,
       skipSTT: this._skipSTT,
       token: this._token,
-      voiceID: voiceId
+      voiceID: voiceID
     }
 
     if (this._configuration) { config = _.assign(config, this._configuration) }
@@ -74,7 +75,7 @@ class Device {
             console.error(`DEVICE ERROR GET CONVERSATION ID: ${response.conversation_id} error property: ${error.error}`)
             // If this is an error from the virtual device, do a retry
             if (error.error) {
-              return this._retry(error, voiceId, messages, record, attempt)
+              return this._retry(error, messages, record, attempt)
             }
           }
           await util.sleep(waitTimeInterval)
@@ -84,18 +85,18 @@ class Device {
           // Server timed out, try again up the max attempts
           const errorMessage = `DEVICE ERROR maxWaitTime exceed: ${maxWaitTime} conversation id: ${response.conversation_id}`
           console.error(errorMessage)
-          return this._retry(errorMessage, voiceId, messages, record, attempt)
+          return this._retry(errorMessage, messages, record, attempt)
         }
 
         console.log('DEVICE MESSAGE final transcript: ' + _.get(_.nth(_.get(result, 'results'), -1), 'transcript'))
         return result.results
       }
     } catch (e) {
-      return this._retry(this._parseError(e), voiceId, messages, record, attempt)
+      return this._retry(this._parseError(e), messages, record, attempt)
     }
   }
 
-  async _retry (error, voiceId, messages, record, attempt) {
+  async _retry (error, messages, record, attempt) {
     const errorMessage = error.error ? error.error : error.toString()
     if (attempt > Config.get('maxAttempts', undefined, true, 3)) {
       // Give up after three tries
@@ -105,7 +106,7 @@ class Device {
     const backoffTime = 10000
     console.error(`DEVICE MESSAGE error: ${errorMessage} retrying ${backoffTime / 1000} seconds`)
     await util.sleep(backoffTime)
-    return this.message(voiceId, messages, record, attempt + 1)
+    return this.message(record, messages, attempt + 1)
   }
 
   _parseError (error) {

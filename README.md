@@ -267,10 +267,8 @@ For values other than the default (`https://virtual-device.bespoken.io`), set th
 ### **`virtualDeviceConfig`**
 Allows setting properties to all virtual devices. For example, when using Twilio Virtual Devices, setting the `phone_number` to call.
 
-### **`voices`**
-Array of voices that should be used to process the records.
-
-If more than one value is supplied, each record will be run once with each voice.
+### **`voiceID`**
+Voice that should be used to process the records.
 
 By default, it is just: `[en-US-Wavenet-D]`
 
