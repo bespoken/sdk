@@ -267,11 +267,6 @@ For values other than the default (`https://virtual-device.bespoken.io`), set th
 ### **`virtualDeviceConfig`**
 Allows setting properties to all virtual devices. For example, when using Twilio Virtual Devices, setting the `phone_number` to call.
 
-### **`voiceID`**
-Voice that should be used to process the records.
-
-By default, it is just: `[en-US-Wavenet-D]`
-
 ## Advanced Execution
 ### Resuming A Job
 To resume a job that did not complete, due to errors or timeout, simply set the `RUN_KEY` environment variable.

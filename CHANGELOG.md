@@ -1,3 +1,8 @@
+## 0.9.18
+### **Enhancements**
+* Use voiceID from record by default
+* Add ability to change the locale, by default is en-US
+
 ## 0.9.17
 ### **Enhancements**
 * Enhancements on docs and behavior for fuzzyMatch

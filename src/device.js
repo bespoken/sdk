@@ -16,12 +16,14 @@ class Device {
   async message (record, messages, attempt = 1) {
     console.log('DEVICE MESSAGE ' + messages.toString())
     const voiceID = record.voiceID || Config.get('voiceID', undefined, false, 'en-US-Wavenet-D')
+    const locale = record.locale || Config.get('locale', undefined, false, 'en-US')
     let config = {
       asyncMode: true,
       debug: true,
       skipSTT: this._skipSTT,
       token: this._token,
-      voiceID: voiceID
+      voiceID: voiceID,
+      locale: locale
     }
 
     if (this._configuration) { config = _.assign(config, this._configuration) }
