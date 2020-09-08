@@ -1,3 +1,7 @@
+## 0.9.19
+### **Enhancements**
+* Get locale and voiceID from virtualDeviceConfig
+
 ## 0.9.18
 ### **Enhancements**
 * Use voiceID from record by default

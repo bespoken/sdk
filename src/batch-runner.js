@@ -183,7 +183,7 @@ class BatchRunner {
       error = e.toString()
     }
 
-    const voiceId = record.voiceID || Config.get('voiceID', undefined, false, 'en-US-Wavenet-D')
+    const voiceId = record.voiceID || Config.get('virtualDeviceConfig.voiceID', undefined, false, 'en-US-Wavenet-D')
     // Create a result object
     const result = new Result(
       record,
