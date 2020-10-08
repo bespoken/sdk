@@ -1,7 +1,12 @@
 const AWS = require('aws-sdk')
 const Config = require('./config')
 
-const SES = new AWS.SES()
+const SESConfig = {
+  accessKeyId: process.env.NOTIFICATION_ACCESS_KEY_ID,
+  secretAccessKey: process.env.NOTIFICATION_SECRET_ACCESS_KEY
+}
+
+const SES = new AWS.SES(SESConfig)
 
 class EmailNotifier {
   static instance () {
