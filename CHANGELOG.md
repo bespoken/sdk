@@ -1,3 +1,7 @@
+## 0.9.20
+### **Enhancements**
+* Send notification emails after job is done
+
 ## 0.9.19
 ### **Enhancements**
 * Get locale and voiceID from virtualDeviceConfig
