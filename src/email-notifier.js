@@ -3,7 +3,8 @@ const Config = require('./config')
 
 const SESConfig = {
   accessKeyId: process.env.NOTIFICATION_ACCESS_KEY_ID,
-  secretAccessKey: process.env.NOTIFICATION_SECRET_ACCESS_KEY
+  secretAccessKey: process.env.NOTIFICATION_SECRET_ACCESS_KEY,
+  region: process.env.AWS_SES_REGION
 }
 
 const SES = new AWS.SES(SESConfig)
@@ -46,7 +47,7 @@ class EmailNotifier {
       await SES.sendEmail(params).promise()
       console.info('EMAIL NOTIFICATION SENT')
     } catch (error) {
-      console.error('EMAIL NOTIFICATION ERROR: ', error)
+      console.error(`EMAIL NOTIFICATION ERROR: ${error.toString()}`)
     }
   }
 
