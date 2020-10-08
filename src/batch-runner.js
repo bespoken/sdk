@@ -12,6 +12,7 @@ const Store = require('./store')
 const Synchronizer = require('./synchronizer')
 const util = require('./util')
 const logger = require('./logger')
+const EmailNotifier = require('./email-notifier')
 
 class BatchRunner {
   constructor (config, outputPath) {
@@ -98,6 +99,11 @@ class BatchRunner {
 
     // Custom code for when the process has finished
     await Interceptor.instance().interceptPostProcess(this._job)
+
+    const emailNotifier = EmailNotifier.instance()
+    if (!this.job.rerun && emailNotifier.canSend) {
+      await emailNotifier.send()
+    }
   }
 
   async _initialize () {
