@@ -82,8 +82,6 @@ server-deploy:
       --cpu 512 \
       --memory 1024 \
       --launchType EC2 \
-      --env AWS_ACCESS_KEY_ID="${BATCH_AWS_ACCESS_KEY_ID}" \
-      --env AWS_SECRET_ACCESS_KEY="${BATCH_AWS_SECRET_ACCESS_KEY}" \
       --env ENCRYPTION_KEY=${ENCRYPTION_KEY} \
       --env LOG_LEVEL=debug
   only:
