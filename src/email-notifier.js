@@ -2,6 +2,8 @@ const AWS = require('aws-sdk')
 const Config = require('./config')
 
 const SESConfig = {
+  accessKeyId: process.env.NOTIFICATION_ACCESS_KEY_ID,
+  secretAccessKey: process.env.NOTIFICATION_SECRET_ACCESS_KEY,
   region: process.env.AWS_SES_REGION
 }
 
