@@ -109,6 +109,7 @@ class Server {
   async _decrypt (response, url) {
     const encryptedKey = url.query.key
     const key = Util.decrypt(encryptedKey)
+
     console.log(`SERVER HANDLE decrypt: ${encryptedKey} as: ${key}`)
     response.end(JSON.stringify({ decryptedKey: key }, null, 2))
   }

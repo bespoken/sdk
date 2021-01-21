@@ -28,6 +28,10 @@ class CloudWatchMetrics extends Metrics {
    * @param {Number} [tries=0]
    */
   async _publishImpl (job, result, tries = 0) {
+    if (!process.env.AWS_ACCESS_KEY_ID) {
+      console.error('CloudWatch NOT configured - set AWS credentials in environment to use CloudWatch')
+      return
+    }
     // Turn the result into JSON - we use JS getters and setters, so need to do this one-by-one
     const json = {
       actualFields: result.actualFields,
