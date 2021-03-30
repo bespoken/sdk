@@ -129,7 +129,7 @@ class Server {
   async _log (response, url) {
     const index = url.query.index
     const job = await this._fetchJob(url)
-    const result = _.nth(job.results, index)
+    const result = _.nth(job.results, index) || {}
     console.log(`SERVER HANDLE log: ${index}`)
 
     const readable = Readable.from(JSON.stringify(result, null, 2))
