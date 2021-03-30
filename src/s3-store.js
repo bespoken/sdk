@@ -19,6 +19,7 @@ class S3Store extends Store {
       return cachedJob
     }
 
+    console.log('3Store.fetch', run);
     console.time('S3Store.fetch' + run)
     const s3 = new AWS.S3()
     const response = await s3.getObject({
@@ -33,6 +34,7 @@ class S3Store extends Store {
       return undefined
     }
 
+    console.log('3Store.parse', run);
     console.time('S3Store.parse' + run)
     const jobJSON = JSON.parse(jobData)
     console.timeEnd('S3Store.parse' + run)
@@ -44,6 +46,8 @@ class S3Store extends Store {
       this.jobCache.set(Store.key(run), job)
       console.timeEnd('S3Store.cache' + run)
     }
+    console.log('3Store.cache', run);
+
     return job
   }
 

@@ -55,22 +55,30 @@ class Server {
   }
 
   _handleRequest (message, response, dataStream) {
-    const url = URL.parse(message.url, true) /* eslint-disable-line */
-    const path = url.pathname
-
-    if (path === '/decrypt') {
-      this._decrypt(response, url)
-    } else if (path === '/fetch') {
-      this._fetch(response, url)
-    } else if (path === '/filter') {
-      this._filter(response, url)
-    } else if (path === '/log') {
-      this._log(response, url)
-    } else if (path === '/save') {
-      this._save(message, url, response, dataStream)
-    } else {
-      this._ping(response)
+    try {
+      console.log("_handleRequest");
+      const url = URL.parse(message.url, true) /* eslint-disable-line */
+      const path = url.pathname
+  
+      if (path === '/decrypt') {
+        this._decrypt(response, url)
+      } else if (path === '/fetch') {
+        this._fetch(response, url)
+      } else if (path === '/filter') {
+        this._filter(response, url)
+      } else if (path === '/log') {
+        this._log(response, url)
+      } else if (path === '/save') {
+        this._save(message, url, response, dataStream)
+      } else {
+        this._ping(response)
+      }  
+    } catch (error) {
+      console.log('error on _handleRequest')
+      console.log(error)
+      throw error
     }
+
   }
 
   /**
@@ -128,11 +136,14 @@ class Server {
 
   async _log (response, url) {
     const index = url.query.index
+    console.log('_log fetch job: before')
     const job = await this._fetchJob(url)
+    console.log('_log fetch job: aflter')
     const result = _.nth(job.results, index)
     console.log(`SERVER HANDLE log: ${index}`)
 
-    const readable = Readable.from(JSON.stringify(result, null, 2))
+    // const readable = Readable.from(JSON.stringify(result, null, 2))
+    const readable = Readable.from(result)
     console.info('SERVER HANDLE log piping')
     readable.pipe(response)
   }
