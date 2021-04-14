@@ -355,7 +355,7 @@ On this project, calling `console.log` is equivalent to calling `console.debug`,
 
 <img src="docs/images/pinoJs.png" width="50%">
 
-To set a log level, simply set the following env variable: `echo LOG_LEVEL=debug`. If not set, `info` is assumed.
+To set a log level, simply set the following env variable: `export LOG_LEVEL=debug`. If not set, `info` is assumed.
 
 We can also colorize the outputs by setting the env variable `COLORIZE`.
 
