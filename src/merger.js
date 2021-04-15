@@ -12,7 +12,7 @@ class Merger {
     this.originalResults = this.readAndParse(originalResults)
     this.rerunResults = this.readAndParse(rerunResults)
     this.headers = Object.keys(this.originalResults[0])
-    this.outputPath = `output/${outputPath}.csv`
+    this.outputPath = outputPath.endsWith('.csv') ? `output/${outputPath}` : `output/${outputPath}.csv`
 
     // Make the output director if it does not exist
     const outputDirectory = path.dirname(this.outputPath)

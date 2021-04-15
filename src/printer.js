@@ -18,7 +18,7 @@ class Printer {
   }
 
   constructor (outputPath = 'results') {
-    this.outputPath = `output/${outputPath}.csv`
+    this.outputPath = outputPath.endsWith('.csv') ? `output/${outputPath}` : `output/${outputPath}.csv`
     // Make the output director if it does not exist
     const outputDirectory = path.dirname(this.outputPath)
     if (!fs.existsSync(outputDirectory)) {

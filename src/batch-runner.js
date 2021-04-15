@@ -140,7 +140,7 @@ class BatchRunner {
     await Interceptor.instance().interceptPreProcess(this._job)
 
     this._devicePool = DevicePool.instance() // Manages virtual devices
-    this._synchronizer = new Synchronizer(this._job, this.outputPath)
+    this._synchronizer = new Synchronizer(this._job)
     this._metrics = Metrics.instance()
     return this._metrics.initialize(this._job)
   }
