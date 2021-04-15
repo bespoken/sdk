@@ -2,9 +2,8 @@ const Config = require('./config')
 const Store = require('./store')
 
 class Synchronizer {
-  constructor (job, outputPath) {
+  constructor (job) {
     this.job = job
-    this.outputPath = outputPath
     this.interval = Config.get('saveInterval', undefined, true, 300) * 1000
     this.periodicSave = undefined
   }
