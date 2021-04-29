@@ -49,11 +49,12 @@ class Interceptor {
 
   /**
    * Allows for making changes to a request payload
+   * @param {Record} the record associated with this request
    * @param {Object} request payload
    * @param {Device} the device making the request
    * @returns {Promise<Undefined>} Void promise
    */
-  async interceptRequest (request, device) {
+  async interceptRequest (record, request, device) {
 
   }
 }

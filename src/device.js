@@ -57,7 +57,7 @@ class Device {
         }
         messagesArray.push(messageObject)
       })
-      await Interceptor.instance().interceptRequest(messagesArray, this)
+      await Interceptor.instance().interceptRequest(record, messagesArray, this)
       const response = await virtualDevice.batchMessage(messagesArray)
       console.log('DEVICE MESSAGE initial response: ' + JSON.stringify(response))
       if (response.conversation_id) {
