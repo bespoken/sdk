@@ -1,3 +1,6 @@
+## 0.10
+### **Enhancements**
+* `interceptRequest` now accepts a `Record` object as a first argument. This is a breaking change.
 ## 0.9.20
 ### **Enhancements**
 * Send notification emails after job is done
