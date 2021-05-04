@@ -147,6 +147,7 @@ An example file:
   "saveInterval": 300,
   "limit": 5,
   "maxAttempts": 3,
+  "backoffTime": 10,
   "metrics": "datadog-metrics",
   "sequence": ["open my audio player"],
   "sequential": false,
@@ -224,6 +225,9 @@ The numbers of records to test during test execution. Very useful when you want 
 
 ### **`maxAttempts`**
 The number of attempts to try if a request has errors. Defaults to 3.
+
+### **`backoffTime`**
+The time in seconds to wait before trying again. Defaults to 10.
 
 ### **`metrics`**
 We have builtin two classes for metrics: `datadog-metrics` and `cloudwatch-metrics`.

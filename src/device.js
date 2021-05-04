@@ -105,9 +105,9 @@ class Device {
       throw errorMessage
     }
 
-    const backoffTime = 10000
-    console.error(`DEVICE MESSAGE error: ${errorMessage} retrying ${backoffTime / 1000} seconds`)
-    await util.sleep(backoffTime)
+    const backoffTime = Config.get('backoffTime', undefined, false, 10)
+    console.error(`DEVICE MESSAGE error: ${errorMessage} retrying ${backoffTime} seconds`)
+    await util.sleep(backoffTime * 1000)
     return this.message(record, messages, attempt + 1)
   }
 
