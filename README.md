@@ -184,9 +184,10 @@ then if ANY of the actual values matches the expected the test will pass.
 ### **`interceptor`**
 The interceptor allows for the core behavior of the batch runner to be modified.
 
-There are five main methods:  
+There are six main methods:
 * interceptRecord - Called before the record is processed
 * interceptResult - Called before the result is finalized
+* interceptError - Called when the process has an error after the max attempts
 * interceptPreProcess - Called after the records have been loaded but before any of them is processed
 * interceptPostProcess - Called after all the records have been executed
 * interceptRequest - Called before the request is sent to a virtual device
@@ -197,6 +198,8 @@ Using [interceptResult](https://bespoken.gitlab.io/batch-tester/Interceptor.html
 * Adding tags to the result (for use in metrics displays)
 * Changing the `success` flag based on custom validation logic
 * Adding output fields to the CSV output to provide additional information to report readers
+
+Using `interceptError` custom code can be called after the max attempts were executed.
 
 Using `interceptPreProcess` custom code can be called before starting the execution of the records. This can involve:
 * Setting up a local storage

@@ -30,6 +30,14 @@ class Interceptor {
   }
 
   /**
+   * Allows for making changes to a result after it has an error
+   * @param {Record} record
+   * @returns {Promise<Undefined>} Void promise
+   */
+  async interceptError (record) {
+  }
+
+  /**
    * Allows for calling custom code before the execution of the tests begin
    * @param {Job} job
    * @returns {Promise<Undefined>} Void promise
