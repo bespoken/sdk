@@ -80,6 +80,8 @@ The structure of the file is:
 | --- | --- | --- |
 | utterance | Yes | The utterance to be said to the device
 | device | No | The device value corresponds to the tag set on the device. If this value matches a tag, that device will be eligible to process this utterance.
+| locale | No | The locale to use for this record. If not set, defaults to 'en-US'
+| voiceID | No | The voice ID to use for this record. If not set, defaults to 'en-US-Wavenet-D'
 | [expected values] | No | There can zero-to-many expected fields defined - these will automatically be compared to fields on the JSON output
 
 #### *device* column
