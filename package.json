@@ -1,7 +1,7 @@
 {
   "author": "Bespoken",
   "bin": {
-    "bbt": "./bin/bbt.js"
+    "bbt": "bin/bbt.js"
   },
   "description": "This project tests utterances in batch - supporting a variety of data sources and reporting formats",
   "dependencies": {
@@ -59,5 +59,5 @@
     "test": "jest"
   },
   "standard": {},
-  "version": "0.10.0"
+  "version": "0.10.1"
 }
