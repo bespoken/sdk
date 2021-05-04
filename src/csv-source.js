@@ -36,6 +36,14 @@ class CSVSource extends Source {
 
       const record = new Record(r[utteranceProperty])
 
+      if (r.locale) {
+        record.locale = r.locale
+      }
+
+      if (r.voiceID) {
+        record.voiceID = r.voiceID
+      }
+
       // Add device tags automatically from the column labeled device
       const deviceProperty = Object.keys(r).find(property => property.trim().toLowerCase() === 'device')
       const device = r[deviceProperty]
@@ -44,10 +52,17 @@ class CSVSource extends Source {
       }
 
       Object.keys(r).forEach(field => {
-        if (field.trim().toLowerCase() === 'utterance' || field.trim().toLowerCase() === 'device') {
+        if (field.trim().toLowerCase() === 'utterance' ||
+          field.trim().toLowerCase() === 'device') {
           return
         }
 
+        // Add locale and voice id as output fields
+        if (field.trim().toLowerCase() === 'locale' ||
+          field.trim().toLowerCase() === 'voiceid') {
+          record.addOutputField(field, r[field])
+          return
+        }
         record.addExpectedField(field, r[field])
       })
       return record

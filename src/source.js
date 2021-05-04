@@ -116,6 +116,8 @@ class Record {
     this._meta = meta
     this._deviceTags = []
     this._conversationId = undefined
+    this._locale = undefined
+    this._voiceID = undefined
     this._rerun = false
   }
 
@@ -197,6 +199,21 @@ class Record {
   }
 
   /**
+   * Getter and setter for the locale
+   * @type {string}
+   */
+  get locale () {
+    return this._locale
+  }
+
+  /**
+   * @private
+   */
+  set locale (locale) {
+    this._locale = locale
+  }
+
+  /**
    * Whether this record is being rerun
    * @type {boolean}
    */
@@ -229,6 +246,21 @@ class Record {
    */
   set utterance (utterance) {
     this._utterance = utterance
+  }
+
+  /**
+   * Getter and setter for the utterance
+   * @type {string}
+   */
+  get voiceID () {
+    return this._voiceID
+  }
+
+  /**
+     * @private
+     */
+  set voiceID (voiceID) {
+    this._voiceID = voiceID
   }
 }
 module.exports = { Source, Record }

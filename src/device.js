@@ -14,7 +14,7 @@ class Device {
   }
 
   async message (record, messages, attempt = 1) {
-    console.log('DEVICE MESSAGE ' + messages.toString())
+    console.info('DEVICE MESSAGE ' + messages.toString() + ' locale: ' + record.locale + ' voice: ' + record.voiceID)
     const voiceID = record.voiceID || Config.get('virtualDeviceConfig.voiceID', undefined, false, 'en-US-Wavenet-D')
     const locale = record.locale || Config.get('virtualDeviceConfig.locale', undefined, false, 'en-US')
     let config = {
