@@ -203,6 +203,8 @@ class BatchRunner {
 
     if (error) {
       result.error = error
+      result.success = false
+      await Interceptor.instance().interceptError(record, result)
     } else {
       // Test the spoken response from Alexa
       Evaluator.evaluate(record, result, result.lastResponse)
