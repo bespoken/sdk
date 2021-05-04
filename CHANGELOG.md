@@ -1,7 +1,7 @@
 ## 0.10.2
 ### **Enhancements**
 * Add ability to change backoff time after attempt, defaults to 10
-* Add `interceptError` to fill up the result columns if the record process has an error
+* Add `interceptError` to fill up the result columns if the process has an error
 * Use voiceID from source data, defaults to 'en-US-Wavenet-D'
 ### **Bug Fixes**
 * Fix output path name extension bug
