@@ -36,13 +36,14 @@ class Device {
       const messagesArray = []
       messages.forEach(message => {
         const messageObject = {}
+        const isRawFile = !this.platform === 'twilio' && message.endsWith('.raw')
         if (!this.platform === 'twilio' && message.startsWith('http')) {
           messageObject.audio = {
             audioURL: message,
             frameRate: 16000,
             channels: 1
           }
-        } else if (!this.platform === 'twilio' && message.endsWith('.raw')) {
+        } else if (isRawFile || message.startsWith('./')) {
           messageObject.audio = {
             audioPath: message,
             frameRate: 16000,
