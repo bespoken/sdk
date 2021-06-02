@@ -1,3 +1,8 @@
+## 0.10.3
+### **Enhancements**
+* Add ability to send local audio files as utterances for Alexa, Google Assistant and Test Robot
+* Change twilio platform to phone platform
+
 ## 0.10.2
 ### **Enhancements**
 * Add ability to change backoff time after attempt, defaults to 10
