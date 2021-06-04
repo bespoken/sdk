@@ -36,13 +36,14 @@ class Device {
       const messagesArray = []
       messages.forEach(message => {
         const messageObject = {}
-        if (!this.platform === 'twilio' && message.startsWith('http')) {
+        const isRawFile = !this.platform === 'phone' && message.endsWith('.raw')
+        if (!this.platform === 'phone' && message.startsWith('http')) {
           messageObject.audio = {
             audioURL: message,
             frameRate: 16000,
             channels: 1
           }
-        } else if (!this.platform === 'twilio' && message.endsWith('.raw')) {
+        } else if (isRawFile || message.startsWith('./')) {
           messageObject.audio = {
             audioPath: message,
             frameRate: 16000,
@@ -146,8 +147,8 @@ class Device {
       platform = 'amazon-alexa'
     } else if (this._token.startsWith('google')) {
       platform = 'google-assistant'
-    } else if (this._token.startsWith('twilio')) {
-      platform = 'twilio'
+    } else if (this._token.startsWith('phone')) {
+      platform = 'phone'
     }
     return platform
   }

@@ -376,6 +376,40 @@ Timestamps can be added to the outputs by setting the env variable `DISPLAY_LOG_
 
 Finally, logs can be saved to a file by setting the env variable `SAVE_LOG_FILE`. The file will be placed in the `output` folder and named `batch-tester.log`. It uses pino.js default format.
 
+## Type of Utterances
+The record class accepts three types of utterances: text, URL and local audio files.
+
+| Device | Support |
+| --- | --- |
+| Alexa | Text, URL, Local Audio File |
+| Google Assistant | Text, URL, Local Audio File |
+| Test Robot | Text, URL, Local Audio File |
+| IVR | Text, URL |
+
+### Text
+```javascript
+  const record = new Record('play a radio station')
+```
+
+### URL
+```javascript
+  const record = new Record('https://play.radio.com/1234.wav')
+```
+
+### Local audio file
+The audio file path should start from the root path of your project
+```
+project/
+|-subfolder/
+  |- audios/
+    |- radio123.wav
+|- src/
+  |- source.js
+```
+```javascript
+  const record = new Record('./subfolder/audio/radio123.wav')
+```
+
 ## **DataDog Configuration**
 Follow [this guide](./docs/datadog#how-to-signup-and-get-an-api-key) to get started.
 
