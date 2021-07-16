@@ -205,6 +205,11 @@ class BatchRunner {
       result.error = error
       result.success = false
       await Interceptor.instance().interceptError(record, result)
+
+      const hasRetry = result.shouldRetry && result.retryCount < 2
+      if (hasRetry) {
+        await this._processWithRetries(device, record, retryCount + 1)
+      }
     } else {
       // Test the spoken response from Alexa
       Evaluator.evaluate(record, result, result.lastResponse)
