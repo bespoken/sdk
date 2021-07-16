@@ -1,3 +1,7 @@
+## 0.10.4
+### **Enhancements**
+* validate shouldRetry when there is an error
+
 ## 0.10.3
 ### **Enhancements**
 * Add ability to send local audio files as utterances for Alexa, Google Assistant and Test Robot
