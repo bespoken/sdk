@@ -232,7 +232,8 @@ class Result {
    *
    * @param {Record} record
    * @param {string} [voiceId]
-   * @param {Object} lastResponse
+   * @param {Object[]} responses
+   * @param {number} retryCount
    */
   constructor (record, voiceId, responses, retryCount = 0) {
     this._record = record

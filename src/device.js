@@ -56,8 +56,17 @@ class Device {
         if (this.settings) {
           messageObject.settings = this.settings
         }
+
+        if (record.settings) {
+          if (!messageObject.settings) {
+            messageObject.settings = {}
+          }
+          Object.assign(messageObject.settings, record.settings)
+        }
         messagesArray.push(messageObject)
       })
+
+      console.log('DEVICE MESSAGE request: ' + JSON.stringify(messagesArray))
       await Interceptor.instance().interceptRequest(record, messagesArray, this)
       const response = await virtualDevice.batchMessage(messagesArray)
       console.log('DEVICE MESSAGE initial response: ' + JSON.stringify(response))
@@ -93,6 +102,8 @@ class Device {
 
         console.log('DEVICE MESSAGE final transcript: ' + _.get(_.nth(_.get(result, 'results'), -1), 'transcript'))
         return result.results
+      } else {
+        return response.results
       }
     } catch (e) {
       return this._retry(this._parseError(e), messages, record, attempt)
