@@ -16,7 +16,7 @@
     "jsonpath": "^1.0.2",
     "lodash": "^4.17.19",
     "moment": "^2.27.0",
-    "mysql": "github:mysqljs/mysql",
+    "mysql": "^2.18.1",
     "node-cache": "^5.1.2",
     "pino": "~6.3.2",
     "pino-multi-stream": "^5.1.1",
