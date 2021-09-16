@@ -119,6 +119,9 @@ class Record {
     this._locale = undefined
     this._voiceID = undefined
     this._rerun = false
+
+    /** @type {Object<string, any>} */
+    this._settings = undefined
   }
 
   /**
@@ -147,8 +150,32 @@ class Record {
     this._outputFields[name] = value
   }
 
+  /**
+   *
+   * @param {string} name
+   * @param {string} setting
+   */
+  addSetting (name, setting) {
+    if (!this._settings) {
+      this._settings = {}
+    }
+    this._settings[name] = setting
+  }
+
   outputField (name) {
     return this._outputFields[name]
+  }
+
+  /**
+   * Property to get the latest conversation id while processing the record
+   * @type {Object}
+   */
+  get conversationId () {
+    return this._conversationId
+  }
+
+  set conversationId (conversationId) {
+    this._conversationId = conversationId
   }
 
   /**
@@ -164,6 +191,21 @@ class Record {
    */
   get expectedFields () {
     return this._expectedFields
+  }
+
+  /**
+   * Getter and setter for the locale
+   * @type {string}
+   */
+  get locale () {
+    return this._locale
+  }
+
+  /**
+   * @private
+   */
+  set locale (locale) {
+    this._locale = locale
   }
 
   /**
@@ -187,33 +229,6 @@ class Record {
   }
 
   /**
-   * Property to get the latest conversation id while processing the record
-   * @type {Object}
-   */
-  get conversationId () {
-    return this._conversationId
-  }
-
-  set conversationId (conversationId) {
-    this._conversationId = conversationId
-  }
-
-  /**
-   * Getter and setter for the locale
-   * @type {string}
-   */
-  get locale () {
-    return this._locale
-  }
-
-  /**
-   * @private
-   */
-  set locale (locale) {
-    this._locale = locale
-  }
-
-  /**
    * Whether this record is being rerun
    * @type {boolean}
    */
@@ -223,6 +238,13 @@ class Record {
 
   set rerun (rerun) {
     this._rerun = rerun
+  }
+
+  /**
+   * @returns {Object<string, any>}
+   */
+  get settings () {
+    return this._settings
   }
 
   /**

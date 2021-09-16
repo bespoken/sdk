@@ -3,15 +3,13 @@
   "description": "This project tests utterances in batch - supporting a variety of data sources and reporting formats",
   "devDependencies": {
     "@types/node": "^16.9.2",
-    "codecov": "^3.7.2",
     "eslint": "^7.32.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-jsdoc": "^36.1.0",
     "jest": "^24.9.0",
     "jest-junit-reporter": "^1.1.0",
     "jsdoc": "^3.6.5",
-    "lerna": "^4.0.0",
-    "standard": "^14.3.4"
+    "lerna": "^4.0.0"
   },
   "engines": {
     "node": ">=10.0.0"
