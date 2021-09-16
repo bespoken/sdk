@@ -1,0 +1,16 @@
+{
+  "ava": {
+    "failWithoutAssertions": false,
+    "files": [
+      "test/**/*.test.js"
+    ]
+  },
+  "dependencies": {
+    "@batch-tester/core": "^0.11.0"
+  },
+  "name": "@batch-tester/alexa",
+  "scripts": {
+    "test": "ava"
+  },
+  "version": "0.11.0"
+}

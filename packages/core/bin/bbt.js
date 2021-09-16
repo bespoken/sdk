@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 const { program } = require('commander')
 const packageJson = require('../package.json')
-const BatchRunner = require('../src/batch-runner')
-const Job = require('../src/job').Job
-const Printer = require('../src/printer')
-const Rerunner = require('../src/rerunner')
-const Merger = require('../src/merger')
+const BatchRunner = require('../lib/batch-runner')
+const Job = require('../lib/job').Job
+const Printer = require('../lib/printer')
+const Rerunner = require('../lib/rerunner')
+const Merger = require('../lib/merger')
 
 program
   .version(packageJson.version)

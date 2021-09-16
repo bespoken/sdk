@@ -1,6 +1,14 @@
 {
-  "javascript.validate.enable": false,
-  "standard.autoFixOnSave": true,
-  "standard.enable": true,
-  "standard.run": "onType",
+  "editor.matchBrackets": "always",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "eslint.alwaysShowStatus": true,
+  "eslint.format.enable": true,
+  "eslint.lintTask.enable": true,
+  "eslint.run": "onSave",
+  "eslint.validate": ["javascript"],
+  "eslint.workingDirectories": [
+    "./src/js"
+  ]
 }

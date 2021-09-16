@@ -1,34 +1,16 @@
 {
   "author": "Bespoken",
-  "bin": {
-    "bbt": "bin/bbt.js"
-  },
   "description": "This project tests utterances in batch - supporting a variety of data sources and reporting formats",
-  "dependencies": {
-    "aws-sdk": "^2.718.0",
-    "axios": "^0.19.0",
-    "bespoken-tools": "2.4.45-0",
-    "commander": "^5.1.0",
-    "csv": "^5.3.2",
-    "datadog-metrics": "^0.8.1",
-    "dotenv": "^8.2.0",
-    "fuse.js": "^6.4.1",
-    "jsonpath": "^1.0.2",
-    "lodash": "^4.17.19",
-    "moment": "^2.27.0",
-    "mysql": "github:mysqljs/mysql",
-    "node-cache": "^5.1.2",
-    "pino": "~6.3.2",
-    "pino-multi-stream": "^5.1.1",
-    "pino-pretty": "^4.1.0",
-    "sqlite3": "^5.0.0",
-    "virtual-device-sdk": "1.7.2-0"
-  },
   "devDependencies": {
+    "@types/node": "^16.9.2",
     "codecov": "^3.7.2",
+    "eslint": "^7.32.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-jsdoc": "^36.1.0",
     "jest": "^24.9.0",
     "jest-junit-reporter": "^1.1.0",
     "jsdoc": "^3.6.5",
+    "lerna": "^4.0.0",
     "standard": "^14.3.4"
   },
   "engines": {
@@ -49,15 +31,15 @@
     "testResultsProcessor": "./node_modules/jest-junit-reporter"
   },
   "main": "index.js",
-  "name": "bespoken-batch-tester",
+  "name": "batch-tester",
   "scripts": {
     "codecov": "codecov",
+    "compile": "lerna exec -- tsc --outDir types",
     "docs": "jsdoc -c .jsdoc.json",
     "postversion": "git push && git push --tags",
     "process": "node bin/bbt.js process",
     "standard": "standard --fix",
     "test": "jest"
   },
-  "standard": {},
-  "version": "0.10.4"
+  "standard": {}
 }
