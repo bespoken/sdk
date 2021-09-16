@@ -6,11 +6,11 @@
     ]
   },
   "dependencies": {
-    "@batch-tester/core": "^0.11.1"
+    "@batch-tester/core": "^0.11.2"
   },
   "name": "@batch-tester/alexa",
   "scripts": {
     "test": "ava"
   },
-  "version": "0.11.1"
+  "version": "0.11.2"
 }
