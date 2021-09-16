@@ -10,6 +10,9 @@
     "aws-sdk": "^2.718.0"
   },
   "name": "@batch-tester/server",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "test": "ava"
   },

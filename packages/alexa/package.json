@@ -9,6 +9,9 @@
     "@batch-tester/core": "^0.11.3"
   },
   "name": "@batch-tester/alexa",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "test": "ava"
   },
