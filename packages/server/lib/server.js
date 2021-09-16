@@ -5,17 +5,27 @@ const http = require('http')
 const Job = require('@batch-tester/core').Job
 const { Readable } = require('stream')
 const Store = require('../src/store')
+
 const S3Store = require('../src/s3-store')
 const URL = require('url')
 const Util = require('../src/util')
 const zlib = require('zlib')
 
+/**
+ *
+ */
 class Server {
+  /**
+   * @param listener
+   */
   constructor (listener) {
     this.listener = listener
     this.store = new S3Store()
   }
 
+  /**
+   * @param port
+   */
   async start (port = 3000) {
     return new Promise((resolve) => {
       this.server = http.createServer((message, response) => {
@@ -43,6 +53,9 @@ class Server {
     })
   }
 
+  /**
+   *
+   */
   stop () {
     return new Promise((resolve) => {
       console.log('SERVER STOP CALLED')
@@ -54,6 +67,11 @@ class Server {
     })
   }
 
+  /**
+   * @param message
+   * @param response
+   * @param dataStream
+   */
   _handleRequest (message, response, dataStream) {
     const url = URL.parse(message.url, true) /* eslint-disable-line */
     const path = url.pathname
@@ -97,6 +115,10 @@ class Server {
     s3Stream.pipe(zlib.createGzip()).pipe(response)
   }
 
+  /**
+   * @param response
+   * @param url
+   */
   async _filter (response, url) {
     const run = url.query.run
     const limit = url.query.limit
@@ -106,6 +128,10 @@ class Server {
     response.end(JSON.stringify({ jobs: results }, null, 2))
   }
 
+  /**
+   * @param response
+   * @param url
+   */
   async _decrypt (response, url) {
     const encryptedKey = url.query.key
     const key = Util.decrypt(encryptedKey)
@@ -126,6 +152,10 @@ class Server {
     return this.store.fetch(run)
   }
 
+  /**
+   * @param response
+   * @param url
+   */
   async _log (response, url) {
     const index = url.query.index
     const job = await this._fetchJob(url)
@@ -137,6 +167,9 @@ class Server {
     readable.pipe(response)
   }
 
+  /**
+   * @param response
+   */
   async _ping (response) {
     const packageData = fs.readFileSync('package.json')
     const packageJSON = JSON.parse(packageData)
