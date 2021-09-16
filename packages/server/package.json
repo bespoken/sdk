@@ -6,12 +6,12 @@
     ]
   },
   "dependencies": {
-    "@batch-tester/core": "^0.11.0",
+    "@batch-tester/core": "^0.11.1",
     "aws-sdk": "^2.718.0"
   },
   "name": "@batch-tester/server",
   "scripts": {
     "test": "ava"
   },
-  "version": "0.11.0"
+  "version": "0.11.1"
 }
