@@ -5,7 +5,6 @@ const http = require('http')
 const Job = require('@batch-tester/core').Job
 const { Readable } = require('stream')
 const Store = require('../src/store')
-
 const S3Store = require('../src/s3-store')
 const URL = require('url')
 const Util = require('../src/util')

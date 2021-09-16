@@ -13,5 +13,6 @@
   "scripts": {
     "test": "ava"
   },
-  "version": "0.11.4"
+  "version": "0.11.4",
+  "gitHead": "73ac650fe3dbf163129cbf1548c18971c600a68d"
 }
