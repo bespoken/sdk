@@ -1,0 +1,42 @@
+{
+  "ava": {
+    "failWithoutAssertions": false,
+    "files": [
+      "test/**/*.test.js"
+    ]
+  },
+  "bin": {
+    "bbt": "bin/bbt.js"
+  },
+  "dependencies": {
+    "@bespoken-sdk/shared": "^0.11.5",
+    "@bespoken-sdk/store": "^0.11.5",
+    "aws-sdk": "^2.718.0",
+    "axios": "^0.19.0",
+    "bespoken-tools": "2.4.45-0",
+    "commander": "^5.1.0",
+    "csv": "^5.3.2",
+    "datadog-metrics": "^0.8.1",
+    "dotenv": "^8.6.0",
+    "fuse.js": "^6.4.1",
+    "jsonpath": "^1.0.2",
+    "lodash": "^4.17.19",
+    "moment": "^2.27.0",
+    "mysql": "^2.18.1",
+    "node-cache": "^5.1.2",
+    "pino": "~6.3.2",
+    "pino-multi-stream": "^5.1.1",
+    "pino-pretty": "^4.1.0",
+    "sqlite3": "^5.0.0",
+    "virtual-device-sdk": "1.7.2-0"
+  },
+  "name": "@bespoken-sdk/batch",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "ava"
+  },
+  "types": "types/index.d.ts",
+  "version": "0.11.5"
+}

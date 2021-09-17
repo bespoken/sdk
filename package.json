@@ -3,13 +3,18 @@
   "description": "This project tests utterances in batch - supporting a variety of data sources and reporting formats",
   "devDependencies": {
     "@types/node": "^16.9.2",
+    "ava": "^3.15.0",
     "eslint": "^7.32.0",
     "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.24.2",
     "eslint-plugin-jsdoc": "^36.1.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0",
     "jest": "^24.9.0",
     "jest-junit-reporter": "^1.1.0",
     "jsdoc": "^3.6.5",
     "lerna": "^4.0.0",
+    "typescript": "^4.4.3",
     "yarn": "^1.22.11"
   },
   "engines": {
@@ -30,7 +35,7 @@
     "testResultsProcessor": "./node_modules/jest-junit-reporter"
   },
   "main": "index.js",
-  "name": "batch-tester",
+  "name": "bespoken-sdk",
   "scripts": {
     "codecov": "codecov",
     "compile": "lerna exec -- tsc --outDir types",
@@ -38,7 +43,8 @@
     "postversion": "git push && git push --tags",
     "process": "node bin/bbt.js process",
     "standard": "standard --fix",
-    "test": "jest"
+    "test": "jest",
+    "types": "lerna exec --no-bail -- tsc --allowJS --declaration --outDir types --emitDeclarationOnly index.js"
   },
   "standard": {}
 }

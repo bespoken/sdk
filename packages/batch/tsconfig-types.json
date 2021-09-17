@@ -5,8 +5,10 @@
     "checkJs": true,
     "module": "commonjs",
     "declaration": true,
-    "noEmit": true,
+    "emitDeclarationOnly": true,
+    "outDir": "types",
     "skipLibCheck": true,
     "target": "es6"
-  }
+  },
+  "include": ["lib/config.js"]
 }

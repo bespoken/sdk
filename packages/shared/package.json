@@ -1,0 +1,19 @@
+{
+  "ava": {
+    "failWithoutAssertions": false,
+    "files": [
+      "test/**/*.test.js"
+    ]
+  },
+  "dependencies": {
+    "dotenv": "^8.6.0"
+  },
+  "name": "@bespoken-sdk/shared",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "ava"
+  },
+  "version": "0.11.5"
+}
