@@ -6,7 +6,7 @@
     ]
   },
   "dependencies": {
-    "@bespoken-sdk/shared": "0.11.5"
+    "@bespoken-sdk/shared": "^0.11.6"
   },
   "name": "@bespoken-sdk/measure",
   "publishConfig": {
@@ -16,6 +16,6 @@
     "test": "ava"
   },
   "types": "types/index.d.ts",
-  "version": "0.11.5",
+  "version": "0.11.6",
   "gitHead": "95dcc6e258335485d123b8e235c99f05d78eaa06"
 }
