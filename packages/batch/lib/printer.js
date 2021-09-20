@@ -15,7 +15,7 @@ class Printer {
    * @returns {Printer}
    */
   static instance (outputPath) {
-    return Config.instance('printer', 'printer', undefined, outputPath)
+    return Config.instance('printer', 'printer', outputPath)
   }
 
   /**

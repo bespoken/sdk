@@ -1,5 +1,4 @@
 const AWS = require('aws-sdk')
-const Job = require('@bespoken-sdk/batch').Job
 const NodeCache = require('node-cache')
 const Store = require('./store')
 

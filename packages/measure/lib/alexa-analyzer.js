@@ -1,3 +1,4 @@
+const logger = require("@bespoken-sdk/shared/lib/logger")('ALEXA')
 
 /**
  * Analyzers Alexa output for accuracy
@@ -38,7 +39,7 @@ class AlexaAnalyzer {
       } else {
         return new AnalysisResponse(false, 'No slot matched - try adding synonyms to the expected slot definition')
       }
-    } else if (slot.value !== slotValue) {
+    } else if (!slot.value || slot.value.toLowerCase() !== slotValue.toLowerCase()) {
       return new AnalysisResponse(false, `Wrong slot value matched: ${slotValue}`)
     } else {
       return new AnalysisResponse(true)
@@ -53,7 +54,7 @@ class AlexaAnalyzer {
    */
   _decodeResult (response) {
     const encodedData = response.caption
-    console.info('ALEXA ENCODED response: ' + encodedData)
+    logger.info('ALEXA ENCODED response: ' + encodedData)
     return this._decodeContent(encodedData)
   }
 
@@ -93,7 +94,7 @@ class AnalysisResponse {
  */
 class IntentResponse {
   /**
-   * @param name
+   * @param {string} name
    */
   constructor(name) {
     this.name = name
@@ -102,10 +103,11 @@ class IntentResponse {
   }
 
   /**
-   * @param name
-   * @param transcript
-   * @param value
-   * @param type
+   * @param {string} name
+   * @param {string} transcript
+   * @param {string} value
+   * @param {string} type
+   * @returns {void}
    */
   addSlot(name, transcript, value, type) {
     this.slots[name] = new SlotResponse(name, transcript, value, type)
@@ -124,7 +126,13 @@ class IntentResponse {
    * @returns {SlotResponse | undefined} 
    */
   slot(name) {
-    return this.slots[name]
+    for (const slot of this.matchedSlots()) {
+      if (slot.name.toLowerCase() === name.toLowerCase()) {
+        return slot
+      }
+    }
+
+    return undefined
   }
 }
 

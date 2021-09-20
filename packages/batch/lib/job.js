@@ -1,6 +1,9 @@
 const _ = require('lodash')
-const fs = require('fs')
 const Config = require('@bespoken-sdk/shared/lib/config')
+const DTO = require('@bespoken-sdk/store/lib/dto')
+const fs = require('fs')
+const JobDTO = require('@bespoken-sdk/store/lib/job-dto')
+const logger = require('@bespoken-sdk/shared/lib/logger')('JOB')
 const Record = require('./source').Record
 const moment = require('moment')
 
@@ -13,10 +16,11 @@ class Job {
    * It checks first for it locally - if it's not there, it loads it remotely
    * It then saves it locally for faster access
    * @param {string} key
+   * @returns {Promise<Job>}
    */
   static async lazyFetchJobForKey (key) {
-    const BespokenStore = require('./bespoken-store')
-    const store = new BespokenStore()
+    const StoreClient = require('@bespoken-sdk/store').Client
+    const store = new StoreClient()
     if (!fs.existsSync('data')) {
       fs.mkdirSync('data')
     }
@@ -26,7 +30,7 @@ class Job {
     let decryptedKey = key
     if (!key.includes('-')) {
       decryptedKey = await store.decrypt(key)
-      console.info('JOB LAZYFETCH decrypted key: ' + decryptedKey)
+      logger.info('JOB LAZYFETCH decrypted key: ' + decryptedKey)
     }
 
     let dataFile = `data/${decryptedKey}`
@@ -36,7 +40,7 @@ class Job {
 
     let jobJSON
     if (fs.existsSync(dataFile)) {
-      jobJSON = JSON.parse(fs.readFileSync(dataFile))
+      jobJSON = JSON.parse(fs.readFileSync(dataFile, 'utf-8'))
     } else {
       jobJSON = await store.fetch(key)
       fs.writeFileSync(dataFile, JSON.stringify(jobJSON, null, 2))
@@ -47,12 +51,21 @@ class Job {
   }
 
   /**
+   * 
+   * @param {DTO} dto
+   * @returns {Job} job
+   */
+  static fromDTO(dto) {
+    return Job.fromJSON(dto.json)
+  }
+
+  /**
    * Creates a new Job object from JSON
    * @param {Object} json
    * @returns {Job}
    */
   static fromJSON (json) {
-    const job = new Job()
+    const job = new Job(json.name, json.run)
     Object.assign(job, json)
     // Loop through results and turn into objects
     const resultObjects = []
@@ -75,9 +88,9 @@ class Job {
   }
 
   /**
-   * @param name
-   * @param run
-   * @param config
+   * @param {string} name
+   * @param {string} run
+   * @param {any} config
    */
   constructor (name, run, config) {
     const now = moment().utc()
@@ -98,95 +111,49 @@ class Job {
   }
 
   /**
-   * Captures a result of a record being processed
-   * @param {Result} result
-   */
-  addResult (result) {
-    this._results.push(result)
-  }
-
-  /**
-   * Increments the number of records being processed
-   * @param {number} [count] Defaults to 1
-   */
-  addProcessedCount (count = 1) {
-    this._processedCount++
-  }
-
-  /**
-   * Iterates across all the results to see all the expected field values
-   * @returns {string[]} Return the list of expected field names
-   */
-  expectedFieldNames () {
-    const fields = this._uniqueFields(this._records, 'expectedFields')
-    // console.log(`JOB expectedFields: ${fields}`)
-    return fields
-  }
-
-  /**
-   *
-   */
-  outputFieldNames () {
-    // Add output fields from the records as well as the results
-    const fields = this._uniqueFields(this._results, 'outputFields')
-    // console.log(`JOB ouputFields: ${fields}`)
-    return fields
-  }
-
-  /**
-   * @param recordArray
-   * @param resultProperty
-   */
-  _uniqueFields (recordArray, resultProperty) {
-    const fields = []
-    recordArray.forEach(result => {
-      // console.log(`RESULT ${resultProperty}: ${result[resultProperty]}`)
-      Object.keys(result[resultProperty]).forEach(field => {
-        if (fields.indexOf(field) === -1) {
-          fields.push(field)
-        }
-      })
-    })
-    return fields
-  }
-
-  /**
-   *
+   * @returns {any}
    */
   get config () {
     return this._config
   }
 
   /**
-   *
+   * The date the job was created (UTC)
+   * Saved in ISO 8601 format: YYYY-MM-DDThh:mm:ssZ
+   * Eg. 2020-05-21T15:50:13Z
+   * @type {string}
+   */
+  get date () {
+    return this._date
+  }
+
+  /**
+   * @returns {string}
    */
   get customer () {
     return this.config.customer
   }
 
   /**
-   *
+   * @returns {string}
    */
   get key () {
     return this._key
   }
-
-  /**
-   *
-   */
+  
   set key (key) {
     this._key = key
   }
 
   /**
-   *
+   * @returns {string}
    */
   get name () {
     return this._name
   }
 
   /**
-   *
+   * @returns {number}
    */
   get processedCount () {
     return this._processedCount
@@ -199,27 +166,24 @@ class Job {
     return this._records
   }
 
-  /**
-   *
-   */
   set records (records) {
     this._records = records
   }
-
+  
   /**
-   *
+   * @returns {boolean}
    */
-  get rerun () {
+   get rerun () {
     return this._rerun
   }
 
   /**
-   *
+   * Sets the rerun flag
    */
   set rerun (rerun) {
     this._rerun = rerun
   }
-
+  
   /**
    * @returns {Result[]} The results for the job
    */
@@ -234,16 +198,13 @@ class Job {
   get run () {
     return this._run
   }
-
-  /**
-   *
-   */
+  
   set run (run) {
     this._run = run
   }
 
   /**
-   *
+   * @returns {string}
    */
   get status () {
     let recordsToProcess = this.records.length
@@ -257,15 +218,68 @@ class Job {
       return 'NOT_COMPLETED'
     }
   }
+  
+  /**
+   * Captures a result of a record being processed
+   * @param {Result} result
+   * @returns {void}
+   */
+  addResult (result) {
+    this._results.push(result)
+  }
 
   /**
-   * The date the job was created (UTC)
-   * Saved in ISO 8601 format: YYYY-MM-DDThh:mm:ssZ
-   * Eg. 2020-05-21T15:50:13Z
-   * @type {string}
+   * Increments the number of records being processed
+   * @param {number} [count] Defaults to 1
+   * @returns {void}
    */
-  get date () {
-    return this._date
+  addProcessedCount (count = 1) {
+    this._processedCount += count
+  }
+
+  /**
+   * Iterates across all the results to see all the expected field values
+   * @returns {string[]} Return the list of expected field names
+   */
+  expectedFieldNames () {
+    const fields = this._uniqueFields(this._records, 'expectedFields')
+    // logger.log(`JOB expectedFields: ${fields}`)
+    return fields
+  }
+
+  /**
+   * @returns {string[]}
+   */
+  outputFieldNames () {
+    // Add output fields from the records as well as the results
+    const fields = this._uniqueFields(this._results, 'outputFields')
+    // logger.log(`JOB ouputFields: ${fields}`)
+    return fields
+  }
+
+  /**
+   * @returns {DTO}
+   */
+  toDTO() {
+    return new JobDTO(this)
+  }
+
+  /**
+   * @param {Object[]} recordArray
+   * @param {string} resultProperty
+   * @returns {string[]}
+   */
+  _uniqueFields (recordArray, resultProperty) {
+    const fields = []
+    recordArray.forEach(result => {
+      // logger.log(`RESULT ${resultProperty}: ${result[resultProperty]}`)
+      Object.keys(result[resultProperty]).forEach(field => {
+        if (fields.indexOf(field) === -1) {
+          fields.push(field)
+        }
+      })
+    })
+    return fields
   }
 }
 
@@ -275,21 +289,28 @@ class Job {
 class Result {
   /**
    *
-   * @param {Record} record
+   * @param {Record} [record]
    * @param {string} [voiceId]
-   * @param {Object[]} responses
-   * @param {number} retryCount
+   * @param {Object[]} [responses]
+   * @param {number} [retryCount]
    */
   constructor (record, voiceId, responses, retryCount = 0) {
     this._record = record
     this._voiceId = voiceId
     this._responses = responses
+    this._retryCount = retryCount
+
+    /** @type {Object<string, string>} */
     this._actualFields = {}
+
+    /** @type {Object<string, string>} */
     this._outputFields = {}
+    
+    /** @type {Object<string, string>} */
     this._tags = {}
+    
     this._timestamp = Date.now()
     this._shouldRetry = false
-    this._retryCount = retryCount
   }
 
   /**
@@ -305,6 +326,7 @@ class Result {
    * Adds the actual value for an expected field to the result
    * @param {string} field The name of the field
    * @param {string} value The value of the field
+   * @returns {void}
    */
   addActualField (field, value) {
     this._actualFields[field] = value
@@ -314,14 +336,16 @@ class Result {
    * Adds a field to the output results - these are fields that are not expected or actual but are helpful info about the record
    * @param {string} field The name of the field
    * @param {string} value The value of the field
+   * @returns {void}
    */
   addOutputField (field, value) {
     this._outputFields[field] = value
   }
 
   /**
-   * @param key
-   * @param value
+   * @param {string} key
+   * @param {string} value
+   * @returns {void}
    */
   addTag (key, value) {
     this._tags[key] = value
@@ -337,45 +361,43 @@ class Result {
   }
 
   /**
-   *
+   * @returns {Object<string, string>}
    */
   get actualFields () {
     return this._actualFields
   }
 
   /**
-   *
+   * @returns {string}
    */
   get error () {
     return this._error
   }
-
-  /**
-   *
-   */
+  
   set error (error) {
     this._error = error
   }
 
   /**
-   *
+   * @returns {any}
    */
   get lastResponse () {
     return _.nth(this.responses, -1)
   }
 
   /**
-   *
+   * @returns {any[]}
    */
   get responses () {
     return this._responses
   }
 
   /**
-   *
+   * @returns {Object<string, string>}
    */
   get outputFields () {
     // We concatenate the output fields from the record and the result
+    /** @type {Object<string, string>} */
     const outputFields = {}
     if (this.record) {
       Object.assign(outputFields, this.record.outputFields)
@@ -385,14 +407,14 @@ class Result {
   }
 
   /**
-   *
+   * @returns {Record}
    */
   get record () {
     return this._record
   }
 
   /**
-   *
+   * @returns {string[]}
    */
   get sanitizedOcrLines () {
     const homophones = Config.get('homophones', false, {})
@@ -425,21 +447,21 @@ class Result {
   }
 
   /**
-   *
+   * @returns {Object<string, string>}
    */
   get tags () {
     return this._tags
   }
 
   /**
-   *
+   * @returns {number}
    */
   get timestamp () {
     return this._timestamp
   }
 
   /**
-   *
+   * @returns {boolean}
    */
   get shouldRetry () {
     return this._shouldRetry
@@ -453,15 +475,12 @@ class Result {
   }
 
   /**
-   *
+   * @returns {number}
    */
   get retryCount () {
     return this._retryCount
   }
 
-  /**
-   *
-   */
   set retryCount (retryCount) {
     this._retryCount = retryCount
   }

@@ -1,6 +1,6 @@
 const _ = require('lodash')
-const axios = require('axios')
-const Job = require('@bespoken-sdk/batch').Job
+const axios = require('axios').default
+const DTO = require('./dto')
 const Readable = require('stream').Readable
 const Store = require('./store')
 const zlib = require('zlib')
@@ -11,7 +11,7 @@ const zlib = require('zlib')
 class Client extends Store {
   /**
    * @param {string} run
-   * @returns {Promise<Job>}
+   * @returns {Promise<DTO>}
    */
   async fetch (run) {
     console.time('BESPOKEN-STORE FETCH')
@@ -44,8 +44,7 @@ class Client extends Store {
       streamResponse.data.on('end', () => {
         console.timeEnd('BESPOKEN-STORE FETCH')
         const jobJSON = JSON.parse(buffer.toString('utf-8'))
-        const job = Job.fromJSON(jobJSON)
-        resolve(job)
+        resolve(jobJSON)
       })
     })
   }
@@ -53,7 +52,7 @@ class Client extends Store {
   /**
    * @param {string} runName
    * @param {number} limit
-   * @returns {Promise<Job[]>}
+   * @returns {Promise<any[]>}
    */
   async filter (runName, limit = 10) {
     console.time('BESPOKEN-STORE FILTER')
@@ -66,7 +65,7 @@ class Client extends Store {
   }
 
   /**
-   * @param {Job} job
+   * @param {any} job
    * @returns {Promise<string>} The UUID assigned to the job
    */
   async save (job) {
@@ -107,37 +106,17 @@ class Client extends Store {
   }
 
   /**
-   * @param {Job} job
+   * @param {DTO} dto
    * @param {number} index
    * @returns {string}
    */
-  logURL (job, index) {
-    if (!job.key) {
+  logURL (dto, index) {
+    if (!dto.key) {
       return 'N/A'
     }
 
-    if (index === undefined) {
-      index = job.results.length - 1
-    }
-
-    return `${this.accessURL()}/log?run=${job.key}&index=${index}`
+    return `${this.accessURL()}/log?run=${dto.key}&index=${index}`
   }
 }
 
 module.exports = Client
-
-if (_.nth(process.argv, 2) === 'test-store') {
-  const bespokenStore = new Client()
-  // bespokenStore.fetch('b0dd06d0de84bf4127b911716fa58868c8b802927829a560094ba83e1b603f50').then(async (job) => {
-  bespokenStore.fetch('e3ddeac12879bd475a7648c5370e06dae18af24ec5ecdad0e6ba33221e967466').then(async (job) => {
-    job._run = job._run + 'V2'
-    const Printer = require('@bespoken-sdk/batch').Printer
-    const printer = new Printer()
-
-    console.time('Print')
-    await printer.print(job)
-    console.timeEnd('Print')
-
-    await bespokenStore.save(job)
-  })
-}

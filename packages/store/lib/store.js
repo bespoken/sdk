@@ -1,9 +1,21 @@
 const Config = require('@bespoken-sdk/shared').Config
+const DTO = require('./dto')
 
 /**
  * Interface for storing data
  */
 class Store {
+  /**
+   * @param {string} run
+   * @returns {string}
+   */
+   static key (run) {
+    if (run.endsWith('.json')) {
+      return run
+    }
+    return run + '.json'
+  }
+
   /**
    * @returns {Store}
    */
@@ -29,41 +41,31 @@ class Store {
 
   /**
    *
-   * @param {any} job
+   * @param {DTO} dto
    * @param {number} index
    * @returns {string}
    */
-  logURL (job, index) {
-    return undefined
+  logURL (dto, index) {
+    throw new Error('Not implemented for: ' + dto + ' index: ' + index)
   }
 
   /**
-   * Fetches the run by name
-   * @param {string} run
-   * @returns {any}
+   * Fetches the object by key
+   * @abstract
+   * @param {string} key
+   * @returns {Promise<DTO>}
    */
-  async fetch (run) {
-    return Promise.resolve()
+  async fetch (key) {
+    throw new Error('Not implemented for: ' + key)
   }
 
   /**
    *
-   * @param {any} job
-   * @returns {string} key
+   * @param {DTO} dto
+   * @returns {Promise<string>} key
    */
-  async save (job) {
-    return Promise.resolve(job.run)
-  }
-
-  /**
-   * @param {string} run
-   * @returns {string}
-   */
-  static key (run) {
-    if (run.endsWith('.json')) {
-      return run
-    }
-    return run + '.json'
+  async save (dto) {
+    return Promise.resolve(dto.key)
   }
 }
 

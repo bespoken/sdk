@@ -1,5 +1,6 @@
 const _ = require('lodash')
 const fs = require('fs')
+const logger = require('./logger')('CONFIG')
 const path = require('path')
 
 require('dotenv').config()
@@ -20,6 +21,7 @@ class Config {
    * This only needs to be called once - it should be done as soon as the process starts
    * </pre>
    * @param {string} file
+   * @returns {void}
    */
   static loadFromFile (file) {
     const configString = fs.readFileSync(file, 'utf-8')
@@ -57,12 +59,12 @@ class Config {
    * Returns the value for the specified environment variable
    * Also checks to see if it is one of the allowed values if provided, and throws an error if not
    * @param {string} key The environment variable requested
-   * @param {string} [allowedValues] The allowed values for the variable
+   * @param {string[]} [allowedValues] The allowed values for the variable
    * @returns {string} The value for the specified environment variable
    */
   static env (key, allowedValues) {
     if (!process.env[key]) {
-      console.error(`Required environment variable ${key} not found. Must be set.`)
+      logger.error(`Required environment variable ${key} not found. Must be set.`)
       process.exit(1)
     }
 
@@ -79,7 +81,7 @@ class Config {
    * @param {string} key
    * @param {boolean} [required=false]
    * @param {any} [defaultValue]
-   * @param {string} [allowedValues]
+   * @param {string[]} [allowedValues]
    * @returns {Object} The value for the specified key
    */
   static get (key, required = false, defaultValue = undefined, allowedValues) {
@@ -89,7 +91,7 @@ class Config {
     }
 
     if (required && !value && !defaultValue) {
-      console.error(`CONFIG FATAL ERROR: ${key} is required in configuration but is not set. Exiting.`)
+      logger.error(`CONFIG FATAL ERROR: ${key} is required in configuration but is not set. Exiting.`)
       process.exit(1)
     }
 
@@ -100,7 +102,7 @@ class Config {
   }
 
   /**
-   * @param key
+   * @param {string} key
    * @returns {boolean}
    */
   static has (key) {
@@ -108,8 +110,8 @@ class Config {
   }
 
   /**
-   * @param key
-   * @param defaultValue
+   * @param {string} key
+   * @param {boolean} [defaultValue=false]
    * @returns {boolean}
    */
   static boolean (key, defaultValue = false) {
@@ -117,7 +119,7 @@ class Config {
   }
 
   /**
-   * @param key
+   * @param {string} key
    * @returns {number}
    */
   static int (key) {
@@ -125,21 +127,20 @@ class Config {
   }
 
   /**
-   * @param key
-   * @param defaultClass
-   * @param values
-   * @param {...any} classParams
+   * @param {string} key
+   * @param {any} [defaultClass]
+   * @param {...any} [classParams]
    * @returns {any}
    */
-  static instance (key, defaultClass, values, ...classParams) {
+  static instance (key, defaultClass, ...classParams) {
     const singleton = Config.singleton(key)
     if (singleton) {
       return singleton
     }
 
-    let className = Config.get(key, false, undefined, values)
+    let className = Config.get(key, false, undefined)
     if (!className) {
-      console.log(`CONFIG INSTANCE No ${key} provider specified - using default.`)
+      logger.debug(`CONFIG INSTANCE No ${key} provider specified - using default.`)
       if (!defaultClass) {
         return undefined
       }
@@ -159,7 +160,7 @@ class Config {
       }
 
       const paths = [process.cwd(), __dirname]
-      console.log(`CONFIG INSTANCE loading class: ${className} using paths: ${paths} for service: ${key}`)
+      logger.debug(`CONFIG INSTANCE loading class: ${className} using paths: ${paths} for service: ${key}`)
       const modulePath = require.resolve(className, {
         paths: paths
       })
@@ -169,9 +170,9 @@ class Config {
       Config.singleton(key, instance)
       return instance
     } catch (e) {
-      console.error(`Could not resolve ${className} for ${key}. Exiting.`)
-      console.error(`FullError: ${e}`)
-      console.error(`${e.stack}`)
+      logger.error(`Could not resolve ${className} for ${key}. Exiting.`)
+      logger.error(`FullError: ${e}`)
+      logger.error(`${e.stack}`)
       throw e
     }
   }
@@ -186,16 +187,17 @@ class Config {
   }
 
   /**
-   * @param key
-   * @param value
+   * @param {string} key
+   * @param {string} value
+   * @returns {void}
    */
   static set (key, value) {
     Config.config[key] = value
   }
 
   /**
-   * @param key
-   * @param instance
+   * @param {string} key
+   * @param {any} instance
    * @returns {any}
    */
   static singleton (key, instance) {
@@ -210,13 +212,14 @@ class Config {
   }
 
   /**
-   * @param key
-   * @param value
-   * @param allowedValues
+   * @param {string} key
+   * @param {string} value
+   * @param {string[]} allowedValues
+   * @returns {void}
    */
   static _checkValues (key, value, allowedValues) {
     if (allowedValues.indexOf(value) === -1) {
-      console.error(`Value [${value}] for ${key} is invalid - must be one of: ${allowedValues}`)
+      logger.error(`Value [${value}] for ${key} is invalid - must be one of: ${allowedValues}`)
       process.exit(0)
     }
   }

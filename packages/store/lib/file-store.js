@@ -1,13 +1,16 @@
 const fs = require('fs')
-const Job = require('./job').Job
 const path = require('path')
 const Store = require('./store')
 
 const BASE_PATH = './data'
+/**
+ *
+ */
 class FileStore extends Store {
   /**
    * Fetchs a run
    * @param {string} run
+   * @returns {Promise<any>}
    */
   async fetch (run) {
     const runFilePath = path.join(BASE_PATH, Store.key(run))
@@ -18,7 +21,7 @@ class FileStore extends Store {
       return undefined
     }
 
-    const jobData = fs.readFileSync(runFilePath)
+    const jobData = fs.readFileSync(runFilePath, 'utf-8')
     const jobJSON = JSON.parse(jobData)
     const job = Job.fromJSON(jobJSON)
     return job
@@ -26,7 +29,8 @@ class FileStore extends Store {
 
   /**
    * Saves the job to a file
-   * @param {Job} job
+   * @param {any} job
+   * @returns {Promise<string>}
    */
   async save (job) {
     if (!fs.existsSync(BASE_PATH)) {
