@@ -1,2 +1,3 @@
 - [ ] Auto-generate typescript types
   - [ ] Add as a task?
+- [ ] Switch over batch to use ava tests?

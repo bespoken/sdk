@@ -26,10 +26,13 @@ class Transcription {
   }
 
   /**
-   * @returns {TranscriptionResult}
+   * @returns {TranscriptionResult | undefined}
    */
   topResult() {
-    return this.results.sort()[this.results.length - 1]
+    if (this.results.length === 0) {
+      return undefined
+    }
+    return this.results.sort()[0]
   }
 }
 
@@ -37,10 +40,20 @@ class Transcription {
  *
  */
 class TranscriptionResult {
-  constructor(text, confidence) {
+  /**
+   * 
+   * @param {string} text 
+   * @param {number} confidence 
+   * @param {any} raw 
+   * 
+   */
+  constructor(text, confidence, raw) {
+    this.raw = raw
     this.text = text
     this.confidence = confidence
+    /** @type {string} */
+    this.textPunctuated = undefined
   }
 }
 
-module.exports = Transcription
+module.exports = { Transcription, TranscriptionResult }
