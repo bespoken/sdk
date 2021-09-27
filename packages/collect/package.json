@@ -7,9 +7,10 @@
   },
   "dependencies": {
     "@bespoken-sdk/shared": "^0.11.8",
+    "axios": "^0.21.4",
     "lodash": "^4.17.21"
   },
-  "name": "@bespoken-sdk/measure",
+  "name": "@bespoken-sdk/collect",
   "publishConfig": {
     "access": "public"
   },

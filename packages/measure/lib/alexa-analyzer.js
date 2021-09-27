@@ -1,5 +1,10 @@
 const logger = require("@bespoken-sdk/shared/lib/logger")('ALEXA')
 
+const ERROR_TYPE_WRONG_INTENT = 'WRONG INTENT'
+const ERROR_TYPE_WRONG_SLOT_TYPE = 'WRONG SLOT TYPE'
+const ERROR_TYPE_NO_SLOT_TYPE = 'NO SLOT TYPE'
+const ERROR_TYPE_WRONG_SLOT_VALUE = 'WRONG SLOT VALUE'
+
 /**
  * Analyzers Alexa output for accuracy
  */
@@ -12,7 +17,7 @@ class AlexaAnalyzer {
   expectedIntent(response, intentName) {
     const intent = this._decodeResult(response)
     if (intent.name !== intentName) {
-      return new AnalysisResponse(false, 'Wrong intent matched - review the intent model and add this utterance to it')
+      return new AnalysisResponse(false, ERROR_TYPE_WRONG_INTENT, 'Wrong intent matched - review the intent model and add this utterance to it')
     } else {
       return new AnalysisResponse(true)
     }
@@ -22,28 +27,38 @@ class AlexaAnalyzer {
    * @param {any} response
    * @param {string} intentName
    * @param {string} slotName
-   * @param {string} slotValue
+   * @param {...string} slotValues
    * @returns {AnalysisResponse}
    */
-  expectedSlot(response, intentName, slotName, slotValue) {
+  expectedSlot(response, intentName, slotName, slotValues) {
     const intent = this._decodeResult(response)
     if (intent.name !== intentName) {
-      return new AnalysisResponse(false, 'Wrong intent matched - review the intent model and add this utterance to it')
+      return new AnalysisResponse(false, ERROR_TYPE_WRONG_INTENT, 'Wrong intent matched - review the intent model and add this utterance to it')
     } 
     
     const slot = intent.slot(slotName)
     if (!slot) {
       if (intent.matchedSlots()) {
         const slotResults = intent.matchedSlots().map(s => `SlotName: "${s.name}" SlotValue: "${s.transcript}"`)
-        return new AnalysisResponse(false, `Wrong slot matched - ${slotResults}`)
+        return new AnalysisResponse(false, ERROR_TYPE_WRONG_SLOT_TYPE, `Wrong slot type matched - ${slotResults}`)
       } else {
-        return new AnalysisResponse(false, 'No slot matched - try adding synonyms to the expected slot definition')
+        return new AnalysisResponse(false,  ERROR_TYPE_NO_SLOT_TYPE, 'No slot matched - try adding synonyms to the expected slot definition')
       }
-    } else if (!slot.value || slot.value.toLowerCase() !== slotValue.toLowerCase()) {
-      return new AnalysisResponse(false, `Wrong slot value matched: ${slotValue}`)
     } else {
-      return new AnalysisResponse(true)
-    }
+      let match = false
+      for (const slotValue of slotValues) {
+        if (slot.value.toLowerCase() !== slotValue.toLowerCase()) {
+          match = true
+          break
+        }
+      }
+       
+      if (match) {
+        return new AnalysisResponse(true)
+      } else {
+        return new AnalysisResponse(false, ERROR_TYPE_WRONG_SLOT_VALUE, `Wrong slot value matched: ${slot.value}`)
+      }
+    } 
     
   }
 
@@ -81,10 +96,12 @@ class AnalysisResponse {
   /**
    * 
    * @param {boolean} success 
+   * @param {string} [errorType]
    * @param {string} [advisory]
    */
-  constructor(success, advisory) {
+  constructor(success, errorType, advisory) {
     this.success = success
+    this.errorType = errorType
     this.advisory = advisory
   }
 }

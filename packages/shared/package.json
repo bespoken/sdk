@@ -8,8 +8,10 @@
   "dependencies": {
     "chalk": "^4.1.2",
     "dotenv": "^8.6.0",
+    "lodash": "^4.17.21",
     "moment": "^2.29.1"
   },
+  "main": "index.js",
   "name": "@bespoken-sdk/shared",
   "publishConfig": {
     "access": "public"

@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"name": "bespoken-api",
+			"path": "../bespoken-api"
+		},
+		{
+			"name": "bespoken-sdk",
+			"path": "."
+		}
+	],
+	"settings": {
+		"eslint.alwaysShowStatus": true
+	}
+}
