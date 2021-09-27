@@ -7,6 +7,9 @@
 		{
 			"name": "bespoken-sdk",
 			"path": "."
+		},
+		{
+			"path": "../typesafe/sdk"
 		}
 	],
 	"settings": {
