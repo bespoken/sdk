@@ -1,5 +1,5 @@
 const Message = require('./message')
-const Transcription = require('./transcription')
+const Transcription = require('./recognition')
 const Understanding = require('./understanding')
 
 /**
@@ -8,14 +8,34 @@ const Understanding = require('./understanding')
 class Reply {
   /**
    * 
-   * @param {Message} message 
-   * @param {Transcription} transcription 
-   * @param {Understanding} understanding 
+   * @param {Message} message
    */
-  constructor(message, transcription, understanding) {
+  constructor(message) {
     this.message = message
-    this.transcription = transcription
-    this.understanding = understanding
+    /** @type {Transcription} */
+    this.transcription = undefined
+    /** @type {Understanding} */
+    this.understanding = undefined
+    /** @type {string} */
+    this.responseText = undefined
+  }
+
+  /**
+   * @param {string} text
+   * @returns {Reply}
+   */
+  setResponseText(text) {
+    this.responseText = text
+    return this
+  }
+
+  /**
+   * @param {Transcription} value
+   * @returns {Reply}
+   */
+   setTranscription(value) {
+    this.transcription = value
+    return this
   }
 }
 

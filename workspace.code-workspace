@@ -9,7 +9,7 @@
 			"path": "."
 		},
 		{
-			"path": "../typesafe/sdk"
+			"path": "../typesafe/typesafe-sdk"
 		}
 	],
 	"settings": {

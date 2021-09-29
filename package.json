@@ -34,6 +34,7 @@
   "scripts": {
     "codecov": "codecov",
     "compile": "lerna exec -- tsc --outDir types",
+    "declare": "lerna exec -- jsd",
     "docs": "jsdoc -c .jsdoc.json",
     "postversion": "git push && git push --tags",
     "process": "node bin/bbt.js process",

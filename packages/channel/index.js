@@ -1,7 +1,8 @@
 module.exports = {
   Audio: require('./lib/audio'),
+  Conversation: require('./lib/conversation'),
   Message: require('./lib/message'),
-  Reply: require('./lib/reply'),
-  Transcription: require('./lib/transcription').Transcription,
-  TranscriptionResult: require('./lib/transcription').TranscriptionResult,
+  Recognition: require('./lib/recognition').Recognition,
+  RecognitionResult: require('./lib/recognition').RecognitionResult,
+  Reply: require('./lib/reply')
 }

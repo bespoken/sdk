@@ -22,6 +22,12 @@ declare class Message {
      */
     static fromAudioBuffer(audio: Buffer): Message;
     /**
+     *
+     * @param {string} [id]
+     */
+    constructor(id?: string);
+    id: string;
+    /**
      * @type {Audio}
      */
     audio: Audio;

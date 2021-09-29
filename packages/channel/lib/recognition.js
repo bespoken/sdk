@@ -1,17 +1,17 @@
 /**
  *
  */
-class Transcription {
+class Recognition {
   constructor() {
     /**
-     * @type {TranscriptionResult[]}
+     * @type {RecognitionResult[]}
      */
     this.results = []
   }
 
   /**
    * 
-   * @param {TranscriptionResult} result 
+   * @param {RecognitionResult} result 
    * @returns {void}
    */
   addResult(result) {
@@ -19,14 +19,14 @@ class Transcription {
   }
 
   /**
-   * @returns {TranscriptionResult[]}
+   * @returns {RecognitionResult[]}
    */
   sort() {
     return this.results.sort((r1, r2) => r2.confidence - r1.confidence)
   }
 
   /**
-   * @returns {TranscriptionResult | undefined}
+   * @returns {RecognitionResult | undefined}
    */
   topResult() {
     if (this.results.length === 0) {
@@ -39,7 +39,7 @@ class Transcription {
 /**
  *
  */
-class TranscriptionResult {
+class RecognitionResult {
   /**
    * 
    * @param {string} text 
@@ -56,4 +56,4 @@ class TranscriptionResult {
   }
 }
 
-module.exports = { Transcription, TranscriptionResult }
+module.exports = { Recognition, RecognitionResult }

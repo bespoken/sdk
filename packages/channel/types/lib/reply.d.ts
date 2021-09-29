@@ -6,14 +6,26 @@ declare class Reply {
     /**
      *
      * @param {Message} message
-     * @param {Transcription} transcription
-     * @param {Understanding} understanding
      */
-    constructor(message: Message, transcription: typeof Transcription, understanding: Understanding);
+    constructor(message: Message);
     message: Message;
+    /** @type {Transcription} */
     transcription: typeof Transcription;
+    /** @type {Understanding} */
     understanding: Understanding;
+    /** @type {string} */
+    responseText: string;
+    /**
+     * @param {string} text
+     * @returns {Reply}
+     */
+    setResponseText(text: string): Reply;
+    /**
+     * @param {Transcription} value
+     * @returns {Reply}
+     */
+    setTranscription(value: typeof Transcription): Reply;
 }
 import Message = require("./message");
-import Transcription = require("./transcription");
+import Transcription = require("./recognition");
 import Understanding = require("./understanding");
