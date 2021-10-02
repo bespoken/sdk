@@ -11,4 +11,8 @@ declare class Audio {
     constructor(buffer: Buffer, type?: string);
     buffer: Buffer;
     type: string;
+    /**
+     * @returns {string}
+     */
+    base64(): string;
 }

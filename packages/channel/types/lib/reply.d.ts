@@ -2,12 +2,12 @@ export = Reply;
 /**
  *
  */
-declare class Reply {
+declare class Reply extends DTO {
     /**
      *
-     * @param {Message} message
+     * @param {Message} [message]
      */
-    constructor(message: Message);
+    constructor(message?: Message);
     message: Message;
     /** @type {Transcription} */
     transcription: typeof Transcription;
@@ -26,6 +26,7 @@ declare class Reply {
      */
     setTranscription(value: typeof Transcription): Reply;
 }
+import DTO = require("./dto");
 import Message = require("./message");
 import Transcription = require("./recognition");
 import Understanding = require("./understanding");

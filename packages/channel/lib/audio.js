@@ -11,6 +11,13 @@ class Audio {
     this.buffer = buffer 
     this.type = type  
   }
+
+  /**
+   * @returns {string}
+   */
+  base64() {
+    return this.buffer.toString('base64')
+  }
 }
 
 module.exports = Audio

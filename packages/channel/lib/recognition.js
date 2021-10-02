@@ -1,8 +1,10 @@
+const DTO = require('./dto')
 /**
  *
  */
-class Recognition {
+class Recognition extends DTO {
   constructor() {
+    super()
     /**
      * @type {RecognitionResult[]}
      */

@@ -1,3 +1,4 @@
+const DTO = require('./dto')
 const Message = require('./message')
 const Transcription = require('./recognition')
 const Understanding = require('./understanding')
@@ -5,12 +6,13 @@ const Understanding = require('./understanding')
 /**
  *
  */
-class Reply {
+class Reply extends DTO {
   /**
    * 
-   * @param {Message} message
+   * @param {Message} [message]
    */
   constructor(message) {
+    super()
     this.message = message
     /** @type {Transcription} */
     this.transcription = undefined

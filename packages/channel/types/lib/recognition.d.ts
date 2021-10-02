@@ -1,7 +1,7 @@
 /**
  *
  */
-export class Recognition {
+export class Recognition extends DTO {
     /**
      * @type {RecognitionResult[]}
      */
@@ -39,3 +39,4 @@ export class RecognitionResult {
     /** @type {string} */
     textPunctuated: string;
 }
+import DTO = require("./dto");

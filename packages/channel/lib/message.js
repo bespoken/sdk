@@ -1,50 +1,53 @@
 const Audio = require('./audio')
+const Conversation = require('./conversation')
+const DTO = require('./dto')
 
 /**
  *
  */
-class Message {
+class Message extends DTO{
   /**
    * 
+   * @param {Conversation} conversation
    * @param {string} text
    * @returns {Message} 
    */
-  static fromText(text) {
-    const message = new Message()
+  static fromText(conversation, text) {
+    const message = new Message(conversation)
     message.text = text
     return message
   }
 
   /**
-   * 
+   * @param {Conversation} conversation
    * @param {string} audio
    * @returns {Message} 
    */
-   static fromAudioBase64(audio) {
-    const message = new Message()
+   static fromAudioBase64(conversation, audio) {
+    const message = new Message(conversation)
     const audioBuffer = Buffer.from(audio, 'base64')
     message.audio = new Audio(audioBuffer)
     return message
   }
 
   /**
-   * 
+   * @param {Conversation} conversation
    * @param {Buffer} audio
    * @returns {Message} 
    */
-   static fromAudioBuffer(audio) {
-    const message = new Message()
+   static fromAudioBuffer(conversation, audio) {
+    const message = new Message(conversation)
     message.audio = new Audio(audio)
     return message
   }
 
   /**
-   * 
-   * @param {string} [id] 
+   * @param {Conversation} conversation
    */
-  constructor(id) {
-    this.id = id
+  constructor(conversation) {
+    super()
     
+    this.conversation = conversation
     /**
      * @type {Audio}
      */
@@ -61,7 +64,7 @@ class Message {
    * @returns {Message}
    */
   clone() {
-    const message = new Message()
+    const message = new Message(this.conversation)
     Object.assign(message, this)
     return message
   }
