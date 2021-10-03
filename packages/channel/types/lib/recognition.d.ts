@@ -1,7 +1,19 @@
+export = Recognition;
+/** @typedef {('AZURE')} RecognizerType  */
 /**
  *
  */
-export class Recognition extends DTO {
+declare class Recognition extends DTO {
+    /**
+     *
+     * @param {Message} message
+     * @param {any} raw
+     * @param {RecognizerType} type
+     */
+    constructor(message: Message, raw: any, type: RecognizerType);
+    message: Message;
+    raw: any;
+    type: "AZURE";
     /**
      * @type {RecognitionResult[]}
      */
@@ -21,22 +33,10 @@ export class Recognition extends DTO {
      */
     topResult(): RecognitionResult | undefined;
 }
-/**
- *
- */
-export class RecognitionResult {
-    /**
-     *
-     * @param {string} text
-     * @param {number} confidence
-     * @param {any} raw
-     *
-     */
-    constructor(text: string, confidence: number, raw: any);
-    raw: any;
-    text: string;
-    confidence: number;
-    /** @type {string} */
-    textPunctuated: string;
+declare namespace Recognition {
+    export { RecognizerType };
 }
 import DTO = require("./dto");
+import Message = require("./message");
+import RecognitionResult = require("./recognition-result");
+type RecognizerType = ('AZURE');

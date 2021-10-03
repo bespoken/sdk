@@ -10,7 +10,7 @@ declare class Reply extends DTO {
     constructor(message?: Message);
     message: Message;
     /** @type {Transcription} */
-    transcription: typeof Transcription;
+    transcription: Transcription;
     /** @type {Understanding} */
     understanding: Understanding;
     /** @type {string} */
@@ -24,7 +24,7 @@ declare class Reply extends DTO {
      * @param {Transcription} value
      * @returns {Reply}
      */
-    setTranscription(value: typeof Transcription): Reply;
+    setTranscription(value: Transcription): Reply;
 }
 import DTO = require("./dto");
 import Message = require("./message");

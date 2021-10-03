@@ -1,10 +1,22 @@
 const DTO = require('./dto')
+const Message = require('./message')
+const RecognitionResult = require('./recognition-result')
+/** @typedef {('AZURE')} RecognizerType  */
 /**
  *
  */
 class Recognition extends DTO {
-  constructor() {
+  /**
+   * 
+   * @param {Message} message 
+   * @param {any} raw
+   * @param {RecognizerType} type
+   */
+  constructor(message, raw, type) {
     super()
+    this.message = message
+    this.raw = raw
+    this.type = type
     /**
      * @type {RecognitionResult[]}
      */
@@ -38,24 +50,6 @@ class Recognition extends DTO {
   }
 }
 
-/**
- *
- */
-class RecognitionResult {
-  /**
-   * 
-   * @param {string} text 
-   * @param {number} confidence 
-   * @param {any} raw 
-   * 
-   */
-  constructor(text, confidence, raw) {
-    this.raw = raw
-    this.text = text
-    this.confidence = confidence
-    /** @type {string} */
-    this.textPunctuated = undefined
-  }
-}
 
-module.exports = { Recognition, RecognitionResult }
+
+module.exports = Recognition
