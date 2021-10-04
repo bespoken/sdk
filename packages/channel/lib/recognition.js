@@ -2,6 +2,7 @@ const DTO = require('./dto')
 const Message = require('./message')
 const RecognitionResult = require('./recognition-result')
 /** @typedef {('AZURE')} RecognizerType  */
+
 /**
  *
  */

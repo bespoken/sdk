@@ -53,6 +53,8 @@ class Message extends DTO{
      */
     this.audio = undefined
 
+    this.locale = 'en-US'
+    
     /**
      * @type {string}
      */

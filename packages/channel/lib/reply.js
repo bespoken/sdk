@@ -1,7 +1,7 @@
 const DTO = require('./dto')
+const Interpretation = require('./interpretation')
 const Message = require('./message')
 const Transcription = require('./recognition')
-const Understanding = require('./understanding')
 
 /**
  *
@@ -16,8 +16,8 @@ class Reply extends DTO {
     this.message = message
     /** @type {Transcription} */
     this.transcription = undefined
-    /** @type {Understanding} */
-    this.understanding = undefined
+    /** @type {Interpretation} */
+    this.interpretation = undefined
     /** @type {string} */
     this.responseText = undefined
   }

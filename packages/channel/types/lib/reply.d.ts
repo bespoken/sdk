@@ -11,8 +11,8 @@ declare class Reply extends DTO {
     message: Message;
     /** @type {Transcription} */
     transcription: Transcription;
-    /** @type {Understanding} */
-    understanding: Understanding;
+    /** @type {Interpretation} */
+    interpretation: Interpretation;
     /** @type {string} */
     responseText: string;
     /**
@@ -29,4 +29,4 @@ declare class Reply extends DTO {
 import DTO = require("./dto");
 import Message = require("./message");
 import Transcription = require("./recognition");
-import Understanding = require("./understanding");
+import Interpretation = require("./interpretation");

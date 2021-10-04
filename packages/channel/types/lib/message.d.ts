@@ -31,6 +31,7 @@ declare class Message extends DTO {
      * @type {Audio}
      */
     audio: Audio;
+    locale: string;
     /**
      * @type {string}
      */
