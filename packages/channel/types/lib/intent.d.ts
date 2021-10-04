@@ -6,9 +6,9 @@ declare class Intent {
     /**
      *
      * @param {string} name
-     * @param {number} confidence
+     * @param {number | undefined} [confidence]
      */
-    constructor(name: string, confidence: number);
+    constructor(name: string, confidence?: number | undefined);
     name: string;
     confidence: number;
 }

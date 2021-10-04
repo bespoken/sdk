@@ -1,7 +1,7 @@
 const DTO = require('./dto')
 const Interpretation = require('./interpretation')
 const Message = require('./message')
-const Transcription = require('./recognition')
+const Recognition = require('./recognition')
 
 /**
  *
@@ -14,8 +14,8 @@ class Reply extends DTO {
   constructor(message) {
     super()
     this.message = message
-    /** @type {Transcription} */
-    this.transcription = undefined
+    /** @type {Recognition} */
+    this.recognition = undefined
     /** @type {Interpretation} */
     this.interpretation = undefined
     /** @type {string} */
@@ -32,11 +32,11 @@ class Reply extends DTO {
   }
 
   /**
-   * @param {Transcription} value
+   * @param {Recognition} value
    * @returns {Reply}
    */
-   setTranscription(value) {
-    this.transcription = value
+   setRecognition(value) {
+    this.recognition = value
     return this
   }
 }

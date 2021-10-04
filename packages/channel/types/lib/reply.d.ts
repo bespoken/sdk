@@ -9,8 +9,8 @@ declare class Reply extends DTO {
      */
     constructor(message?: Message);
     message: Message;
-    /** @type {Transcription} */
-    transcription: Transcription;
+    /** @type {Recognition} */
+    recognition: Recognition;
     /** @type {Interpretation} */
     interpretation: Interpretation;
     /** @type {string} */
@@ -21,12 +21,12 @@ declare class Reply extends DTO {
      */
     setResponseText(text: string): Reply;
     /**
-     * @param {Transcription} value
+     * @param {Recognition} value
      * @returns {Reply}
      */
-    setTranscription(value: Transcription): Reply;
+    setRecognition(value: Recognition): Reply;
 }
 import DTO = require("./dto");
 import Message = require("./message");
-import Transcription = require("./recognition");
+import Recognition = require("./recognition");
 import Interpretation = require("./interpretation");

@@ -5,7 +5,7 @@
   /**
    * 
    * @param {string} name 
-   * @param {number} confidence 
+   * @param {number | undefined} [confidence]
    */
   constructor(name, confidence) {
     this.name = name

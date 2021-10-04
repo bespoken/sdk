@@ -2,7 +2,7 @@ const Entity = require('./entity')
 const Intent = require('./intent')
 const Message = require('./message')
 
-/** @typedef {('LEX')} InterpreterType  */
+/** @typedef {('LEX' | 'NOOP')} InterpreterType  */
 
 /**
  * Holds results from NLU

@@ -13,6 +13,7 @@ declare class Interpretation {
      */
     constructor(message: Message, raw: any, type: InterpreterType, intent?: Intent);
     message: Message;
+    raw: any;
     type: "LEX";
     intent: Intent;
     /** @type {Entity[]} */
