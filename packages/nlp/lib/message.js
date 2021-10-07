@@ -5,7 +5,7 @@ const DTO = require('./dto')
 /**
  *
  */
-class Message extends DTO{
+class Message extends DTO {
   /**
    * 
    * @param {Conversation} conversation
@@ -70,6 +70,8 @@ class Message extends DTO{
     Object.assign(message, this)
     return message
   }
+
+  
 }
 
 module.exports = Message

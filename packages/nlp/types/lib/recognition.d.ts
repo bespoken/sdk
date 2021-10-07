@@ -1,5 +1,5 @@
 export = Recognition;
-/** @typedef {('AZURE')} RecognizerType  */
+/** @typedef {('AZURE' | 'NOOP' )} RecognizerType  */
 /**
  *
  */
@@ -13,7 +13,7 @@ declare class Recognition extends DTO {
     constructor(message: Message, raw: any, type: RecognizerType);
     message: Message;
     raw: any;
-    type: "AZURE";
+    type: RecognizerType;
     /**
      * @type {RecognitionResult[]}
      */
@@ -38,5 +38,5 @@ declare namespace Recognition {
 }
 import DTO = require("./dto");
 import Message = require("./message");
+type RecognizerType = ('AZURE' | 'NOOP');
 import RecognitionResult = require("./recognition-result");
-type RecognizerType = ('AZURE');

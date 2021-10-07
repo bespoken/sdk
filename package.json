@@ -34,8 +34,9 @@
   "scripts": {
     "codecov": "codecov",
     "compile": "lerna exec -- tsc --outDir types",
-    "declare": "lerna exec -- jsd",
+    "declare": "lerna run --scope @bespoken-sdk/nlp -- npm run declare",
     "docs": "jsdoc -c .jsdoc.json",
+    "link": "lerna exec -- npx yarn link",
     "postversion": "git push && git push --tags",
     "process": "node bin/bbt.js process",
     "standard": "standard --fix",

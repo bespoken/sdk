@@ -23,6 +23,15 @@ class Reply extends DTO {
   }
 
   /**
+   * @param {Interpretation} interpretation 
+   * @returns {Reply}
+   */
+  setInterpretation(interpretation) {
+    this.interpretation = interpretation
+    return this
+  }
+
+  /**
    * @param {string} text
    * @returns {Reply}
    */
