@@ -1,12 +1,18 @@
 const logger = require('./logger')('ENV')
 
+/**
+ *
+ */
 class Env {
   /**
    * @returns {boolean}
    */
   static isTest() {
-    console.info('Env: ' + JSON.stringify(process.env, null, 2))
-    return false
+    if (process.env.AVA_PATH) {
+      return true
+    } else {
+      return false
+    }
   }
 
   /**

@@ -17,7 +17,7 @@
     "@typesafejs/cli": "^0.2.9"
   },
   "main": "index.js",
-  "name": "@bespoken-sdk/channel",
+  "name": "@bespoken-sdk/nlp",
   "publishConfig": {
     "access": "public"
   },
