@@ -47,6 +47,13 @@ class Logger {
   }
 
   /**
+   * @returns {boolean}
+   */
+  isDebugEnabled() {
+    return process.env.SILENT === undefined && (process.env.DEBUG !== undefined || process.env.TRACE !== undefined)
+  }
+
+  /**
    * @param {string} log
    * @returns {void}
    */

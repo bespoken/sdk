@@ -1,3 +1,4 @@
+const Audio = require('./audio')
 const DTO = require('./dto')
 const Interpretation = require('./interpretation')
 const Message = require('./message')
@@ -20,6 +21,8 @@ class Reply extends DTO {
     this.interpretation = undefined
     /** @type {string} */
     this.responseText = undefined
+    /** @type {Audio} */
+    this.responseAudio = undefined
   }
 
   /**
@@ -28,6 +31,15 @@ class Reply extends DTO {
    */
   setInterpretation(interpretation) {
     this.interpretation = interpretation
+    return this
+  }
+
+  /**
+   * @param {Audio} audio
+   * @returns {Reply}
+   */
+  setResponseAudio(audio) {
+    this.responseAudio = audio
     return this
   }
 

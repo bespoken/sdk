@@ -41,10 +41,6 @@ class Config {
     require('dotenv').config()
 
     Config.config = json
-
-    // Check for required values
-    Config.get('customer', true)
-    Config.get('job', true)
     return Config.config
   }
 
@@ -92,6 +88,7 @@ class Config {
 
     if (required && !value && !defaultValue) {
       logger.error(`CONFIG FATAL ERROR: ${key} is required in configuration but is not set. Exiting.`)
+      console.trace()
       process.exit(1)
     }
 

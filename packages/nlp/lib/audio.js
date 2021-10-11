@@ -60,7 +60,7 @@ class Audio {
    * @param {(1 | 2)} channels 
    * @returns {Audio}
    */
-   setChannels(channels) {
+  setChannels(channels) {
     this.channels = channels
     return this
   }
@@ -69,7 +69,7 @@ class Audio {
    * @param {(8000 | 16000)} sampleRate 
    * @returns {Audio}
    */
-   setSampleRate(sampleRate) {
+  setSampleRate(sampleRate) {
     this.sampleRate = sampleRate
     return this
   }
