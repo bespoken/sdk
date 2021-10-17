@@ -11,7 +11,6 @@
   "dependencies": {
     "@bespoken-sdk/shared": "^0.11.12",
     "@bespoken-sdk/store": "^0.11.12",
-    "aws-sdk": "^2.718.0",
     "axios": "^0.19.0",
     "bespoken-tools": "2.4.45-0",
     "commander": "^5.1.0",
@@ -23,7 +22,6 @@
     "lodash": "^4.17.19",
     "moment": "^2.27.0",
     "mysql": "^2.18.1",
-    "node-cache": "^5.1.2",
     "pino": "~6.3.2",
     "pino-multi-stream": "^5.1.1",
     "pino-pretty": "^4.1.0",

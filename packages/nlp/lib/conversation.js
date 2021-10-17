@@ -19,7 +19,13 @@ class Conversation extends DTO {
     this.externalID = externalID
     
     /** @type {string} */
+    this.context = undefined
+    
+    /** @type {string} */
     this.phoneNumber = undefined
+
+    /** @type {any} */
+    this.settings = {}
   }
 }
 

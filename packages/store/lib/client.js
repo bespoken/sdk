@@ -2,13 +2,12 @@ const _ = require('lodash')
 const axios = require('axios').default
 const DTO = require('./dto')
 const Readable = require('stream').Readable
-const Store = require('./store')
 const zlib = require('zlib')
 
 /**
  *
  */
-class Client extends Store {
+class Client  {
   /**
    * @param {string} run
    * @returns {Promise<DTO>}

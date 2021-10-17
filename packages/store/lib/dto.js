@@ -10,10 +10,24 @@ class DTO {
   }
   
   /**
+   * @returns {boolean}
+   */
+  get finalized() {
+    return true
+  }
+  
+  /**
    * @type {string}
    */
   get key() {
     throw new Error('Property must be implemented')
+  }
+
+  /**
+   * @returns {any}
+   */
+  asJSON() {
+    return this.json
   }
 }
 

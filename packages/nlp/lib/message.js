@@ -55,9 +55,10 @@ class Message extends DTO {
 
     this.locale = 'en-US'
     
-    /**
-     * @type {string}
-     */
+    /** @type {Object<string, any>} */
+    this.settings = {}
+
+    /** @type {string} */
     this.text = undefined
   }
 
@@ -71,6 +72,14 @@ class Message extends DTO {
     return message
   }
 
+  /**
+   * 
+   * @param {string} key 
+   * @returns {string}
+   */
+  setting(key) {
+    return this.settings[key]
+  }
   
 }
 

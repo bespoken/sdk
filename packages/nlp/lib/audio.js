@@ -1,3 +1,5 @@
+const Readable = require('stream').Readable
+
 /**
  * Class to handle audio payload
  */
@@ -13,6 +15,8 @@ class Audio {
     this.sampleRate = 16000
     this.bitsPerSample = 16
     this.channels = 1
+
+    this.readable = undefined
   }
 
   /**
@@ -22,6 +26,16 @@ class Audio {
     return this.buffer.toString('base64')
   }
 
+  /**
+   * @returns {void}
+   */
+  close() {
+    console.info('close stream')
+    if (this.readable) {
+      this.readable.destroy()
+    }
+    
+  }
   /**
    * @param {AudioReceivedListener} listener 
    * @returns {Audio}
@@ -72,6 +86,36 @@ class Audio {
   setSampleRate(sampleRate) {
     this.sampleRate = sampleRate
     return this
+  }
+
+  /**
+   * @returns {Readable}
+   */
+  stream() {
+    let position = 0
+    const self = this
+    
+    this.readable = new Readable({
+      
+      read: function(size) {
+        console.info('audio read size: ' + size + ' length: ' + self.buffer.length + ' position: ' + position)
+    
+        let endIndex = position + size
+        if (endIndex > self.buffer.length) {
+          endIndex = self.buffer.length
+        }
+        //console.trace()
+        const data = self.buffer.slice(position, endIndex)
+        position = endIndex
+        console.info('Pushing data: ' + data.length)
+        if (data.length > 0) {
+          this.push(data)
+        } else {
+          this.destroy()
+        }
+      }
+    })
+    return this.readable
   }
 }
 
