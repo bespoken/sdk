@@ -1,6 +1,8 @@
 const Entity = require('./entity')
 const Intent = require('./intent')
 const Message = require('./message')
+const Recognition = require('./recognition')
+const Reply = require('./reply')
 
 /** @typedef {('LEX' | 'NOOP')} InterpreterType  */
 
@@ -21,10 +23,19 @@ class Interpretation {
     this.type = type
     this.intent = intent
 
+    /** @type {Reply | undefined} */
+    this.reply = undefined
+
     /** @type {Entity[]} */
     this.entities = []
   }
 
+  /** 
+   * @returns {Recognition | undefined} 
+   */
+  get recognition () {
+    return this.message.recognition
+  }
   /**
    * 
    * @param {Entity} entity 
@@ -33,6 +44,15 @@ class Interpretation {
   addEntity(entity) {
     this.entities.push(entity)
     return this
+  }
+
+  /**
+   * @param {Reply} reply
+   * @returns {Interpretation}
+   */
+  setReply(reply) {
+    this.reply = reply
+    return this 
   }
 }
 

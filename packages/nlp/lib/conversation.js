@@ -18,14 +18,30 @@ class Conversation extends DTO {
     this.channelType = channelType
     this.externalID = externalID
     
-    /** @type {string} */
-    this.context = undefined
+    /** @type {Object<string, any>} */
+    this.context = {}
     
     /** @type {string} */
     this.phoneNumber = undefined
 
     /** @type {any} */
     this.settings = {}
+  }
+
+   /**
+   * @param {string} key
+   * @returns {string | undefined}
+   */
+  contextString(key) {
+    return this.context[key]
+  }
+
+  /**
+   * @param {string} key
+   * @returns {any | undefined}
+   */
+  contextValue(key) {
+    return this.context[key]
   }
 }
 

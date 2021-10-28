@@ -10,19 +10,30 @@ const Recognition = require('./recognition')
 class Reply extends DTO {
   /**
    * 
-   * @param {Message} [message]
+   * @param {Interpretation} [interpretation]
    */
-  constructor(message) {
+  constructor(interpretation) {
     super()
-    this.message = message
-    /** @type {Recognition} */
-    this.recognition = undefined
     /** @type {Interpretation} */
-    this.interpretation = undefined
+    this.interpretation = interpretation
     /** @type {string} */
-    this.responseText = undefined
+    this.text = undefined
     /** @type {Audio} */
-    this.responseAudio = undefined
+    this.audio = undefined
+  }
+
+  /**
+   * @returns {Message}
+   */
+  get message () {
+    return this.interpretation.message
+  }
+
+  /**
+   * @returns {Recognition}
+   */
+  get recognition () {
+    return this.interpretation.recognition
   }
 
   /**
@@ -38,8 +49,8 @@ class Reply extends DTO {
    * @param {Audio} audio
    * @returns {Reply}
    */
-  setResponseAudio(audio) {
-    this.responseAudio = audio
+  setAudio(audio) {
+    this.audio = audio
     return this
   }
 
@@ -47,17 +58,8 @@ class Reply extends DTO {
    * @param {string} text
    * @returns {Reply}
    */
-  setResponseText(text) {
-    this.responseText = text
-    return this
-  }
-
-  /**
-   * @param {Recognition} value
-   * @returns {Reply}
-   */
-   setRecognition(value) {
-    this.recognition = value
+  setText(text) {
+    this.text = text
     return this
   }
 }
