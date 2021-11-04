@@ -13,6 +13,8 @@
 		}
 	],
 	"settings": {
-		"eslint.alwaysShowStatus": true
+		"eslint.alwaysShowStatus": true,
+		"terminal.explorerKind": "external",
+		"terminal.external.linuxExec": "gnome-terminal"
 	}
 }

@@ -14,6 +14,9 @@ class Reply extends DTO {
    */
   constructor(interpretation) {
     super()
+    /** @type {Message | undefined} */
+    this._message = undefined
+
     /** @type {Interpretation} */
     this.interpretation = interpretation
     /** @type {string} */
@@ -26,6 +29,9 @@ class Reply extends DTO {
    * @returns {Message}
    */
   get message () {
+    if (this._message) {
+      return this._message
+    }
     return this.interpretation.message
   }
 
@@ -54,6 +60,14 @@ class Reply extends DTO {
     return this
   }
 
+  /**
+   * @param {Message} message
+   * @returns {Reply}
+   */
+   setMessage(message) {
+    this._message = message
+    return this
+  }
   /**
    * @param {string} text
    * @returns {Reply}

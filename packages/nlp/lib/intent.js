@@ -10,6 +10,9 @@
   constructor(name, confidence) {
     this.name = name
     this.confidence = confidence
+
+    // To keep track of multi-step intents
+    this.finalized = false
   }
 }
 

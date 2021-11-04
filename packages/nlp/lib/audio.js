@@ -12,15 +12,12 @@ class Audio {
    */
   constructor(buffer, type = 'pcm') {
     this.buffer = buffer 
-    if (!buffer) {
-      this.streamBuffer = Buffer.alloc(0)  
-    }
     this.type = type  
     this.sampleRate = 16000
     this.bitsPerSample = 16
     this.channels = 1
 
-    this.readable = undefined
+    this._stream = this.buffer ? undefined : new AudioStream()
   }
 
   /**
@@ -34,17 +31,36 @@ class Audio {
    * @returns {void}
    */
   close() {
-    console.info('close stream')
-    if (this.readable) {
-      this.readable.destroy()
+    logger.debug('close stream')
+    if (this._stream) {
+      this._stream.destroy()
+      //this._stream.destroy()
     } 
+  }
+
+  /**
+   * @returns {number}
+   */
+  durationInSeconds() {
+    if (this.type !== 'pcm') {
+      throw new Error("Cannot compute duration for anything other than PCM")
+    }
+
+    const length = this.length()
+    if (length === undefined) {
+      throw new Error("Cannot compute duration for audio without a buffer length")
+    }
+
+    const duration = this.buffer.buffer.byteLength / this.sampleRate
+    // console.info('duraiton: ' + duration)
+    return duration
   }
 
   /**
    * @returns {boolean}
    */
   isStream() {
-    return this._stream !== undefined
+    return this.buffer === undefined
   }
 
   /**
@@ -55,32 +71,12 @@ class Audio {
   }
 
   /**
-   * @param {AudioReceivedListener} listener 
-   * @returns {Audio}
-   */
-  onAudioReceived(listener) {
-    this.listener = listener
-    return this
-  }
-
-  /**
    * @param {Buffer} buffer
    * @returns {void}
    */
   push(buffer) {
-    if (!this.streamBuffer) {
-      throw new Error('Pushing data to stream buffer but not audio not set in stream mode')
-    }
-
-    if (this.isStream()) {
-      this.stream().addToBuffer(buffer)
-    }
-
-    //this.streamBuffer = Buffer.concat([this.streamBuffer, buffer])
-  
-    if (this.listener) {
-      this.listener(buffer)
-    }
+    logger.trace('add to buffer: ' + buffer.length)
+    this.stream().addToBuffer(buffer)
   }
 
   /**
@@ -114,10 +110,18 @@ class Audio {
    * @returns {AudioStream}
    */
   stream() {
-    if (!this._stream) {
-      this._stream = new AudioStream()
-    }
     return this._stream
+  }
+
+  /**
+   * @returns {string}
+   */
+  toString() {
+    if (this.isStream()) {
+      return 'length: streaming'
+    } else {
+      return 'length: ' + this.length()
+    }
   }
 }
 
@@ -140,11 +144,11 @@ class AudioStream extends Readable {
    */
   addToBuffer(buffer) {
     if (this.destroyed) {
-      console.info('Not puhshing data because destroyed' + this.buffer.length)
+      logger.error('Not pushing data because destroyed' + this.buffer.length)
       return
     }
     this.buffer = Buffer.concat([this.buffer, buffer])
-    this.push(buffer)
+    //this.push(buffer)
   }
 
   /**
@@ -154,6 +158,7 @@ class AudioStream extends Readable {
    * @returns {void}
    */
   _destroy(error, callback) {
+    logger.debug('destroy stream')
     this._destroyed = true
     if (error) {
       callback(error)
@@ -166,7 +171,7 @@ class AudioStream extends Readable {
    * @returns {void}
    */
   _read (size) {
-    // logger.debug('stream read size: ' + size + ' length: ' + this.buffer.length + ' position: ' + this.position)
+    logger.trace('stream read size: ' + size + ' length: ' + this.buffer.length + ' position: ' + this.position)
 
     let endIndex = this.position + size
     if (endIndex > this.buffer.length) {

@@ -111,6 +111,17 @@ class Message extends DTO {
   setting(key) {
     return this.settings[key]
   }
+
+  /**
+   * @returns {string}
+   */
+  toString() {
+    if (this.text) {
+      return 'message: ' + this.text
+    } else {
+      return 'message: [audio ' + this.audio.toString() + ']'
+    }
+  }
   
 }
 
