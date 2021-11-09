@@ -9,6 +9,7 @@
       "@bespoken-sdk/*": ["packages/*"]
     },
     "skipLibCheck": true,
+    "strictNullChecks": true,
     "target": "es6"
   }
 }

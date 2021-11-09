@@ -47,6 +47,15 @@ class Interpretation {
   }
 
   /**
+   * 
+   * @param {string} name 
+   * @returns {Entity | undefined}
+   */
+  entity(name) {
+    return this.entities.find(e => e.name === name)
+  }
+
+  /**
    * @param {Reply} reply
    * @returns {Interpretation}
    */

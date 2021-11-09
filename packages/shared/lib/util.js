@@ -1,3 +1,6 @@
+const FS = require('fs')
+const Path = require('path')
+
 /**
  * Utility methods
  */
@@ -21,6 +24,21 @@ class Util {
         resolve()
       }, time)
     })
+  }
+
+  /**
+   *
+   * @param {string} file
+   * @param {Buffer} buffer
+   * @returns {Promise<void>}
+   */
+  static async writeFile (file, buffer) {
+    const directory = Path.dirname(file)
+    if (!FS.existsSync(directory)) {
+      FS.mkdirSync(directory)
+    }
+
+    return FS.promises.writeFile(file, buffer)
   }
 }
 
@@ -81,6 +99,9 @@ class Mutex {
 
     return this
   }
+
+  
+   
 }
 
 Mutex.Locks = {}

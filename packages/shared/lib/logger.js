@@ -1,7 +1,7 @@
 const _ = require('lodash')
 const Chalk = require('chalk')
 const Moment = require('moment')
-// const Util = require('./util')
+const Util = require('./util')
 
 /**
  *
@@ -43,6 +43,18 @@ class Logger {
   debug (log) {
     if (!process.env.SILENT && (process.env.DEBUG || process.env.TRACE)) {
       this.log('DEBUG', Chalk.rgb(255, 102, 0), log)
+    }
+  }
+  
+  /**
+   * If debug is enabled, writes the specified file 
+   * @param {string} fileName 
+   * @param {Buffer} buffer 
+   * @returns {Promise<void>}
+   */
+  async debugFile(fileName, buffer) {
+    if (this.isDebugEnabled()) {
+      return Util.writeFile(fileName, buffer)
     }
   }
 

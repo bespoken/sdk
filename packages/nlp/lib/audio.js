@@ -21,9 +21,12 @@ class Audio {
   }
 
   /**
-   * @returns {string}
+   * @returns {string | undefined}
    */
   base64() {
+    if (!this.buffer) {
+      return undefined
+    }
     return this.buffer.toString('base64')
   }
 

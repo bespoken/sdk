@@ -1,4 +1,5 @@
 const DTO = require('./dto')
+const Settings = require('./settings')
 
 /** @typedef {('TWILIO')} ChannelType */
 
@@ -24,8 +25,8 @@ class Conversation extends DTO {
     /** @type {string} */
     this.phoneNumber = undefined
 
-    /** @type {any} */
-    this.settings = {}
+    /** @type {Settings} */
+    this.settings = new Settings({})
   }
 
    /**
