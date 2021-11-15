@@ -1,6 +1,8 @@
+const Util = require('@bespoken-sdk/shared/lib/util')
 const Audio = require('./audio')
 const Conversation = require('./conversation')
 const DTO = require('./dto')
+const logger = require('@bespoken-sdk/shared/lib/logger')('MESSAGE')
 const Recognition = require('./recognition')
 
 /**
@@ -43,6 +45,36 @@ class Message extends DTO {
   /**
    * 
    * @param {Conversation} conversation
+   * @param {Buffer} buffer
+   * @param buffer
+   * @returns {Message} 
+   */
+   static fromBufferAsStream(conversation, buffer) {
+    const message = new Message(conversation)
+    message.audio = new Audio()
+    const chunkSize = 3000
+    new Promise(async (resolve) => {
+      while (buffer.length > 0) {
+        let bytesToRead = chunkSize
+        if (buffer.length < chunkSize) {
+          bytesToRead = buffer.length
+        }
+        const newBuffer = buffer.slice(0, bytesToRead)
+        buffer = buffer.slice(bytesToRead)
+        message.audio?.push(newBuffer)
+        await Util.sleep(100)
+        //console.info('pushed data')
+      }
+      resolve(undefined)
+    }).then(() => {
+      logger.info('creating stream from buffer - done writing buffer to stream')
+    })
+    return message
+  }
+
+  /**
+   * 
+   * @param {Conversation} conversation
    * @param {string} text
    * @returns {Message} 
    */
@@ -57,7 +89,7 @@ class Message extends DTO {
    * @param {Conversation} conversation
    * @returns {Message} 
    */
-   static emptyMessage(conversation) {
+  static emptyMessage(conversation) {
     const message = new Message(conversation)
     return message
   }
@@ -70,7 +102,7 @@ class Message extends DTO {
     
     this.conversation = conversation
     /**
-     * @type {Audio}
+     * @type {Audio | undefined}
      */
     this.audio = undefined
 
@@ -82,8 +114,18 @@ class Message extends DTO {
     /** @type {Object<string, any>} */
     this.settings = {}
 
-    /** @type {string} */
+    /** @type {string | undefined} */
     this.text = undefined
+  }
+
+  /**
+   * @returns {Audio}
+   */
+  audioRequired() {
+    if (!this.audio) {
+      throw new Error("This should not happen - audio is not defined")
+    }
+    return this.audio
   }
 
   /**
@@ -118,8 +160,10 @@ class Message extends DTO {
   toString() {
     if (this.text) {
       return 'message: ' + this.text
-    } else {
+    } else if (this.audio) {
       return 'message: [audio ' + this.audio.toString() + ']'
+    } else {
+      return 'message: text and audio undefined'
     }
   }
   

@@ -1,4 +1,5 @@
 const logger = require('@bespoken-sdk/shared/lib/logger')('AUDIO')
+const MemoryStream = require('memorystream');
 const Readable = require('stream').Readable
 
 /**
@@ -17,7 +18,32 @@ class Audio {
     this.bitsPerSample = 16
     this.channels = 1
 
-    this._stream = this.buffer ? undefined : new AudioStream()
+    // if (!this.buffer) {
+    //   this.tempFile = `/tmp/${uuid.v4()}.raw`
+    //   logger.info('tempfile: ' + this.tempFile)
+    //   this.writeStream = fs.createWriteStream(this.tempFile)
+    //   this.readStream = fs.createReadStream(this.tempFile)
+    //   this.readStream.pipe(this.writeStream)
+    // }
+
+    if (!this.buffer) {
+      // We store stream data here for debugging purposes
+      this._streamBuffer = Buffer.alloc(0)
+      this._stream = new MemoryStream(Buffer.alloc(0), {
+        bufoverflow: 10000000,
+        frequence: 1000,
+        maxbufsize: 20000000,
+        readable: true,
+        writeable: true
+      })
+      
+      this._stream.on('data', (data) => {
+        this._streamBuffer = Buffer.concat([this._streamBuffer, data])
+        logger.debug('data received: ' + data.length)
+        logger.debugFile('debug/out.pcm', data)
+      })
+    }
+    //this._stream = this.buffer ? undefined : new AudioStream()
   }
 
   /**
@@ -45,6 +71,10 @@ class Audio {
    * @returns {number}
    */
   durationInSeconds() {
+    if (!this.buffer) {
+      throw new Error("Cannot compute duration for stream")
+    }
+
     if (this.type !== 'pcm') {
       throw new Error("Cannot compute duration for anything other than PCM")
     }
@@ -70,7 +100,11 @@ class Audio {
    * @returns {number | undefined}
    */
   length() {
-    return this.buffer.length
+    const stream = this.stream()
+    if (stream) {
+      return this._streamBuffer ? this._streamBuffer.length : -1
+    }
+    return this.buffer?.length
   }
 
   /**
@@ -78,8 +112,19 @@ class Audio {
    * @returns {void}
    */
   push(buffer) {
-    logger.trace('add to buffer: ' + buffer.length)
-    this.stream().addToBuffer(buffer)
+    if (!this._stream || this._stream.destroyed) {
+      return
+    }
+    
+    const result = this._stream?.write(buffer, 'binary', (error) => {
+      if (error) {
+        logger.error('push write failed: ' + error)
+      }
+    })
+
+    if (!result) {
+      console.info('push buffer failed: ' + result)
+    }
   }
 
   /**
@@ -110,12 +155,29 @@ class Audio {
   }
 
   /**
-   * @returns {AudioStream}
+   * @returns {Readable | undefined}
    */
   stream() {
     return this._stream
   }
 
+  /**
+   * @returns {Readable}
+   */
+  streamRequired() {
+    if (!this._stream) {
+      throw new Error('No stream defined for audio')
+    }  
+    return this._stream
+  }
+
+  /**
+   * @returns {string}
+   */
+  toJSON () {
+    return this.toString()
+  }
+  
   /**
    * @returns {string}
    */
@@ -128,70 +190,4 @@ class Audio {
   }
 }
 
-/**
- *
- */
-class AudioStream extends Readable {
-  constructor() {
-    super()
-    this.position = 0
-    this.buffer = Buffer.alloc(0)   
-    
-    /** @private */
-    this._destroyed = false
-  }
-
-  /**
-   * @param {Buffer} buffer
-   * @returns {void}
-   */
-  addToBuffer(buffer) {
-    if (this.destroyed) {
-      logger.error('Not pushing data because destroyed' + this.buffer.length)
-      return
-    }
-    this.buffer = Buffer.concat([this.buffer, buffer])
-    //this.push(buffer)
-  }
-
-  /**
-   * 
-   * @param {Error} error 
-   * @param {Function} callback 
-   * @returns {void}
-   */
-  _destroy(error, callback) {
-    logger.debug('destroy stream')
-    this._destroyed = true
-    if (error) {
-      callback(error)
-    } else {
-      callback()
-    }
-  }
-  /**
-   * @param {number} size
-   * @returns {void}
-   */
-  _read (size) {
-    logger.trace('stream read size: ' + size + ' length: ' + this.buffer.length + ' position: ' + this.position)
-
-    let endIndex = this.position + size
-    if (endIndex > this.buffer.length) {
-      endIndex = this.buffer.length
-    }
-    
-    const data = this.buffer.slice(this.position, endIndex)
-    this.position = endIndex
-    if (data.length > 0) {
-      this.push(data)
-    }
-  }
-}
-
-
-/**
- * @callback AudioReceivedListener
- * @param {Buffer} buffer
- */
 module.exports = Audio

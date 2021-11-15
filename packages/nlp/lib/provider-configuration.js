@@ -58,7 +58,6 @@ class ProviderConfiguration extends DTO {
    * @returns {string}
    */
   requiredString (key, defaultValue) {
-    console.info('json: ' + JSON.stringify(this.json, null, 2))
     const value = this.json[key] ? this.json[key] : defaultValue
     if (!value) {
       throw new Error('No value found for configuration setting: ' + key + ' for provider: ' + this.class)

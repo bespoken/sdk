@@ -6,7 +6,7 @@ class Entity {
    * @param {string} name 
    * @param {string} value 
    * @param {string} transcription 
-   * @param {number} confidence 
+   * @param {number} [confidence]
    */
   constructor(name, value, transcription, confidence) {
     this.name = name
