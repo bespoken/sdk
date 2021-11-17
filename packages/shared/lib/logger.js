@@ -101,7 +101,7 @@ class Logger {
    */
   log (level, color, log) {
     var local = Moment().format('hh:mm:ss.SSS') // today (local time)
-    this._write(level, `${color(_.padEnd(level, 5))} ${local} ${Chalk.magenta(_.padEnd(this.name, 10))} ${color(log)}\n`)
+    this._write(level, `${color(_.padEnd(level, 5))} ${local} ${Chalk.magenta(_.padEnd(this.name, 7))} ${color(log)}\n`)
   }
 
   /**

@@ -46,7 +46,6 @@ class Message extends DTO {
    * 
    * @param {Conversation} conversation
    * @param {Buffer} buffer
-   * @param buffer
    * @returns {Message} 
    */
    static fromBufferAsStream(conversation, buffer) {

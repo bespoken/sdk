@@ -1,5 +1,6 @@
 const Audio = require('./audio')
 const DTO = require('./dto')
+const InputSettings = require('./input-settings')
 const Interpretation = require('./interpretation')
 const Message = require('./message')
 const Recognition = require('./recognition')
@@ -9,37 +10,31 @@ const Recognition = require('./recognition')
  */
 class Reply extends DTO {
   /**
-   * 
+   * @param {Message} message
    * @param {Interpretation} [interpretation]
    */
-  constructor(interpretation) {
+  constructor(message, interpretation) {
     super()
-    /** @type {Message | undefined} */
-    this._message = undefined
-
-    /** @type {Interpretation} */
+    this.message = message
+    
+    /** @type {Interpretation | undefined} */
     this.interpretation = interpretation
-    /** @type {string} */
+    
+    /** @type {string | undefined} */
     this.text = undefined
-    /** @type {Audio} */
+    
+    /** @type {Audio | undefined} */
     this.audio = undefined
+
+    /** @type {InputSettings | undefined} */
+    this.inputSettings = undefined
   }
 
   /**
-   * @returns {Message}
-   */
-  get message () {
-    if (this._message) {
-      return this._message
-    }
-    return this.interpretation.message
-  }
-
-  /**
-   * @returns {Recognition}
+   * @returns {Recognition | undefined}
    */
   get recognition () {
-    return this.interpretation.recognition
+    return this.interpretation?.recognition
   }
 
   /**
@@ -61,10 +56,19 @@ class Reply extends DTO {
   }
 
   /**
+   * @param {InputSettings} settings 
+   * @returns {Reply}
+   */
+  setInputSettings(settings) {
+    this.inputSettings = settings
+    return this
+  }
+
+  /**
    * @param {Message} message
    * @returns {Reply}
    */
-   setMessage(message) {
+  setMessage(message) {
     this._message = message
     return this
   }
