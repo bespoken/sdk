@@ -22,7 +22,7 @@ class Conversation extends DTO {
     /** @type {Object<string, any>} */
     this.context = {}
     
-    /** @type {string} */
+    /** @type {string | undefined} */
     this.phoneNumber = undefined
 
     /** @type {Settings} */
