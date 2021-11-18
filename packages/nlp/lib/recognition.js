@@ -1,7 +1,6 @@
 const DTO = require('./dto')
 const Message = require('./message')
 const RecognitionResult = require('./recognition-result')
-/** @typedef {('AZURE' | 'NOOP' | 'WATSON' )} RecognizerType  */
 
 /**
  *
@@ -11,17 +10,20 @@ class Recognition extends DTO {
    * 
    * @param {Message} message 
    * @param {any} raw
-   * @param {RecognizerType} type
+   * @param {string} type
    */
   constructor(message, raw, type) {
     super()
     this.message = message
     this.raw = raw
     this.type = type
+    
     /**
      * @type {RecognitionResult[]}
      */
     this.results = []
+
+    this.timedOut = false
   }
 
   /**
@@ -31,6 +33,15 @@ class Recognition extends DTO {
    */
   addResult(result) {
     this.results.push(result)
+  }
+
+  /**
+   * @param {boolean} timedOut
+   * @returns {Recognition}
+   */
+  setTimedOut(timedOut) {
+    this.timedOut = timedOut
+    return this
   }
 
   /**

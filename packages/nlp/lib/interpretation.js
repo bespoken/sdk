@@ -63,6 +63,19 @@ class Interpretation {
     this.reply = reply
     return this 
   }
+
+  /**
+   * @param {string} property
+   * @returns {any}
+   */
+  toJSON(property) {
+    if (property === 'message') {
+      return this.message.toString()
+    } else if (!property) {
+      return this
+    }
+    return this[property]
+  }
 }
 
 module.exports = Interpretation

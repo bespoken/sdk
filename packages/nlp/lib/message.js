@@ -115,6 +115,9 @@ class Message extends DTO {
 
     /** @type {string | undefined} */
     this.text = undefined
+
+    /** @type {number | undefined} */
+    this.timeout = undefined
   }
 
   /**
@@ -160,7 +163,7 @@ class Message extends DTO {
     if (this.text) {
       return 'message: ' + this.text
     } else if (this.audio) {
-      return 'message: [audio ' + this.audio.toString() + ']'
+      return 'message: [audio ' + this.audio.toString() + ' timeout ' + this.timeout + ']'
     } else {
       return 'message: text and audio undefined'
     }
