@@ -1,4 +1,5 @@
 const DTO = require('./dto')
+const Reply = require('./reply')
 const Settings = require('./settings')
 
 /** @typedef {('TWILIO')} ChannelType */
@@ -27,8 +28,20 @@ class Conversation extends DTO {
 
     /** @type {Settings} */
     this.settings = new Settings({})
+
+    /** @type {Reply[]} */
+    this.replies = []
   }
 
+  /**
+   * @param {Reply} reply
+   * @returns {Conversation}
+   */
+  addReply(reply) {
+    this.replies.push(reply)
+    return this
+  }
+  
    /**
    * @param {string} key
    * @returns {string | undefined}
@@ -43,6 +56,13 @@ class Conversation extends DTO {
    */
   contextValue(key) {
     return this.context[key]
+  }
+
+  /**
+   * @returns {Reply | undefined}
+   */
+  lastReply() {
+    return this.replies.length > 0 ? this.replies[this.replies.length - 1] : undefined
   }
 }
 

@@ -19,7 +19,10 @@ class Reply extends DTO {
     
     /** @type {Interpretation | undefined} */
     this.interpretation = interpretation
-    
+  
+    /** @type {Recognition | undefined} */
+    this.recognition = interpretation?.recognition ? interpretation?.recognition : undefined
+
     /** @type {string | undefined} */
     this.text = undefined
     
@@ -28,13 +31,6 @@ class Reply extends DTO {
 
     /** @type {InputSettings | undefined} */
     this.inputSettings = undefined
-  }
-
-  /**
-   * @returns {Recognition | undefined}
-   */
-  get recognition () {
-    return this.interpretation?.recognition
   }
 
   /**
@@ -72,6 +68,16 @@ class Reply extends DTO {
     this._message = message
     return this
   }
+
+  /**
+   * @param {Recognition} recognition 
+   * @returns {Reply}
+   */
+  setRecognition(recognition) {
+    this.recognition = recognition
+    return this
+  }
+
   /**
    * @param {string} text
    * @returns {Reply}
@@ -79,6 +85,19 @@ class Reply extends DTO {
   setText(text) {
     this.text = text
     return this
+  }
+
+  /**
+   * Strips the opening and closing speak from the text, if present
+   * @returns {string | undefined}
+   */
+  textWithoutSSML() {
+    let text = this.text
+    if (text) {
+      text = text.replace('<speak>', '')
+      text = text.replace('</speak>', '')
+    }
+    return text
   }
 }
 

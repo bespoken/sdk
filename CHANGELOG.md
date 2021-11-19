@@ -1,3 +1,7 @@
+## 0.11.16
+### **Enhancements**
+* Added reply history to conversation
+
 ## 0.10.4
 ### **Enhancements**
 * validate shouldRetry when there is an error
