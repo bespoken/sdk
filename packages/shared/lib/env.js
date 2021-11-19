@@ -17,18 +17,25 @@ class Env {
 
   /**
    * @param {string} key
+   * @param {string} [defaultValue]
    * @returns {string}
    */
-  static requiredVariable(key) {
-    if (!process.env[key]) {
-      if (Env.isTest()) {
-        throw new Error('No environment variable found for: ' + key)
-      } else {
-        logger.error('No environment variable found for: ' + key + '. Exiting.')
-        process.exit(1)
-      } 
+  static requiredVariable(key, defaultValue) {
+    const value = process.env[key]
+    if (value) {
+      return value
     }
-    return process.env[key]
+
+    if (defaultValue) {
+      return defaultValue
+    }
+
+    if (Env.isTest()) {
+      throw new Error('No environment variable found for: ' + key)
+    } else {
+      logger.error('No environment variable found for: ' + key + '. Exiting.')
+      process.exit(1)
+    } 
   }
   
   /**
