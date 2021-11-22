@@ -24,6 +24,9 @@ class Recognition extends DTO {
     this.results = []
 
     this.timedOut = false
+
+    /** @type {RecognitionResult | undefined} */
+    this._topResult = undefined
   }
 
   /**
@@ -52,9 +55,23 @@ class Recognition extends DTO {
   }
 
   /**
+   * We can override the top result
+   * @param {RecognitionResult} result
+   * @returns {Recognition}
+   */
+  setTopResult(result) {
+    this._topResult = result
+    return this
+  }
+
+  /**
    * @returns {RecognitionResult | undefined}
    */
   topResult() {
+    if (this._topResult) {
+      return this._topResult
+    }
+
     if (this.results.length === 0) {
       return undefined
     }

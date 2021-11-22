@@ -1,3 +1,9 @@
+## 0.11.17
+### **Enhancements**
+* Env requiredVariable now uses a default value if supplied
+* Added support for overriding the top result on the recognition object
+* Added support dialog state in the input settings
+
 ## 0.11.16
 ### **Enhancements**
 * Added reply history to conversation

@@ -39,7 +39,7 @@ class Audio {
       
       this._stream.on('data', (data) => {
         this._streamBuffer = Buffer.concat([this._streamBuffer, data])
-        //logger.trace('data received: ' + data.length)
+        //logger.info('data received: ' + data.length)
         logger.debugFile('debug/out.pcm', data)
       })
     }
