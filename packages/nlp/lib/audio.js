@@ -7,12 +7,22 @@ const Readable = require('stream').Readable
  */
 class Audio {
   /**
+   * @param {any} o
+   * @returns {Audio}
+   */
+  static fromJSON(o) {
+    const audio = new Audio(o.buffer, o.type)
+    return audio
+  }
+  
+  /**
    * 
    * @param {Buffer} [buffer]
    * @param {string} [type='pcm'] 
    */
   constructor(buffer, type = 'pcm') {
-    this.buffer = buffer 
+    /** @private */
+    this._buffer = buffer 
     this.type = type  
     this.sampleRate = 16000
     this.bitsPerSample = 16
@@ -26,7 +36,7 @@ class Audio {
     //   this.readStream.pipe(this.writeStream)
     // }
 
-    if (!this.buffer) {
+    if (!this._buffer) {
       // We store stream data here for debugging purposes
       this._streamBuffer = Buffer.alloc(0)
       this._stream = new MemoryStream(Buffer.alloc(0), {
@@ -50,10 +60,20 @@ class Audio {
    * @returns {string | undefined}
    */
   base64() {
-    if (!this.buffer) {
-      return undefined
+    return this.buffer().toString('base64')
+  }
+
+  /**
+   * @returns {Buffer}
+   */
+  buffer() {
+    if (this._streamBuffer) {
+      return this._streamBuffer
+    } else if (this._buffer) {
+      return this._buffer
+    } else {
+      throw new Error('This should never happen')
     }
-    return this.buffer.toString('base64')
   }
 
   /**
@@ -71,10 +91,6 @@ class Audio {
    * @returns {number}
    */
   durationInSeconds() {
-    if (!this.buffer) {
-      throw new Error("Cannot compute duration for stream")
-    }
-
     if (this.type !== 'pcm') {
       throw new Error("Cannot compute duration for anything other than PCM")
     }
@@ -84,7 +100,7 @@ class Audio {
       throw new Error("Cannot compute duration for audio without a buffer length")
     }
 
-    const duration = this.buffer.buffer.byteLength / this.sampleRate
+    const duration = this.buffer().buffer.byteLength / this.sampleRate
     // console.info('duraiton: ' + duration)
     return duration
   }
@@ -93,7 +109,7 @@ class Audio {
    * @returns {boolean}
    */
   isStream() {
-    return this.buffer === undefined
+    return this._buffer === undefined
   }
 
   /**
@@ -104,7 +120,7 @@ class Audio {
     if (stream) {
       return this._streamBuffer ? this._streamBuffer.length : -1
     }
-    return this.buffer?.length
+    return this._buffer?.length
   }
 
   /**

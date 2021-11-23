@@ -21,6 +21,16 @@ const DialogState = {
  */
 class InputSettings {
   /**
+   * @param {any} o 
+   * @returns {InputSettings}
+   */
+  static fromJSON(o) {
+    const settings = new InputSettings(o.type)
+    Object.assign(settings, o)
+    return settings
+  }
+
+  /**
    * @param {InputType} type
    */
   constructor(type) {
@@ -48,6 +58,15 @@ class InputSettings {
     this.timeout = undefined
   }
 
+  /**
+   * @param {DialogState} state 
+   * @returns {InputSettings}
+   */
+  setDialogState(state) {
+    this.dialogState = state
+    return this
+  }
+  
   /**
    * @param {number} digits
    * @returns {InputSettings}

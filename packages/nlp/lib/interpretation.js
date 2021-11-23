@@ -1,15 +1,30 @@
+const _ = require('lodash')
 const Entity = require('./entity')
 const Intent = require('./intent')
 const Message = require('./message')
+const Persistable = require('./persistable')
 const Recognition = require('./recognition')
-const Reply = require('./reply')
 
 /** @typedef {('LEX' | 'NOOP')} InterpreterType  */
 
 /**
  * Holds results from NLU
  */
-class Interpretation {
+class Interpretation extends Persistable {
+  /**
+   * @param {any} o
+   * @returns {Interpretation | undefined}
+   */
+  static fromJSON(o) {
+    if (!o) {
+      return undefined
+    }
+
+    const interpretation = new Interpretation(Message.fromJSON(o.message), o.raw, o.type)
+    _.defaults(interpretation, o)
+    return interpretation
+  }
+
   /**
    * 
    * @param {Message} message 
@@ -18,24 +33,19 @@ class Interpretation {
    * @param {Intent} [intent]
    */
   constructor(message, raw, type, intent) {
+    super()
     this.message = message
     this.raw = raw
     this.type = type
     this.intent = intent
 
-    /** @type {Reply | undefined} */
-    this.reply = undefined
+    /** @type {Recognition | undefined} */
+    this.recognition = undefined
 
     /** @type {Entity[]} */
     this.entities = []
   }
 
-  /** 
-   * @returns {Recognition | undefined} 
-   */
-  get recognition () {
-    return this.message.recognition
-  }
   /**
    * 
    * @param {Entity} entity 
@@ -56,11 +66,11 @@ class Interpretation {
   }
 
   /**
-   * @param {Reply} reply
+   * @param {Recognition} recognition
    * @returns {Interpretation}
    */
-  setReply(reply) {
-    this.reply = reply
+  setRecognition(recognition) {
+    this.recognition = recognition
     return this 
   }
 

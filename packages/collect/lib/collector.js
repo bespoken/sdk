@@ -1,5 +1,7 @@
-const Message = require('./message')
-const Reply = require('./reply')
+const axios = require('axios').default
+const Env = require('@bespoken-sdk/shared/lib/env')
+const Message = require('@bespoken-sdk/nlp/lib/message')
+const Reply = require('@bespoken-sdk/nlp/lib/reply')
 
 /**
  *
@@ -11,10 +13,15 @@ class Collector {
 
   /**
    * @param {Message} message
-   * @returns {Promise<void>}
+   * @returns {Promise<Message>}
    */
   async collectMessage(message) {
-    // TODO call axios with url for collector
+    const baseURL = Env.requiredVariable('COLLECT_API_URL')
+    const url = `${baseURL}/message`
+    console.info('collect essage: ' + JSON.stringify(message))
+    const response = await axios.post(url, message)
+    
+    return response.data
   } 
   
   /**
@@ -22,7 +29,12 @@ class Collector {
    * @returns {Promise<void>}
    */
   async collectReply(reply) {
-    // TODO call axios with url for collector
+    const baseURL = Env.requiredVariable('COLLECT_API_URL')
+    const url = `${baseURL}/reply`
+    console.info('collect reply: ' + JSON.stringify(reply))
+    const response = await axios.post(url, reply)
+    
+    return response.data
   } 
 }
 

@@ -1,5 +1,6 @@
-const DTO = require('./dto')
-const Reply = require('./reply')
+// We do not actually import Reply because it makes this circular
+/** @typedef {import('./reply')} Reply */
+const Persistable = require('./persistable')
 const Settings = require('./settings')
 
 /** @typedef {('TWILIO')} ChannelType */
@@ -7,7 +8,17 @@ const Settings = require('./settings')
 /**
  * Manages the conversation between a user and a bot
  */
-class Conversation extends DTO {
+class Conversation extends Persistable {
+  /**
+   * @param {any} o
+   * @returns {Conversation}
+   */
+  static fromJSON(o) {
+    const conversation = new Conversation(o.raw, o.channelType, o.externalID)
+    Object.assign(conversation, o)
+    return conversation
+  }
+  
   /**
    * @param {any} raw
    * @param {ChannelType} channelType
@@ -15,7 +26,6 @@ class Conversation extends DTO {
    */
   constructor(raw, channelType, externalID) {
     super()
-
     this.raw = raw
     this.channelType = channelType
     this.externalID = externalID

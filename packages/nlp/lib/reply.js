@@ -1,14 +1,35 @@
+const _ = require('lodash')
 const Audio = require('./audio')
-const DTO = require('./dto')
 const InputSettings = require('./input-settings')
 const Interpretation = require('./interpretation')
 const Message = require('./message')
+const Persistable = require('./persistable')
 const Recognition = require('./recognition')
 
 /**
  *
  */
-class Reply extends DTO {
+class Reply extends Persistable {
+  /**
+   * @param {any} o
+   * @returns {Reply}
+   */
+  static fromJSON(o) {
+    const reply = new Reply(Message.fromJSON(o.message),
+      Interpretation.fromJSON(o.interpretation))
+    reply.recognition = Recognition.fromJSON(o.recognition)
+    if (o.audio) {
+      reply.audio = Audio.fromJSON(o.audio)
+    }
+
+    if (o.inputSettings) {
+      reply.inputSettings = InputSettings.fromJSON(o.inputSettings)
+    }
+    
+    _.defaults(reply, o)
+    return reply
+  }
+
   /**
    * @param {Message} message
    * @param {Interpretation} [interpretation]

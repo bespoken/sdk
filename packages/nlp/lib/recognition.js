@@ -1,11 +1,23 @@
-const DTO = require('./dto')
+const _ = require('lodash')
 const Message = require('./message')
 const RecognitionResult = require('./recognition-result')
 
 /**
  *
  */
-class Recognition extends DTO {
+class Recognition {
+  /**
+   * 
+   * @param {any} o 
+   * @returns {Recognition}
+   */
+  static fromJSON(o) {
+    const recognition = new Recognition(Message.fromJSON(o.message), o.raw, o.type)
+    recognition.results = o.results.map(r => RecognitionResult.fromJSON(r))
+    _.defaults(recognition, o)
+    return recognition
+  }
+
   /**
    * 
    * @param {Message} message 
@@ -13,7 +25,6 @@ class Recognition extends DTO {
    * @param {string} type
    */
   constructor(message, raw, type) {
-    super()
     this.message = message
     this.raw = raw
     this.type = type
