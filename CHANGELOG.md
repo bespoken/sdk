@@ -1,3 +1,7 @@
+## 0.11.18
+### **Enhancements**
+* First version of collector SDK
+
 ## 0.11.17
 ### **Enhancements**
 * Env requiredVariable now uses a default value if supplied
