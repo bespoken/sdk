@@ -1,17 +1,24 @@
 const logger = require('@bespoken-sdk/shared/lib/logger')('AUDIO')
 const MemoryStream = require('memorystream');
+const Persistable = require('./persistable')
 const Readable = require('stream').Readable
 
 /**
  * Class to handle audio payload
  */
-class Audio {
+class Audio extends Persistable {
   /**
    * @param {any} o
    * @returns {Audio}
    */
   static fromJSON(o) {
-    const audio = new Audio(o.buffer, o.type)
+    // We may already have this as an audio object - if so just return it
+    console.info('typeof: ' + typeof o)
+    if (o instanceof Audio) {
+      return o
+    }
+    const arrayBuffer = Buffer.from(o.base64, 'base64')
+    const audio = new Audio(arrayBuffer, o.type)
     return audio
   }
   
@@ -21,6 +28,7 @@ class Audio {
    * @param {string} [type='pcm'] 
    */
   constructor(buffer, type = 'pcm') {
+    super()
     /** @private */
     this._buffer = buffer 
     this.type = type  
@@ -188,10 +196,13 @@ class Audio {
   }
 
   /**
-   * @returns {string}
+   * @returns {any}
    */
   toJSON () {
-    return this.toString()
+    return {
+      base64: this.base64(),
+      type: this.type
+    }
   }
   
   /**

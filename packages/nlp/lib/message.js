@@ -12,11 +12,12 @@ const Util = require('@bespoken-sdk/shared/lib/util')
 class Message extends Persistable {
   /**
    * @param {Conversation} conversation
+   * @param {InputSettings} inputSettings
    * @returns {Message} 
    */
-  static fromAudioStream(conversation) {
-    const message = new Message(conversation, new InputSettings('VOICE'))
-    message.audio = new Audio()
+  static fromAudioStream(conversation, inputSettings) {
+    const message = new Message(conversation, inputSettings)
+    message._audio = new Audio()
     return message
   }
 
@@ -28,7 +29,7 @@ class Message extends Persistable {
   static fromAudioBase64(conversation, audio) {
     const message = new Message(conversation, new InputSettings('VOICE'))
     const audioBuffer = Buffer.from(audio, 'base64')
-    message.audio = new Audio(audioBuffer)
+    message._audio = new Audio(audioBuffer)
     return message
   }
 
@@ -39,7 +40,7 @@ class Message extends Persistable {
    */
   static fromAudioBuffer(conversation, audio) {
     const message = new Message(conversation, new InputSettings('VOICE'))
-    message.audio = new Audio(audio)
+    message._audio = new Audio(audio)
     return message
   }
 
@@ -49,9 +50,9 @@ class Message extends Persistable {
    * @param {Buffer} buffer
    * @returns {Message} 
    */
-   static fromBufferAsStream(conversation, buffer) {
+  static fromBufferAsStream(conversation, buffer) {
     const message = new Message(conversation, new InputSettings('VOICE'))
-    message.audio = new Audio()
+    message._audio = new Audio()
     const chunkSize = 3000
     new Promise(async (resolve) => {
       while (buffer.length > 0) {
@@ -79,18 +80,26 @@ class Message extends Persistable {
   static fromJSON(o) {
     const conversation = Conversation.fromJSON(o.conversation)
     const message = new Message(conversation, InputSettings.fromJSON(o.inputSettings))
-    _.defaults(message, o)
+    if (o.audio) {
+      message._audio = Audio.fromJSON(o.audio)
+    }
+    message._text = o.text
+    message._locale = o.locale
     return message
   }
   /**
    * 
    * @param {Conversation} conversation
    * @param {string} text
+   * @param {InputSettings} [inputSettings]
    * @returns {Message} 
    */
-  static fromText(conversation, text) {
-    const message = new Message(conversation, new InputSettings('TEXT'))
-    message.text = text
+  static fromText(conversation, text, inputSettings) {
+    if (!inputSettings) {
+      inputSettings = new InputSettings('TEXT')
+    }
+    const message = new Message(conversation, inputSettings)
+    message._text = text
     return message
   }
 
@@ -110,32 +119,67 @@ class Message extends Persistable {
    */
   constructor(conversation, inputSettings) {
     super()
-    this.conversation = conversation
-    /**
-     * @type {Audio | undefined}
-     */
-    this.audio = undefined
-
-    this.locale = 'en-US'
+    this._conversation = conversation
     
-    /** @type {string | undefined} */
-    this.text = undefined
+    /** @private @type {Audio | undefined} */
+    this._audio = undefined
 
-    /** @type {InputSettings} */
-    this.inputSettings = inputSettings
+    /** @private */
+    this._locale = 'en-US'
+    
+    /** @private @type {string | undefined} */
+    this._text = undefined
+
+    /** @private @type {InputSettings} */
+    this._inputSettings = inputSettings
 
     /** @type {Message | undefined} */
     this.originalMessage = undefined
   }
 
   /**
+   * @returns {Audio | undefined}
+   */
+  get audio() {
+    return this._audio
+  }
+
+  /**
+   * @returns {Conversation}
+   */
+  get conversation() {
+    return this._conversation
+  }
+
+  /**
+   * @returns {InputSettings}
+   */
+  get inputSettings() {
+    return this._inputSettings
+  }
+
+  /**
+   * @returns {string}
+   */
+  get locale() {
+    return this._locale;
+  }
+  
+  /**
+   * @returns {string | undefined}
+   */
+  get text() {
+    return this._text
+  }
+
+  /**
    * @returns {Audio}
    */
   audioRequired() {
-    if (!this.audio) {
+    if (!this._audio) {
       throw new Error("This should not happen - audio is not defined")
     }
-    return this.audio
+    return this._audio
   }
 
   /**
@@ -154,6 +198,41 @@ class Message extends Persistable {
    */
   isEmpty() {
     return this.text === undefined && this.audio === undefined
+  }
+
+  /**
+   * @returns {any}
+   */
+  toJSON() {
+    /** @type {any} */
+    const clone = _.defaultsDeep({}, this)
+    clone.audio = clone._audio
+    clone.conversation = clone._conversation
+    clone.inputSettings = clone._inputSettings
+    clone.locale = clone._locale
+    clone.text = clone._text 
+
+    delete clone._audio
+    delete clone._conversation
+    delete clone._inputSettings
+    delete clone._locale
+    delete clone._text
+    return clone
+  }
+
+  /**
+   * @param {number} [indent]
+   * @returns {string}
+   */
+  toStringAsJSON(indent=2) {
+    const o = this.toJSON()
+    return JSON.stringify(o, (p, value) => {
+      if (p === 'base64') {
+        return `[length: ${value.length}]`
+      } else {
+        return value
+      }
+    }, indent)
   }
 
   /**

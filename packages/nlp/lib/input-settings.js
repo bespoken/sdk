@@ -36,8 +36,8 @@ class InputSettings {
   constructor(type) {
     this.type = type
 
-    /** @type {DialogState | undefined} */
-    this.dialogState = undefined
+    /** @type {DialogState} */
+    this.dialogState = DialogState.ELICIT_INTENT
 
     /** @type {string | undefined} */
     this.intentToConfirm = undefined

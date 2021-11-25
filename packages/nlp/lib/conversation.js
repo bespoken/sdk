@@ -1,5 +1,6 @@
 // We do not actually import Reply because it makes this circular
 /** @typedef {import('./reply')} Reply */
+const _ = require('lodash')
 const Persistable = require('./persistable')
 const Settings = require('./settings')
 
@@ -73,6 +74,16 @@ class Conversation extends Persistable {
    */
   lastReply() {
     return this.replies.length > 0 ? this.replies[this.replies.length - 1] : undefined
+  }
+
+  /**
+   * @returns {any}
+   */
+   toJSON() {
+    const clone = _.defaultsDeep({}, this)
+    //console.info('reply tojson: ' + clone?.message?.conversation?.replies?.length)
+    delete clone.replies 
+    return clone
   }
 }
 

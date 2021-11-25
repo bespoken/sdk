@@ -17,7 +17,10 @@ class Reply extends Persistable {
   static fromJSON(o) {
     const reply = new Reply(Message.fromJSON(o.message),
       Interpretation.fromJSON(o.interpretation))
-    reply.recognition = Recognition.fromJSON(o.recognition)
+    if (o.recognition) {
+      reply.recognition = Recognition.fromJSON(o.recognition)
+    }
+    
     if (o.audio) {
       reply.audio = Audio.fromJSON(o.audio)
     }
