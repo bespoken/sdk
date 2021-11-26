@@ -19,7 +19,7 @@ class Collector {
   async collectMessage(message) {
     const baseURL = Env.requiredVariable('COLLECT_API_URL', 'https://collect.bespoken.io/collect')
     const url = `${baseURL}/message`
-    logger.info('collect message: ' + message.toStringAsJSON())
+    logger.debug('collect message: ' + message.toStringAsJSON())
     const response = await axios.post(url, message, {
       headers: {
         'content-type': 'application/json'

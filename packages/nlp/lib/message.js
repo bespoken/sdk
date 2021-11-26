@@ -83,23 +83,48 @@ class Message extends Persistable {
     if (o.audio) {
       message._audio = Audio.fromJSON(o.audio)
     }
+
+    if (o.originalMessage) {
+      message.originalMessage = Message.fromJSON(o.originalMessage)
+    }
+    message.id = o.id
+    message.createdTimestamp = o.createdTimestamp
     message._text = o.text
     message._locale = o.locale
     return message
   }
+  
   /**
    * 
    * @param {Conversation} conversation
    * @param {string} text
-   * @param {InputSettings} [inputSettings]
+   * @param {Message} [originalMessage]
    * @returns {Message} 
    */
-  static fromText(conversation, text, inputSettings) {
-    if (!inputSettings) {
+  static fromText(conversation, text, originalMessage) {
+    let inputSettings
+    if (originalMessage?.inputSettings) {
+      // Make a copy of the input settings if we are pulling it off the original message
+      inputSettings = InputSettings.fromJSON(originalMessage?.inputSettings)
+    } else {
       inputSettings = new InputSettings('TEXT')
     }
     const message = new Message(conversation, inputSettings)
+    message.originalMessage = originalMessage
     message._text = text
+    return message
+  }
+
+  /**
+   * 
+   * @param {Conversation} conversation
+   * @param {number} dtmfInput
+   * @param {InputSettings} inputSettings
+   * @returns {Message} 
+   */
+   static fromDTMF(conversation, dtmfInput, inputSettings) {
+    const message = new Message(conversation, inputSettings)
+    message._text = dtmfInput + ''
     return message
   }
 
@@ -130,7 +155,7 @@ class Message extends Persistable {
     /** @private @type {string | undefined} */
     this._text = undefined
 
-    /** @private @type {InputSettings} */
+    /** @type {InputSettings} */
     this._inputSettings = inputSettings
 
     /** @type {Message | undefined} */
@@ -227,8 +252,8 @@ class Message extends Persistable {
   toStringAsJSON(indent=2) {
     const o = this.toJSON()
     return JSON.stringify(o, (p, value) => {
-      if (p === 'base64') {
-        return `[length: ${value.length}]`
+      if (p === 'audio') {
+        return `[length: ${value}]`
       } else {
         return value
       }

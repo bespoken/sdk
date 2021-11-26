@@ -1,9 +1,17 @@
 module.exports = class {
   constructor() {
-    /** @type {String | undefined} */
-    this.id = undefined
+    /** @type {String} */
+    this.id = this.generatedID()
 
-    /** @type {Date | undefined} */
-    this.createdTimestamp = undefined
+    /** @type {Date} */
+    this.createdTimestamp = new Date()
+  }
+
+  /**
+   * @protected
+   * @returns {string}
+   */
+  generatedID() {
+    return require('uuid').v4()
   }
 }

@@ -13,7 +13,6 @@ class Audio extends Persistable {
    */
   static fromJSON(o) {
     // We may already have this as an audio object - if so just return it
-    console.info('typeof: ' + typeof o)
     if (o instanceof Audio) {
       return o
     }
