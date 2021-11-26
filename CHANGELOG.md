@@ -1,3 +1,10 @@
+## 0.12.1
+* Updates to collector SDK for better object serialization
+
+## 0.12.0
+### **Enhancements**
+* First release of collector SDK into real environment
+
 ## 0.11.18
 ### **Enhancements**
 * First version of collector SDK
