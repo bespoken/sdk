@@ -58,6 +58,18 @@ class Reply extends Persistable {
   }
 
   /**
+   * @param {string} s 
+   * @returns {Reply}
+   */
+  appendText(s) {
+    if (!this.text) {
+      this.text = ''
+    }
+    this.text = this.text + ' ' + s
+    return this
+  }
+
+  /**
    * @param {Interpretation} interpretation 
    * @returns {Reply}
    */
