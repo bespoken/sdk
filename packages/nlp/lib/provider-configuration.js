@@ -54,6 +54,19 @@ class ProviderConfiguration extends DTO {
 
   /**
    * @param {string} key
+   * @param {number} [defaultValue]
+   * @returns {number}
+   */
+   requiredNumber (key, defaultValue) {
+    const value = this.json[key] ? this.json[key] : defaultValue
+    if (!value) {
+      throw new Error('No value found for configuration setting: ' + key + ' for provider: ' + this.class)
+    }
+    return value
+  }
+
+  /**
+   * @param {string} key
    * @param {string} [defaultValue]
    * @returns {string}
    */

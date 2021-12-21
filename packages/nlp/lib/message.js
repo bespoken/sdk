@@ -160,6 +160,8 @@ class Message extends Persistable {
 
     /** @type {Message | undefined} */
     this.originalMessage = undefined
+
+    this.timedOut = false
   }
 
   /**

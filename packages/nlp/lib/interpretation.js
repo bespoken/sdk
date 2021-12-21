@@ -5,7 +5,7 @@ const Message = require('./message')
 const Persistable = require('./persistable')
 const Recognition = require('./recognition')
 
-/** @typedef {('LEX' | 'NOOP')} InterpreterType  */
+/** @typedef {('LEX' | 'NOOP' | 'VOICEFLOW')} InterpreterType  */
 
 /**
  * Holds results from NLU

@@ -4,7 +4,7 @@ const _ = require('lodash')
 const Persistable = require('./persistable')
 const Settings = require('./settings')
 
-/** @typedef {('TWILIO')} ChannelType */
+/** @typedef {('DIRECT' | 'TWILIO')} ChannelType */
 
 /**
  * Manages the conversation between a user and a bot

@@ -58,6 +58,12 @@ class Reply extends Persistable {
   }
 
   /**
+   * @returns {boolean}
+   */
+  hasText() {
+    return this.text !== undefined && this.text.length > 0
+  }
+  /**
    * @param {string} s 
    * @returns {Reply}
    */
