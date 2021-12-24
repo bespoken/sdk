@@ -32,6 +32,13 @@ class Settings extends ProviderConfiguration {
       return undefined
     }
   }
+
+  /**
+   * @returns {any}
+   */
+   toJSON() {
+    return this.json
+  }
 }
 
 module.exports = Settings
