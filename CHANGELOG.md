@@ -1,3 +1,6 @@
+## 0.12.2
+* Working on usable batch package
+
 ## 0.12.1
 * Updates to collector SDK for better object serialization
 
