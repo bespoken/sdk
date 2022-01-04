@@ -1,7 +1,7 @@
 const _ = require('lodash')
-const sqlite3 = require('sqlite3').verbose()
-const Store = require('@bespoken-sdk/store').Store
-
+const Job = require('./job')
+const logger = require('@bespoken-sdk/shared/lib/logger')('SQLPRINT')
+const mysql = require('mysql')
 /**
  * Sends results of tests to SQLite database
  */
@@ -11,47 +11,63 @@ class SQLPrinter {
    */
   constructor () {
     this.tableName = 'RESULTS'
+    this.fields = []
   }
 
   /**
-   *
+   * @param {Job} job
+   * @returns {Promise<SQLPrinter>}
    */
-  async reset () {
-    return this._run(`DROP TABLE ${this.tableName}`)
+   async reset (job) {
+    await this._query(`DELETE FROM ${this.tableName} WHERE RUN = ?`, [job.run])
+    return this
   }
 
   /**
-   *
+   * @param {Job} job
+   * @returns {Promise<void>}
    */
-  _connect () {
-    this.db = new sqlite3.Database('output/results.db')
+   async print (job) {
+    try {
+      return await this.printImpl(job, true)
+    } catch (e) {
+      console.error('MYSQL-PRINTER PRINT print error: ' + e.toString())
+      throw e
+    } finally {
+      try {
+        await this._close()
+      } catch (e) {
+        console.error('MYSQL-PRINTER PRINT close error: ' + e.toString())
+      }
+    }
   }
-
   /**
-   * @param job
-   * @param reset
+   * @param {Job} job
+   * @param {boolean} reset
+   * @returns {Promise<void>}
    */
-  async print (job, reset = false) {
+  async printImpl (job, reset = false) {
+    this.tableName = process.env.MYSQL_TABLE ? process.env.MYSQL_TABLE : this._name(job.name)
     this._connect()
     if (reset) {
       try {
         await this.reset(job)
       } catch (e) {
-        console.error('SQL-PRINTER PRINT reset error: ' + e.toString())
+        logger.error('SQL-PRINTER PRINT reset error: ' + e.toString())
       }
     }
 
-    if (!this.fields) {
+    if (this.fields.length === 0) {
       await this._setup(job)
     }
 
-    const insertSQL = `INSERT INTO ${this.tableName} (${this.fields.map(f => f.name).join(',\n')}) values (${this.fields.map(f => '?').join(', ')})`
-    console.log('SQLLITE PRINT insert-sql: ' + insertSQL)
+    const insertSQL = `INSERT INTO ${this.tableName} (${this.fields.map(f => f.name).join(',\n')}) values (${this.fields.map(() => '?').join(', ')})`
+    logger.debug('SQLLITE PRINT insert-sql: ' + insertSQL)
     const statement = this._prepare(insertSQL)
 
     let index = 0
     for (const result of job.results) {
-      const params = [result.record.utteranceRaw, job.run, job.name]
+      const params = [result.record.utteranceRaw, job.run, job.name, job.timestamp]
 
       const expectedFieldNames = job.expectedFieldNames()
       for (const fieldName of expectedFieldNames) {
@@ -70,10 +86,10 @@ class SQLPrinter {
         const expected = result.outputField(fieldName)
         params.push(expected)
       }
-      params.push(result.error)
+      params.push(result.error ? result.error : '')
 
       // Push a link to the logs
-      params.push(`${Store.instance().logURL(job, index)}`)
+      params.push(`${job.logURL(index)}`)
 
       // resultsArray.push(resultArray)
       await statement.run(params)
@@ -87,15 +103,57 @@ class SQLPrinter {
 
     await statement.finalize()
   }
-
+  
   /**
-   * @param job
+   * @returns {Promise<void>}
+   */
+   async _close () {
+    return new Promise((resolve, reject) => {
+      if (!this.connection) {
+        return
+      }
+      this.connection.end((error) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve()
+        }
+      })
+    })
+  }
+
+   /**
+   * @returns {Promise<void>}
+   */
+  async _connect () {
+    this.connection = mysql.createConnection({
+      database: process.env.MYSQL_DATABASE,
+      host: process.env.MYSQL_HOST,
+      password: process.env.MYSQL_PASSWORD,
+      user: process.env.MYSQL_USER,
+      
+    })
+
+    return new Promise((resolve, reject) => {
+      if (!this.connection) throw new Error('No connection created')
+      this.connection.connect((error) => {
+        if (error) {
+          reject(error)
+          return
+        }
+        resolve()
+      })
+    })
+  }
+  /**
+   * @param {Job} job
+   * @returns {Promise<void>}
    */
   async _setup (job) {
-    this.fields = []
     this._addField('UTTERANCE', 'text')
     this._addField('RUN', 'text')
     this._addField('JOB', 'text')
+    this._addField('TIMESTAMP', 'text')
 
     const expectedFieldNames = job.expectedFieldNames()
     for (const fieldName of expectedFieldNames) {
@@ -141,59 +199,79 @@ class SQLPrinter {
   }
 
   /**
-   * @param sql
+   * @param {string} sql
+   * @param {any[]} [params]
+   * @returns {Promise<any[]>}
    */
-  _query (sql) {
+   _query (sql, params) {
     return new Promise((resolve, reject) => {
-      this.db.all(sql, function (error, rows) {
+      if (params) {
+        params = params.map(param => this._value(param))
+      }
+      // console.info('SQL: ' + sql)
+      const options = {
+        sql: sql,
+        timeout: 40000
+      }
+      if (params) {
+        options.values = params
+      }
+
+      if (!this.connection) throw new Error('No connection')
+      this.connection.query(options, (error, results) => {
+        // error will be an Error if one occurred during the query
+        // results will contain the results of the query
+        // fields will contain information about the returned results fields (if any)
         if (error) {
-          console.error('SQLITE ALL ERROR ' + error)
+          if (!sql.includes('CREATE TABLE')) {
+            console.error('MYSQL QUERY error on sql: ' + sql)
+            if (params) {
+              console.error('MYSQL QUERY error on params:' + params.join(',\n'))
+            }
+          }
           reject(error)
-          return
+        } else {
+          resolve(results)
         }
-        console.log('SQLITE ALL rows: ' + rows.length)
-        resolve(rows)
       })
     })
   }
 
   /**
-   * @param columnName
+   * @param {string} columnName
+   * @returns {Promise<boolean>}
    */
-  async _hasColumn (columnName) {
-    const rows = await this._query(`PRAGMA table_info('${this.tableName}');`)
-    const columnNames = rows.map(r => r.name)
-    return columnNames.includes(columnName)
+   async _hasColumn (columnName) {
+    if (!this.columnNames) {
+      const rows = await this._query(`SHOW COLUMNS FROM ${this.tableName};`)
+      // console.info('ROWS: ' + JSON.stringify(rows, null, 2))
+      this.columnNames = rows.map(r => r.Field)
+    }
+
+    return this.columnNames.includes(columnName)
   }
 
   /**
-   * @param sql
+   * @param {string} sql
+   * @returns {Statement}
    */
-  _prepare (sql) {
+   _prepare (sql) {
     return new Statement(this, sql)
   }
 
   /**
-   * @param sql
+   * @param {string} sql
+   * @returns {Promise<SQLPrinter>}
    */
-  _run (sql) {
-    return new Promise((resolve, reject) => {
-      console.info('SQLITE RUN sql ' + sql)
-      this.db.run(sql, function (error) {
-        if (error) {
-          console.error('SQLITE RUN ERROR ' + error + ' on sql: ' + sql)
-          reject(error)
-          return
-        }
-        console.log('SQLITE RUN sql: ' + sql + ' changes: ' + this.changes)
-        resolve(this)
-      })
-    })
+  async _run (sql) {
+    await this._query(sql)
+    return this
   }
 
   /**
-   * @param fieldName
-   * @param type
+   * @param {string} fieldName
+   * @param {string} type
+   * @returns {void}
    */
   _addField (fieldName, type) {
     fieldName = this._name(fieldName)
@@ -204,7 +282,8 @@ class SQLPrinter {
   }
 
   /**
-   * @param fieldName
+   * @param {string} fieldName
+   * @returns {string}
    */
   _name (fieldName) {
     fieldName = fieldName.split(' ').join('_').toUpperCase()
@@ -220,7 +299,8 @@ class SQLPrinter {
 
   // Clean values
   /**
-   * @param value
+   * @param {any} value
+   * @returns {string | undefined}
    */
   _value (value) {
     if (value === undefined) {
@@ -255,50 +335,25 @@ class SQLPrinter {
 /**
  *
  */
-class Statement {
-  /**
-   * @param printer
-   * @param sql
-   */
+ class Statement {
   constructor (printer, sql) {
     this.printer = printer
     this.sql = sql
-    this.statement = printer.db.prepare(sql)
   }
 
   /**
-   * @param params
+   * @param {any[]} params
+   * @returns {Promise<Statement>}
    */
   async run (params) {
-    return new Promise((resolve, reject) => {
-      params = params.map(param => this.printer._value(param))
-      this.statement.run(params, function (error) {
-        if (error) {
-          console.error('SQLITE RUN ERROR ' + error)
-          reject(error)
-          return
-        }
-        console.log('SQLITE RUNSTATEMENT changes: ' + this.changes)
-        resolve(this)
-      })
-    })
+    return this.printer._query(this.sql, params)
   }
 
   /**
-   *
+   * @returns {Promise<void>}
    */
   async finalize () {
-    return new Promise((resolve, reject) => {
-      this.statement.finalize((error) => {
-        if (error) {
-          console.error('SQLITE FINALIZE ERROR: ' + error)
-          reject(error)
-        }
-
-        console.info('SQLITE FINALIZE')
-        resolve()
-      })
-    })
+    return Promise.resolve()
   }
 }
 

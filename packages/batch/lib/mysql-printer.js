@@ -1,7 +1,15 @@
-const SQLPrinter = require('./sql-printer')
+const Job = require('./job')
 const mysql = require('mysql')
+const SQLPrinter = require('./sql-printer')
 
+/**
+ *
+ */
 class MySQLPrinter extends SQLPrinter {
+  /**
+   * @param {Job} job
+   * @returns {Promise<void>}
+   */
   async print (job) {
     // Allow for the table name to be set by environment variable
     // If not present, uses the job name
@@ -20,19 +28,29 @@ class MySQLPrinter extends SQLPrinter {
     }
   }
 
-  reset (job) {
-    return this._query(`DELETE FROM ${this.tableName} WHERE RUN = ?`, [job.run])
+  /**
+   * @param {Job} job
+   * @returns {Promise<SQLPrinter>}
+   */
+  async reset (job) {
+    await this._query(`DELETE FROM ${this.tableName} WHERE RUN = ?`, [job.run])
+    return this
   }
 
+  /**
+   * @returns {Promise<void>}
+   */
   async _connect () {
     this.connection = mysql.createConnection({
+      database: process.env.MYSQL_DATABASE,
       host: process.env.MYSQL_HOST,
-      user: process.env.MYSQL_USER,
       password: process.env.MYSQL_PASSWORD,
-      database: process.env.MYSQL_DATABASE
+      user: process.env.MYSQL_USER,
+      
     })
 
     return new Promise((resolve, reject) => {
+      if (!this.connection) throw new Error('No connection created')
       this.connection.connect((error) => {
         if (error) {
           reject(error)
@@ -43,8 +61,14 @@ class MySQLPrinter extends SQLPrinter {
     })
   }
 
+  /**
+   * @returns {Promise<void>}
+   */
   async _close () {
     return new Promise((resolve, reject) => {
+      if (!this.connection) {
+        return
+      }
       this.connection.end((error) => {
         if (error) {
           reject(error)
@@ -55,6 +79,11 @@ class MySQLPrinter extends SQLPrinter {
     })
   }
 
+  /**
+   * @param {string} sql
+   * @param {any[]} [params]
+   * @returns {Promise<any[]>}
+   */
   _query (sql, params) {
     return new Promise((resolve, reject) => {
       if (params) {
@@ -68,7 +97,9 @@ class MySQLPrinter extends SQLPrinter {
       if (params) {
         options.values = params
       }
-      this.connection.query(options, (error, results, fields) => {
+
+      if (!this.connection) throw new Error('No connection')
+      this.connection.query(options, (error, results) => {
         // error will be an Error if one occurred during the query
         // results will contain the results of the query
         // fields will contain information about the returned results fields (if any)
@@ -87,6 +118,10 @@ class MySQLPrinter extends SQLPrinter {
     })
   }
 
+  /**
+   * @param {string} columnName
+   * @returns {Promise<boolean>}
+   */
   async _hasColumn (columnName) {
     if (!this.columnNames) {
       const rows = await this._query(`SHOW COLUMNS FROM ${this.tableName};`)
@@ -97,25 +132,45 @@ class MySQLPrinter extends SQLPrinter {
     return this.columnNames.includes(columnName)
   }
 
+  /**
+   * @param {string} sql
+   * @returns {Statement}
+   */
   _prepare (sql) {
     return new Statement(this, sql)
   }
 
-  _run (sql) {
-    return this._query(sql)
+  /**
+   * @param {string} sql
+   * @returns {Promise<SQLPrinter>}
+   */
+  async _run (sql) {
+    await this._query(sql)
+    return this
   }
 }
 
-class Statement {
+/**
+ *
+ */
+class Statement extends SQLPrinter.Statement {
   constructor (printer, sql) {
+    super(printer, sql)
     this.printer = printer
     this.sql = sql
   }
 
+  /**
+   * @param {any[]} params
+   * @returns {Promise<Statement>}
+   */
   async run (params) {
     return this.printer._query(this.sql, params)
   }
 
+  /**
+   * @returns {Promise<void>}
+   */
   async finalize () {
     return Promise.resolve()
   }

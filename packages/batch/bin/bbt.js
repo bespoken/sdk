@@ -44,7 +44,7 @@ program
       await Printer.instance(options.output_file).print(job)
       console.info(JSON.stringify(options.sql, null, 2))
       if (options.sql) {
-        const SQLPrinter = require('../src/mysql-printer')
+        const SQLPrinter = require('../src/sql-printer')
         const sqlPrinter = new SQLPrinter()
         sqlPrinter.print(job)
       }

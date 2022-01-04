@@ -1,8 +1,8 @@
 const Config = require('@bespoken-sdk/shared/lib/config')
 const debug = require('debug')('PRINTER')
 const fs = require('fs')
+const Job = require('./job')
 const path = require('path')
-const Store = require('@bespoken-sdk/store').Store
 const stringify = require('csv-stringify')
 
 /**
@@ -11,7 +11,7 @@ const stringify = require('csv-stringify')
  */
 class Printer {
   /**
-   * @param outputPath
+   * @param {string} outputPath
    * @returns {Printer}
    */
   static instance (outputPath) {
@@ -19,7 +19,7 @@ class Printer {
   }
 
   /**
-   * @param outputPath
+   * @param {string} outputPath
    */
   constructor (outputPath = 'results') {
     this.outputPath = outputPath.endsWith('.csv') ? `output/${outputPath}` : `output/${outputPath}.csv`
@@ -38,6 +38,7 @@ class Printer {
   /**
    * Prints out the results for a job
    * @param {Job} job
+   * @returns {Promise<void>}
    */
   async print (job) {
     let successCount = 0
@@ -72,7 +73,7 @@ class Printer {
         resultArray.push(actual)
       }
 
-      resultArray.push(result.success)
+      resultArray.push(result.success + '')
       for (const fieldName of expectedFieldNames) {
         const expected = result.record.expectedFields[fieldName]
         resultArray.push(expected)
@@ -93,7 +94,7 @@ class Printer {
 
       // Push a link to the logs
       const index = resultsArray.length - 1
-      resultArray.push(`${Store.instance().logURL(job, index)}`)
+      resultArray.push(`${job.logURL(index)}`)
 
       resultsArray.push(resultArray)
     })

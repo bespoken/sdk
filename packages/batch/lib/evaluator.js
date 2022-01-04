@@ -12,6 +12,7 @@ class Evaluator {
    * @param {Record} record
    * @param {Result} result
    * @param {Object} response
+   * @returns {Result}
    */
   static evaluate (record, result, response) {
     result.success = true
@@ -35,9 +36,10 @@ class Evaluator {
   }
 
   /**
-   * @param field
-   * @param record
-   * @param response
+   * @param {string} field
+   * @param {Record} record
+   * @param {any} response
+   * @returns {Result}
    */
   static evaluateExpectedField (field, record, response) {
     const actual = Evaluator.jsonQuery(field, response)
@@ -71,8 +73,9 @@ class Evaluator {
   }
 
   /**
-   * @param field
-   * @param response
+   * @param {string} field
+   * @param {any} response
+   * @returns {any}
    */
   static jsonQuery (field, response) {
     let actual = [response[field]]

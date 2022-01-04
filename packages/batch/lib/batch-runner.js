@@ -1,20 +1,22 @@
-const Config = require('@bespoken-sdk/shared').Config
+const Config = require('@bespoken-sdk/shared/lib/config')
 const Device = require('./device').Device
 const DevicePool = require('./device').DevicePool
 const EmailNotifier = require('./email-notifier')
 const Evaluator = require('./evaluator')
 const Interceptor = require('./interceptor')
-const Job = require('./job').Job
+const Job = require('./job')
 const logger = require('@bespoken-sdk/shared/lib/logger')('RUNNER')
 const Metrics = require('./metrics')
-const MySQLPrinter = require('./mysql-printer')
 const Printer = require('./printer')
-const Record = require('./source').Record
-const Result = require('./job').Result
-const Source = require('./source').Source
-const Store = require('@bespoken-sdk/store').Store
+const Record = require('./record')
+const Result = require('./result')
+const Source = require('./source')
+const SQLPrinter = require('./sql-printer')
+const Store = require('@bespoken-sdk/store/lib/client')
 const Synchronizer = require('./synchronizer')
 const util = require('./util')
+
+require('dotenv').config()
 
 /**
  *
@@ -35,25 +37,40 @@ class BatchRunner {
     this._config = config
     this.outputPath = outputPath
     this._startIndex = 0
-    /** @type {Job} */
+    /** @type {Job | undefined} */
     this._job = undefined
 
     Config.singleton('runner', this)
   }
   
   /**
+   * @returns {DevicePool}
+   */
+  get devicePool() {
+    if (!this._devicePool) {
+      throw new Error('Device Pool is not created yet! Should not have been called')
+    }
+    return this._devicePool
+  }
+  /**
    * @returns {Job} The job created and processed by this runner
    */
   get job () {
+    if (!this._job) {
+      throw new Error('Job is not created yet! Should not have been called')
+    }
     return this._job
   }
   /**
-   * @returns {Job}
+   * @returns {Job | undefined}
    */
   get originalJob () {
     return this._originalJob
   }
 
+  /**
+   *
+   */
   set originalJob(job) {
     this._originalJob = job
   }
@@ -66,6 +83,16 @@ class BatchRunner {
   }
 
   /**
+   * @returns {Synchronizer}
+   */
+  get synchronizer() {
+    if (!this._synchronizer) {
+      throw new Error('Synchronizer not yet created - this should not be called yet')
+    }
+    return this._synchronizer
+  }
+
+  /**
    * @returns {Promise<void>}
    */
   async process () {
@@ -74,25 +101,25 @@ class BatchRunner {
     // Read in the CSV input records
     await this._read()
 
-    if (this._job.records.length === 0) {
+    if (this.job.records.length === 0) {
       logger.error('No records to process in input file')
       process.exit(1)
     }
 
-    let recordsToProcess = process.env.LIMIT || Config.get('limit', false, this._job.records.length)
-    if (recordsToProcess > this._job.records.length) {
-      recordsToProcess = this._job.records.length
+    let recordsToProcess = process.env.LIMIT || Config.get('limit', false, this.job.records.length)
+    if (recordsToProcess > this.job.records.length) {
+      recordsToProcess = this.job.records.length
     }
 
-    await this._synchronizer.saveJob('INITIAL')
-    this._synchronizer.runSave()
+    await this.synchronizer.saveJob('INITIAL')
+    this.synchronizer.runSave()
 
     for (let i = this._startIndex; i < recordsToProcess; i++) {
-      const record = this._job.records[i]
+      const record = this.job.records[i]
 
       // This runner can operate concurrently
       // It will run as many records simultaneously as there are tokens available
-      const device = await this._devicePool.lock(record)
+      const device = await this.devicePool.lock(record)
 
       // In some cases, we may want to force serial processing
       // In this case we use a mutex to force only one record a time to be processed
@@ -105,14 +132,14 @@ class BatchRunner {
         logger.error(`BATCH PROCESS error: ${e}\n${e.stack}`)
       }).finally(async () => {
         // Free the device once we are done with it
-        this._devicePool.free(device)
+        this.devicePool.free(device)
 
         // Make sure to increment the processed count every time we do a record
-        this._job.addProcessedCount()
+        this.job.addProcessedCount()
 
         // Print out our progress every 100 records for reruns, or with every record for regular runs
-        if (this._job.processedCount % 100 === 0 || !this.rerun) {
-          logger.info(`BATCH PROCESS processed: ${this._job.processedCount} out of ${recordsToProcess}`)
+        if (this.job.processedCount % 100 === 0 || !this.rerun) {
+          logger.info(`BATCH PROCESS processed: ${this.job.processedCount} out of ${recordsToProcess}`)
         }
 
         if (sequential) {
@@ -122,16 +149,16 @@ class BatchRunner {
     }
 
     // Wait for all records to fnish
-    while (this._job.processedCount < recordsToProcess) {
+    while (this.job.processedCount < recordsToProcess) {
       // logger.log(`BATCH PROCESS waiting for records to finish processed: ${this._job.processedCount} total: ${recordsToProcess}`)
       await util.sleep(1000)
     }
 
-    this._synchronizer.stopSave()
+    this.synchronizer.stopSave()
     // Do a save once all records are done - in case any writes got skipped due to contention
     logger.info('BATCH PROCESS all records done - final save')
 
-    await this._synchronizer.saveJob('FINAL')
+    await this.synchronizer.saveJob('FINAL')
 
     // Print out the results
     await this._print()
@@ -173,6 +200,9 @@ class BatchRunner {
       this._startIndex = this._job.processedCount
       logger.info(`BATCH INIT resuming job - starting at: ${this._startIndex}`)
     } else if (this.rerun) {
+      if (!this.originalJob) {
+        throw new Error('Rerunning but no original job set. Exiting.')
+      }
       // If this is a re-run, set the key to be the same as the previous job
       this._job.key = this.originalJob.key
       this._job.run = this.originalJob.run
@@ -194,7 +224,7 @@ class BatchRunner {
    * @returns {Promise<void>}
    */
   async _processRecord (device, record) {
-    logger.info(`RUNNER PROCESS-RECORD run: ${this._job.run} utterance: ${record.utterance}`)
+    logger.info(`RUNNER PROCESS-RECORD run: ${this.job.run} utterance: ${record.utterance}`)
     // Do just-in-time processing on the record
     await Source.instance().loadRecord(record)
 
@@ -286,12 +316,12 @@ class BatchRunner {
     }
 
     if (!result.shouldRetry || result.retryCount === 2) {
-      this._job.addResult(result)
+      this.job.addResult(result)
     }
 
     // For regular runs, print out the URL for each record as we process it
     if (!this.rerun) {
-      logger.info(`BATCH URL ${Store.instance().logURL(this._job.toDTO(), this._job.results.length - 1)}`)
+      logger.info(`BATCH URL ${this.job.logURL(this.job.results.length - 1)}`)
     }
 
     if (Config.has('postSequence')) {
@@ -304,7 +334,7 @@ class BatchRunner {
     }
 
     // Publish to cloudwatch
-    await this._metrics.publish(this._job, result)
+    if (this._metrics) await this._metrics.publish(this.job, result)
   }
 
   /**
@@ -314,8 +344,8 @@ class BatchRunner {
     const source = Source.instance()
     const records = await source.loadAll()
     // Apply the filter to the records
-    this._job.records = source.filter(records)
-    logger.info(`BATCH READ pre-filter: ${records.length} post-filter: ${this._job.records.length}`)
+    this.job.records = source.filter(records)
+    logger.info(`BATCH READ pre-filter: ${records.length} post-filter: ${this.job.records.length}`)
   }
 
   /**
@@ -326,12 +356,12 @@ class BatchRunner {
       logger.time('BATCH PRINT')
       // We print out records to file
       const printer = new Printer(this.outputPath)
-      await printer.print(this._job)
+      await printer.print(this.job)
 
       // If there are mysql credentials, we print out to MySQL
       if (process.env.MYSQL_HOST) {
-        const mysqlPrinter = new MySQLPrinter()
-        await mysqlPrinter.print(this._job)
+        const mysqlPrinter = new SQLPrinter()
+        await mysqlPrinter.print(this.job)
       }
       logger.timeEnd('BATCH PRINT')
     } catch (e) {
@@ -345,7 +375,7 @@ class BatchRunner {
    */
   _saveOnError () {
     if (this.job && this.job.key) {
-      this._synchronizer.saveJob('ON ERROR')
+      this.synchronizer.saveJob('ON ERROR')
     }
   }
 }
@@ -353,13 +383,14 @@ class BatchRunner {
 process.on('unhandledRejection', (e) => {
   if (BatchRunner.instance()) BatchRunner.instance()._saveOnError()
   logger.error('UNHANDLED: ' + e)
-  logger.error(e.toString())
 })
 
 process.on('uncaughtException', (e) => {
   if (BatchRunner.instance()) BatchRunner.instance()._saveOnError()
   logger.error('UNCAUGHT: ' + e)
-  logger.error(e.stack)
+  if (e.stack) {
+    logger.error(e.stack)
+  }
 })
 
 module.exports = BatchRunner

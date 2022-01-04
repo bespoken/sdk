@@ -1,6 +1,7 @@
 const Config = require('@bespoken-sdk/shared/lib/config')
-const Job = require('./job').Job
-const Result = require('./job').Result
+const Job = require('./job')
+const logger = require('@bespoken-sdk/shared/lib/logger')('METRICS')
+const Result = require('./result')
 
 /**
  * Defines the interface for publishing metrics to data/reporting tools
@@ -21,22 +22,24 @@ class Metrics {
 
   /**
    * Called to initialize the metrics client
-   * @param job
-   * @params {Job} job The job the metrics client is publishing data for
+   * @param {Job} job The job the metrics client is publishing data for
    * @returns {Promise<void>}
    */
   async initialize (job) {
+    logger.info('no-op published: ' + job)
     return Promise.resolve()
   }
 
   /**
    * Called to publish data about a specific result.
    * Must be implemented by sub-classes.
+   * @abstract
    * @param {Job} job
    * @param {Result} result
    * @returns {Promise<void>}
    */
   async publish (job, result) {
+    logger.info('no-op published: ' + job + ' result: ' + result)
     return Promise.resolve()
   }
 }

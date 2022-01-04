@@ -1,11 +1,11 @@
 const _ = require('lodash')
-const Config = require('@bespoken-sdk/shared/lib/config')
-const DTO = require('@bespoken-sdk/store/lib/dto')
+const Client = require('@bespoken-sdk/store/lib/client')
 const fs = require('fs')
-const JobDTO = require('@bespoken-sdk/store/lib/job-dto')
+const JSONUtil = require('@bespoken-sdk/shared/lib/json-util')
 const logger = require('@bespoken-sdk/shared/lib/logger')('JOB')
-const Record = require('./source').Record
 const moment = require('moment')
+const Record = require('./record')
+const Result = require('./result')
 
 /**
  * Class that manages info and execution of a particular job
@@ -19,7 +19,7 @@ class Job {
    * @returns {Promise<Job>}
    */
   static async lazyFetchJobForKey (key) {
-    const StoreClient = require('@bespoken-sdk/store').Client
+    const StoreClient = require('@bespoken-sdk/store/lib/client')
     const store = new StoreClient()
     if (!fs.existsSync('data')) {
       fs.mkdirSync('data')
@@ -51,30 +51,24 @@ class Job {
   }
 
   /**
-   * 
-   * @param {DTO} dto
-   * @returns {Job} job
-   */
-  static fromDTO(dto) {
-    return Job.fromJSON(dto.json)
-  }
-
-  /**
    * Creates a new Job object from JSON
    * @param {Object} json
    * @returns {Job}
    */
   static fromJSON (json) {
-    const job = new Job(json.name, json.run)
+    const job = new Job(json.name, json.run, json.config)
     Object.assign(job, json)
     // Loop through results and turn into objects
     const resultObjects = []
-    for (const result of job._results) {
-      const o = new Result()
-      Object.assign(o, result)
+    for (const resultJSON of job._results) {
+      const record = Record.fromJSON(resultJSON.record)
+      
+      const result = new Result(record)
+
+      // We update our new result using defaults because we do not want to overwrite propertie
+      _.defaults(result, resultJSON)
       // Make the record property back into a record object - I know, we do similar stuff below :-)
-      o._record = Record.fromJSON(result._record)
-      resultObjects.push(o)
+      resultObjects.push(result)
     }
     job._results = resultObjects
 
@@ -89,7 +83,7 @@ class Job {
 
   /**
    * @param {string} name
-   * @param {string} run
+   * @param {string | undefined} run
    * @param {any} config
    */
   constructor (name, run, config) {
@@ -100,7 +94,7 @@ class Job {
     } else {
       this._run = name + '_' + now.format('YYYY-MM-DDTHH-mm-ss')
     }
-    this._date = now.format()
+    this._timestamp = now.format()
     this._config = config
     this._key = undefined
     this._records = []
@@ -123,8 +117,8 @@ class Job {
    * Eg. 2020-05-21T15:50:13Z
    * @type {string}
    */
-  get date () {
-    return this._date
+  get timestamp () {
+    return this._timestamp
   }
 
   /**
@@ -135,12 +129,15 @@ class Job {
   }
 
   /**
-   * @returns {string}
+   * @returns {string | undefined}
    */
   get key () {
     return this._key
   }
   
+  /**
+   *
+   */
   set key (key) {
     this._key = key
   }
@@ -166,6 +163,9 @@ class Job {
     return this._records
   }
 
+  /**
+   *
+   */
   set records (records) {
     this._records = records
   }
@@ -199,6 +199,9 @@ class Job {
     return this._run
   }
   
+  /**
+   *
+   */
   set run (run) {
     this._run = run
   }
@@ -248,6 +251,18 @@ class Job {
   }
 
   /**
+   * @param {number} index
+   * @returns {string}
+   */
+   logURL (index) {
+    if (!this.key) {
+      return 'N/A'
+    }
+
+    return `${Client.accessURL()}/log?run=${this.key}&index=${index}`
+  }
+
+  /**
    * @returns {string[]}
    */
   outputFieldNames () {
@@ -258,10 +273,10 @@ class Job {
   }
 
   /**
-   * @returns {DTO}
+   * @returns {any}
    */
-  toDTO() {
-    return new JobDTO(this)
+  toJSON() {
+    return JSONUtil.toJSON(this)
   }
 
   /**
@@ -283,207 +298,4 @@ class Job {
   }
 }
 
-/**
- * The result for a particular record
- */
-class Result {
-  /**
-   *
-   * @param {Record} [record]
-   * @param {string} [voiceId]
-   * @param {Object[]} [responses]
-   * @param {number} [retryCount]
-   */
-  constructor (record, voiceId, responses, retryCount = 0) {
-    this._record = record
-    this._voiceId = voiceId
-    this._responses = responses
-    this._retryCount = retryCount
-
-    /** @type {Object<string, string>} */
-    this._actualFields = {}
-
-    /** @type {Object<string, string>} */
-    this._outputFields = {}
-    
-    /** @type {Object<string, string>} */
-    this._tags = {}
-    
-    this._timestamp = Date.now()
-    this._shouldRetry = false
-  }
-
-  /**
-   *
-   * @param {string} field
-   * @returns {string} The value for the field
-   */
-  actualField (field) {
-    return this._actualFields[field]
-  }
-
-  /**
-   * Adds the actual value for an expected field to the result
-   * @param {string} field The name of the field
-   * @param {string} value The value of the field
-   * @returns {void}
-   */
-  addActualField (field, value) {
-    this._actualFields[field] = value
-  }
-
-  /**
-   * Adds a field to the output results - these are fields that are not expected or actual but are helpful info about the record
-   * @param {string} field The name of the field
-   * @param {string} value The value of the field
-   * @returns {void}
-   */
-  addOutputField (field, value) {
-    this._outputFields[field] = value
-  }
-
-  /**
-   * @param {string} key
-   * @param {string} value
-   * @returns {void}
-   */
-  addTag (key, value) {
-    this._tags[key] = value
-  }
-
-  /**
-   * Gets a specific output field
-   * @param {string} field
-   * @returns {string} The value of the field
-   */
-  outputField (field) {
-    return this.outputFields[field]
-  }
-
-  /**
-   * @returns {Object<string, string>}
-   */
-  get actualFields () {
-    return this._actualFields
-  }
-
-  /**
-   * @returns {string}
-   */
-  get error () {
-    return this._error
-  }
-  
-  set error (error) {
-    this._error = error
-  }
-
-  /**
-   * @returns {any}
-   */
-  get lastResponse () {
-    return _.nth(this.responses, -1)
-  }
-
-  /**
-   * @returns {any[]}
-   */
-  get responses () {
-    return this._responses
-  }
-
-  /**
-   * @returns {Object<string, string>}
-   */
-  get outputFields () {
-    // We concatenate the output fields from the record and the result
-    /** @type {Object<string, string>} */
-    const outputFields = {}
-    if (this.record) {
-      Object.assign(outputFields, this.record.outputFields)
-    }
-    Object.assign(outputFields, this._outputFields)
-    return outputFields
-  }
-
-  /**
-   * @returns {Record}
-   */
-  get record () {
-    return this._record
-  }
-
-  /**
-   * @returns {string[]}
-   */
-  get sanitizedOcrLines () {
-    const homophones = Config.get('homophones', false, {})
-    const ocrLines = _.get(this.lastResponse, 'raw.ocrJSON.TextDetections', [])
-      .filter(text => text.Type === 'LINE')
-
-    Object.keys(homophones).forEach(expectedString => {
-      homophones[expectedString].forEach(homophone => {
-        ocrLines.forEach((item, index) => {
-          ocrLines[index].DetectedText = item.DetectedText.replace(new RegExp(homophone, 'gi'), expectedString)
-        })
-      })
-    })
-
-    return ocrLines
-  }
-
-  /**
-   * @type {boolean}
-   */
-  get success () {
-    return this._success
-  }
-
-  /**
-   *
-   */
-  set success (success) {
-    this._success = success
-  }
-
-  /**
-   * @returns {Object<string, string>}
-   */
-  get tags () {
-    return this._tags
-  }
-
-  /**
-   * @returns {number}
-   */
-  get timestamp () {
-    return this._timestamp
-  }
-
-  /**
-   * @returns {boolean}
-   */
-  get shouldRetry () {
-    return this._shouldRetry
-  }
-
-  /**
-   *
-   */
-  set shouldRetry (shouldRetry) {
-    this._shouldRetry = shouldRetry
-  }
-
-  /**
-   * @returns {number}
-   */
-  get retryCount () {
-    return this._retryCount
-  }
-
-  set retryCount (retryCount) {
-    this._retryCount = retryCount
-  }
-}
-
-module.exports = { Job, Result }
+module.exports = Job

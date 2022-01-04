@@ -1,6 +1,6 @@
 const _ = require('lodash')
 const axios = require('axios').default
-const DTO = require('./dto')
+const logger = require('@bespoken-sdk/shared/lib/logger')('STORE')
 const Readable = require('stream').Readable
 const zlib = require('zlib')
 
@@ -9,13 +9,20 @@ const zlib = require('zlib')
  */
 class Client  {
   /**
+   * @returns {string}
+   */
+  static accessURL () {
+    return process.env.STORE_URL ? process.env.STORE_URL : 'https://batch-tester.bespoken.io'
+  }
+
+  /**
    * @param {string} run
-   * @returns {Promise<DTO>}
+   * @returns {Promise<any>}
    */
   async fetch (run) {
-    console.time('BESPOKEN-STORE FETCH')
-    const url = `${this.accessURL()}/fetch?run=${run}`
-    console.info(`BESPOKEN-STORE FETCH run: ${run} url: ${url}`)
+    logger.time('FETCH')
+    const url = `${Client.accessURL()}/fetch?run=${run}`
+    logger.info(`FETCH run: ${run} url: ${url}`)
 
     const streamResponse = await axios.get(url, {
       headers: {
@@ -34,14 +41,14 @@ class Client  {
       buffer = Buffer.concat([buffer, b])
       const bufferLength = _.round(buffer.length / 1024 / 1024, 0)
       if (bufferLength !== previousLength) {
-        console.info(`BESPOKEN-STORE FETCH downloaded: ${bufferLength}M`)
+        logger.info(`FETCH downloaded: ${bufferLength}M`)
         previousLength = bufferLength
       }
     })
 
     return new Promise((resolve) => {
       streamResponse.data.on('end', () => {
-        console.timeEnd('BESPOKEN-STORE FETCH')
+        logger.timeEnd('FETCH')
         const jobJSON = JSON.parse(buffer.toString('utf-8'))
         resolve(jobJSON)
       })
@@ -54,12 +61,12 @@ class Client  {
    * @returns {Promise<any[]>}
    */
   async filter (runName, limit = 10) {
-    console.time('BESPOKEN-STORE FILTER')
-    const url = `${this.accessURL()}/filter?run=${runName}&limit=${limit}`
+    logger.time('FILTER')
+    const url = `${Client.accessURL()}/filter?run=${runName}&limit=${limit}`
 
     const response = await axios.get(url)
     const jobs = response.data.jobs
-    console.timeEnd('BESPOKEN-STORE FILTER')
+    logger.timeEnd('FILTER')
     return jobs
   }
 
@@ -68,8 +75,8 @@ class Client  {
    * @returns {Promise<string>} The UUID assigned to the job
    */
   async save (job) {
-    console.time('BESPOKEN-STORE SAVE')
-    const url = `${this.accessURL()}/save?run=${job.run}`
+    logger.time('SAVE')
+    const url = `${Client.accessURL()}/save?run=${job.run}`
 
     // Create a stream from the JSON
     const jsonStream = Readable.from(JSON.stringify(job))
@@ -82,16 +89,9 @@ class Client  {
       responseType: 'json'
     })
 
-    console.timeEnd('BESPOKEN-STORE SAVE')
+    logger.timeEnd('SAVE')
     job.key = response.data.key
     return response.data.key
-  }
-
-  /**
-   * @returns {string}
-   */
-  accessURL () {
-    return process.env.STORE_URL ? process.env.STORE_URL : 'https://batch-tester.bespoken.io'
   }
 
   /**
@@ -99,22 +99,9 @@ class Client  {
    * @returns {Promise<string>}
    */
   async decrypt (key) {
-    const url = `${this.accessURL()}/decrypt?key=${key}`
+    const url = `${Client.accessURL()}/decrypt?key=${key}`
     const response = await axios.get(url)
     return response.data.decryptedKey
-  }
-
-  /**
-   * @param {DTO} dto
-   * @param {number} index
-   * @returns {string}
-   */
-  logURL (dto, index) {
-    if (!dto.key) {
-      return 'N/A'
-    }
-
-    return `${this.accessURL()}/log?run=${dto.key}&index=${index}`
   }
 }
 

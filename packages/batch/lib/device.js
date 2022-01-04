@@ -1,6 +1,8 @@
 const _ = require('lodash')
 const Config = require('@bespoken-sdk/shared/lib/config')
 const Interceptor = require('./interceptor')
+const logger = require('@bespoken-sdk/shared/lib/logger')('DEVICE')
+const Record = require('./record')
 const util = require('./util')
 const vdk = require('virtual-device-sdk')
 
@@ -9,10 +11,10 @@ const vdk = require('virtual-device-sdk')
  */
 class Device {
   /**
-   * @param token
-   * @param skipSTT
-   * @param settings
-   * @param configuration
+   * @param {string} token
+   * @param {boolean} skipSTT
+   * @param {Object<string, string>} settings
+   * @param {any} configuration
    */
   constructor (token, skipSTT = false, settings, configuration) {
     this._token = token
@@ -23,21 +25,22 @@ class Device {
   }
 
   /**
-   * @param record
-   * @param messages
-   * @param attempt
+   * @param {Record} record
+   * @param {string[]} messages
+   * @param {number} [attempt=1]
+   * @returns {Promise<any[]>}
    */
   async message (record, messages, attempt = 1) {
-    console.info('DEVICE MESSAGE ' + messages.toString() + ' locale: ' + record.locale + ' voice: ' + record.voiceID)
+    logger.info('MESSAGE ' + messages.toString() + ' locale: ' + record.locale + ' voice: ' + record.voiceID)
     const voiceID = record.voiceID || Config.get('virtualDeviceConfig.voiceID', false, 'en-US-Wavenet-D')
     const locale = record.locale || Config.get('virtualDeviceConfig.locale', false, 'en-US')
     let config = {
       asyncMode: true,
       debug: true,
+      locale: locale,
       skipSTT: this._skipSTT,
       token: this._token,
-      voiceID: voiceID,
-      locale: locale
+      voiceID: voiceID 
     }
 
     if (this._configuration) { config = _.assign(config, this._configuration) }
@@ -50,18 +53,18 @@ class Device {
       const messagesArray = []
       messages.forEach(message => {
         const messageObject = {}
-        const isRawFile = !this.platform === 'phone' && message.endsWith('.raw')
-        if (!this.platform === 'phone' && message.startsWith('http')) {
+        const isRawFile = config.platform !== 'phone' && message.endsWith('.raw')
+        if (config.platform !== 'phone' && message.startsWith('http')) {
           messageObject.audio = {
             audioURL: message,
-            frameRate: 16000,
-            channels: 1
+            channels: 1,
+            frameRate: 16000
           }
         } else if (isRawFile || message.startsWith('./')) {
           messageObject.audio = {
             audioPath: message,
-            frameRate: 16000,
-            channels: 1
+            channels: 1,
+            frameRate: 16000
           }
         } else {
           messageObject.text = message
@@ -80,10 +83,10 @@ class Device {
         messagesArray.push(messageObject)
       })
 
-      console.log('DEVICE MESSAGE request: ' + JSON.stringify(messagesArray))
+      logger.debug('MESSAGE request: ' + JSON.stringify(messagesArray))
       await Interceptor.instance().interceptRequest(record, messagesArray, this)
       const response = await virtualDevice.batchMessage(messagesArray)
-      console.log('DEVICE MESSAGE initial response: ' + JSON.stringify(response))
+      logger.debug('MESSAGE initial response: ' + JSON.stringify(response))
       if (response.conversation_id) {
         let result = { status: 'IN_PROGRESS' }
         const waitTimeInterval = _.get(this._configuration, 'waitTimeInterval') || 1000
@@ -91,14 +94,17 @@ class Device {
         let totalTimeWaited = 0
 
         record.conversationId = response.conversation_id
+        // Wait 10 seconds to start
+        await util.sleep(waitTimeInterval)
 
         while (result.status === 'IN_PROGRESS' && totalTimeWaited < maxWaitTime) {
           try {
             result = await virtualDevice.getConversationResults(response.conversation_id)
+            logger.debug('message result: ' + JSON.stringify(result, null, 2))
             totalTimeWaited += waitTimeInterval
           } catch (e) {
             const error = this._parseError(e)
-            console.error(`DEVICE ERROR GET CONVERSATION ID: ${response.conversation_id} error property: ${error.error}`)
+            logger.error(`ERROR GET CONVERSATION ID: ${response.conversation_id} error property: ${error}`)
             // If this is an error from the virtual device, do a retry
             if (error.error) {
               return this._retry(error, messages, record, attempt)
@@ -110,11 +116,11 @@ class Device {
         if (result.status === 'IN_PROGRESS') {
           // Server timed out, try again up the max attempts
           const errorMessage = `DEVICE ERROR maxWaitTime exceed: ${maxWaitTime} conversation id: ${response.conversation_id}`
-          console.error(errorMessage)
+          logger.error(errorMessage)
           return this._retry(errorMessage, messages, record, attempt)
         }
 
-        console.log('DEVICE MESSAGE final transcript: ' + _.get(_.nth(_.get(result, 'results'), -1), 'transcript'))
+        logger.debug('DEVICE MESSAGE final transcript: ' + _.get(_.nth(_.get(result, 'results'), -1), 'transcript'))
         return result.results
       } else {
         return response.results
@@ -125,48 +131,16 @@ class Device {
   }
 
   /**
-   * @param error
-   * @param messages
-   * @param record
-   * @param attempt
-   */
-  async _retry (error, messages, record, attempt) {
-    const errorMessage = error.error ? error.error : error.toString()
-    if (attempt > Config.get('maxAttempts', true, 3)) {
-      // Give up after three tries
-      throw errorMessage
-    }
-
-    const backoffTime = Config.get('backoffTime', false, 10)
-    console.error(`DEVICE MESSAGE error: ${errorMessage} retrying ${backoffTime} seconds`)
-    await util.sleep(backoffTime * 1000)
-    return this.message(record, messages, attempt + 1)
-  }
-
-  /**
-   * @param error
-   */
-  _parseError (error) {
-    if (_.isObject(error)) {
-      return error
-    } else {
-      try {
-        return JSON.parse(error)
-      } catch (e) {
-        return e
-      }
-    }
-  }
-
-  /**
-   * @param tag
-   */
+   * @param {string} tag
+   * @returns {void}
+   */ 
   addTag (tag) {
     this._tags.push(tag)
   }
-
+  
   /**
-   * @param tags
+   * @param {string[]} tags
+   * @returns {boolean}
    */
   hasTags (tags) {
     let success = true
@@ -177,9 +151,10 @@ class Device {
     })
     return success
   }
-
+  
   /**
    * Returns the name of the platform this device corresponds to
+   * @type {string}
    */
   get platform () {
     let platform = 'other'
@@ -192,26 +167,62 @@ class Device {
     }
     return platform
   }
-
+  
   /**
-   *
+   * @returns {Object<string, any>}
    */
   get settings () {
     return this._settings
   }
-
+  
   /**
-   *
+   * @type {string[]}
    */
   get tags () {
     return this._tags
   }
 
   /**
-   *
+   * @type {string}
    */
   get token () {
     return this._token
+  }
+
+  /**
+   * @param {any} error
+   * @param {string[]} messages
+   * @param {Record} record
+   * @param {number} attempt
+   * @returns {Promise<any[]>}
+   */
+  async _retry (error, messages, record, attempt) {
+    const errorMessage = error.error ? error.error : error.toString()
+    if (attempt > Config.get('maxAttempts', true, 3)) {
+      // Give up after three tries
+      throw errorMessage
+    }
+
+    const backoffTime = Config.get('backoffTime', false, 10)
+    logger.error(`DEVICE MESSAGE error: ${errorMessage} retrying ${backoffTime} seconds`)
+    await util.sleep(backoffTime * 1000)
+    return this.message(record, messages, attempt + 1)
+  }
+
+  /**
+   * @param {any} error
+   * @returns {any}
+   */
+  _parseError (error) {
+    if (_.isObject(error)) {
+      return error
+    } else {
+      try {
+        return JSON.parse(error)
+      } catch (e) {
+        return e
+      }
+    }
   }
 }
 
@@ -220,7 +231,7 @@ class Device {
  */
 class DevicePool {
   /**
-   *
+   * @returns {DevicePool}
    */
   static instance () {
     return Config.instance('device-pool', DevicePool)
@@ -230,17 +241,18 @@ class DevicePool {
    *
    */
   constructor () {
+    this._devices = []
     this.initialize()
   }
 
   /**
-   *
+   * @returns {void}
    */
   initialize () {
     const tokensInfo = Config.get('virtualDevices', true)
     const virtualDeviceConfig = Config.get('virtualDeviceConfig', false)
     const tokens = Object.keys(tokensInfo)
-    const maxTokens = process.env.VIRTUAL_DEVICE_LIMIT || tokens.length
+    const maxTokens = process.env.VIRTUAL_DEVICE_LIMIT ? parseInt(process.env.VIRTUAL_DEVICE_LIMIT) : tokens.length
     this._devices = []
 
     let skipSTT = false
@@ -259,7 +271,7 @@ class DevicePool {
 
       // Clean the tags - trim them
       tags = tags.map(tag => tag.trim())
-      console.info(`DEVICE CREATE token: ${token} skipSTT: ${skipSTT} tags: ${tags} settings: ${JSON.stringify(tokenInfo.settings)}`)
+      logger.info(`CREATE token: ${token} skipSTT: ${skipSTT} tags: ${tags} settings: ${JSON.stringify(tokenInfo.settings)}`)
       const device = new Device(token.trim(), skipSTT, tokenInfo.settings, virtualDeviceConfig)
 
       // Add the tags to the device
@@ -272,16 +284,17 @@ class DevicePool {
   }
 
   /**
-   * @param record
+   * @param {Record} record
+   * @returns {Promise<Device>}
    */
   async lock (record) {
     // Check if there are any devices at all
     if (this._validDevices(record).length === 0) {
-      console.error(`DEVICE LOCK no device exists to process tags: ${record.deviceTags}`)
+      logger.error(`LOCK no device exists to process tags: ${record.deviceTags}`)
       process.exit(1)
     }
 
-    console.log(`DEVICE LOCK tags: ${record.deviceTags} count: ${this._freeDevices(record).length}`)
+    logger.debug(`LOCK tags: ${record.deviceTags} count: ${this._freeDevices(record).length}`)
     while (this._freeDevices(record).length === 0) {
       await util.sleep(1000)
     }
@@ -291,23 +304,29 @@ class DevicePool {
       return this._devicesInUse.find(d => d.token === device.token) === undefined
     })
 
+    if (!device) {
+      throw new Error('No device available for locking')
+    }
+
     this._devicesInUse.push(device)
-    console.log(`DEVICE LOCK acquire tags: ${record.deviceTags} available: ${this._freeDevices(record).length} token: ${device.token}`)
+    logger.debug(`LOCK acquire tags: ${record.deviceTags} available: ${this._freeDevices(record).length} token: ${device.token}`)
 
     return device
   }
 
   /**
-   * @param device
+   * @param {Device} device
+   * @returns {Promise<void>}
    */
   async free (device) {
     // Remove the token we used from our tokens in list use - i.e., return it to the free pool
     this._devicesInUse = _.pull(this._devicesInUse, device)
-    console.log('DEVICE FREE ' + device._token + ' tokens available: ' + this._freeCount())
+    logger.debug('FREE ' + device._token + ' tokens available: ' + this._freeCount())
   }
 
   /**
-   * @param record
+   * @param {Record} record
+   * @returns {Device[]}
    */
   _freeDevices (record) {
     const validDevices = this._validDevices(record)
@@ -320,7 +339,7 @@ class DevicePool {
   }
 
   /**
-   *
+   * @returns {number}
    */
   _freeCount () {
     return this._devices.length - this._devicesInUse.length
@@ -328,9 +347,14 @@ class DevicePool {
 
   // Filter to the devices that have tags that match the record
   /**
-   * @param record
+   * @param {Record} record
+   * @returns {Device[]}
    */
   _validDevices (record) {
+    if (!this._devices) {
+      throw new Error('There are no valid devices')
+    }
+
     const validDevices = this._devices.filter(device => {
       return device.hasTags(record.deviceTags)
     })

@@ -1,8 +1,23 @@
-const Metrics = require('./metrics')
 const datadog = require('datadog-metrics')
+const Job = require('./job')
+const logger = require('@bespoken-sdk/shared/lib/logger')('DATADOG')
+const Metrics = require('./metrics')
+const Result = require('./result')
 
+/**
+ *
+ */
 class DataDogMetrics extends Metrics {
+  /**
+   * Called to publish data about a specific result.
+   * Must be implemented by sub-classes.
+   * @abstract
+   * @param {Job} job
+   * @param {Result} result
+   * @returns {Promise<void>}
+   */
   async publish (job, result) {
+    logger.debug('publishing result to datadog: ' + result.record.utterance)
     const tags = [
       `customer:${job.customer}`,
       `job:${job.name}`,

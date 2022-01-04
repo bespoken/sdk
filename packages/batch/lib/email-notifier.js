@@ -1,10 +1,11 @@
 const AWS = require('aws-sdk')
 const Config = require('@bespoken-sdk/shared/lib/config')
+const logger = require('@bespoken-sdk/shared/lib/logger')('EMAIL')
 
 const SESConfig = {
   accessKeyId: process.env.NOTIFICATION_ACCESS_KEY_ID,
-  secretAccessKey: process.env.NOTIFICATION_SECRET_ACCESS_KEY,
-  region: process.env.AWS_SES_REGION
+  region: process.env.AWS_SES_REGION,
+  secretAccessKey: process.env.NOTIFICATION_SECRET_ACCESS_KEY
 }
 
 const SES = new AWS.SES(SESConfig)
@@ -14,14 +15,14 @@ const SES = new AWS.SES(SESConfig)
  */
 class EmailNotifier {
   /**
-   *
+   * @returns {EmailNotifier}
    */
   static instance () {
     return Config.instance('email-notifier', EmailNotifier)
   }
 
   /**
-   *
+   * @returns {any}
    */
   content () {
     const jobName = Config.get('job', true)
@@ -31,15 +32,19 @@ class EmailNotifier {
       body += `\n\nReview the results here:\n${process.env.CI_JOB_URL}`
     }
     return {
-      subject,
-      body
+      body,
+      subject
     }
   }
 
   /**
-   *
+   * @returns {Promise<void>}
    */
   async send () {
+    if (!process.env.NOTIFICATION_EMAILS) {
+      logger.error('No NOTIFICATION_EMAILS environment variable set')
+      return
+    }
     const { subject, body } = this.content()
     const addresses = process.env.NOTIFICATION_EMAILS.split(',')
     const params = {
@@ -64,12 +69,12 @@ class EmailNotifier {
   }
 
   /**
-   *
+   * @returns {boolean}
    */
   get canSend () {
-    return process.env.NOTIFICATION_EMAILS &&
-           process.env.NOTIFICATION_ACCESS_KEY_ID &&
-           process.env.NOTIFICATION_SECRET_ACCESS_KEY
+    return process.env.NOTIFICATION_EMAILS !== undefined &&
+           process.env.NOTIFICATION_ACCESS_KEY_ID !== undefined&&
+           process.env.NOTIFICATION_SECRET_ACCESS_KEY !== undefined
   }
 }
 

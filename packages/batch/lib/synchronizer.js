@@ -1,12 +1,14 @@
 const Config = require('@bespoken-sdk/shared/lib/config')
-const Store = require('@bespoken-sdk/store').Store
+const Client = require('@bespoken-sdk/store/lib/client')
+const Job = require('./job')
+const logger = require('@bespoken-sdk/shared/lib/logger')('SYNC')
 
 /**
  *
  */
 class Synchronizer {
   /**
-   * @param job
+   * @param {Job} job
    */
   constructor (job) {
     this.job = job
@@ -15,7 +17,8 @@ class Synchronizer {
   }
 
   /**
-   * @param logMessage
+   * @param {string} logMessage
+   * @returns {Promise<void>}
    */
   async saveJob (logMessage) {
     // We have this check in other places, but just to make sure, we put it here as well
@@ -25,19 +28,21 @@ class Synchronizer {
     }
 
     try {
-      console.time(`BATCH ${logMessage} SAVE`)
+      logger.time(`BATCH ${logMessage} SAVE`)
 
-      await Store.instance().save(this.job)
-      console.timeEnd(`BATCH ${logMessage} SAVE`)
-      console.info(`BATCH ${logMessage} SAVE completed key: ${this.job.key}`)
+      const client = new Client()
+      await client.save(this.job)
+      logger.timeEnd(`BATCH ${logMessage} SAVE`)
+      logger.info(`BATCH ${logMessage} SAVE completed key: ${this.job.key}`)
     } catch (e) {
-      console.error('BATCH ' + e.stack)
-      console.error(`BATCH ${logMessage} SAVE error: ` + e)
+      logger.timeEnd(`BATCH ${logMessage} SAVE`)
+      logger.error('BATCH ' + e.stack)
+      logger.error(`BATCH ${logMessage} SAVE error: ` + e)
     }
   }
 
   /**
-   *
+   * @returns {void}
    */
   runSave () {
     // We do not save intermittently for re-runs
@@ -50,7 +55,7 @@ class Synchronizer {
   }
 
   /**
-   *
+   * @returns {void}
    */
   stopSave () {
     if (!this.periodicSave) {

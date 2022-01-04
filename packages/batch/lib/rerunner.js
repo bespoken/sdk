@@ -1,22 +1,20 @@
 const _ = require('lodash')
-const BespokenStore = require('@bespoken-sdk/store').Client
+const BespokenStore = require('@bespoken-sdk/store/lib/client')
 const Config = require('@bespoken-sdk/shared/lib/config')
 const { Device, DevicePool } = require('./device')
-const fs = require('fs')
-const Job = require('./job').Job
-const Record = require('./source').Record
+const Job = require('./job')
+const Record = require('./record')
 const Runner = require('./batch-runner')
-const Source = require('./source').Source
-const Util = require('./util')
+const Source = require('./source')
 
 /**
  *
  */
 class Rerunner {
   /**
-   * @param configFile
-   * @param key
-   * @param outputPath
+   * @param {string} configFile
+   * @param {string} key
+   * @param {string} outputPath
    */
   constructor (configFile, key, outputPath) {
     this.configFile = configFile
@@ -25,8 +23,9 @@ class Rerunner {
   }
 
   /**
-   * @param runName
-   * @param limit
+   * @param {string} runName
+   * @param {number} limit
+   * @returns {Promise<void>}
    */
   async list (runName, limit) {
     const store = new BespokenStore()
@@ -39,8 +38,9 @@ class Rerunner {
   }
 
   /**
-   * @param runName
-   * @param status
+   * @param {string} runName
+   * @param {string} status
+   * @returns {Promise<void>}
    */
   async rerunMany (runName, status = 'COMPLETED') {
     const store = new BespokenStore()
@@ -54,7 +54,7 @@ class Rerunner {
   }
 
   /**
-   *
+   * @returns {Promise<void>}
    */
   async rerun () {
     const job = await Job.lazyFetchJobForKey(this.key)
@@ -74,7 +74,7 @@ class Rerunner {
  */
 class RerunSource extends Source {
   /**
-   * @param job
+   * @param {Job} job
    */
   constructor (job) {
     super()
@@ -91,6 +91,7 @@ class RerunSource extends Source {
     const records = this.job.results.map((result) => {
       const record = result.record
       record.rerun = true
+      // @ts-ignore
       record.responses = result.responses
       return record
     })
@@ -111,15 +112,16 @@ class RerunDevicePool extends DevicePool {
   }
 
   /**
-   * @param record
+   * @param {Record} record
+   * @returns {Promise<Device>}
    */
-  lock (record) {
+  async lock (record) {
     this.inUse = true
     return new RerunDevice(record)
   }
 
   /**
-   *
+   * @returns {void}
    */
   free () {
     this.inUse = false
@@ -131,15 +133,16 @@ class RerunDevicePool extends DevicePool {
  */
 class RerunDevice extends Device {
   /**
-   * @param record
+   * @param {Record} record
    */
   constructor (record) {
-    super('rerun-device')
+    super('rerun-device', undefined, undefined, undefined)
     this.record = record
   }
 
   /**
-   * @param message
+   * @param {string} message
+   * @returns {Promise<Response[]>}
    */
   async message (message) {
     return this.record.responses

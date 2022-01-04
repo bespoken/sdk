@@ -9,7 +9,7 @@ const Source = require('./source').Source
  */
 class CSVSource extends Source {
   /**
-   *
+   * @returns {Promise<Record[]>}
    */
   async loadAll () {
     let sourceFile = Config.get('sourceFile')
@@ -34,6 +34,10 @@ class CSVSource extends Source {
 
     const records = rawRecords.map(r => {
       const utteranceProperty = Object.keys(r).find(property => property.trim().toLowerCase() === 'utterance')
+      if (!utteranceProperty) {
+        return undefined
+      }
+
       const utterance = r[utteranceProperty]
       if (!utterance || utterance.trim().length === 0 || utterance.startsWith('#')) {
         console.log(`CSV-SOURCE LOADALL skipping utterance: ${utterance}`)
@@ -52,9 +56,12 @@ class CSVSource extends Source {
 
       // Add device tags automatically from the column labeled device
       const deviceProperty = Object.keys(r).find(property => property.trim().toLowerCase() === 'device')
-      const device = r[deviceProperty]
-      if (device) {
-        record.addDeviceTag(device)
+
+      if (deviceProperty) {
+        const device = r[deviceProperty]
+        if (device) {
+          record.addDeviceTag(device)
+        }
       }
 
       Object.keys(r).forEach(field => {
