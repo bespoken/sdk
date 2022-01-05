@@ -1,3 +1,6 @@
+## 0.13.0
+* First usable version with batch-tester
+
 ## 0.12.2
 * Working on usable batch package
 
