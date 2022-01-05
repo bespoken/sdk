@@ -17,7 +17,7 @@ class DataDogMetrics extends Metrics {
    * @returns {Promise<void>}
    */
   async publish (job, result) {
-    logger.debug('publishing result to datadog: ' + result.record.utterance)
+    logger.info('publishing result to datadog: ' + result.record.utterance)
     const tags = [
       `customer:${job.customer}`,
       `job:${job.name}`,
@@ -59,11 +59,13 @@ class DataDogMetrics extends Metrics {
     const success = result.success ? 1 : 0
     const failure = !result.success && !result.error ? 1 : 0
 
+    
     datadog.increment('utterance.error', error)
     datadog.increment('utterance.success', success)
     datadog.increment('utterance.failure', failure)
 
-    datadog.flush()
+    const ddResult = datadog.flush()
+    logger.info('flush result: ' + ddResult)
   }
 }
 

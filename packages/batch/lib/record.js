@@ -10,7 +10,7 @@ const JSONUtil = require('@bespoken-sdk/shared/lib/json-util')
    */
   static fromJSON (o) {
     const record = new Record(o.utterance)
-    Object.assign(record, o)
+    JSONUtil.fromJSON(record, o)
     return record
   }
 
@@ -32,8 +32,8 @@ const JSONUtil = require('@bespoken-sdk/shared/lib/json-util')
     this._voiceID = undefined
     this._rerun = false
 
-    /** @type {Object<string, any> | undefined} */
-    this._settings = undefined
+    /** @type {Object<string, any>} */
+    this._settings = {}
   }
 
   /**
@@ -72,9 +72,6 @@ const JSONUtil = require('@bespoken-sdk/shared/lib/json-util')
    * @returns {void}
    */
   addSetting (name, setting) {
-    if (!this._settings) {
-      this._settings = {}
-    }
     this._settings[name] = setting
   }
 

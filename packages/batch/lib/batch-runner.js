@@ -164,7 +164,7 @@ class BatchRunner {
     await this._print()
 
     // Custom code for when the process has finished
-    await Interceptor.instance().interceptPostProcess(this._job)
+    await Interceptor.instance().interceptPostProcess(this.job)
 
     const emailNotifier = EmailNotifier.instance()
     if (!this.job.rerun && emailNotifier.canSend) {
@@ -193,7 +193,8 @@ class BatchRunner {
     // Check if we are resuming
     if (process.env.RUN_KEY) {
       const run = process.env.RUN_KEY
-      this._job = Job.fromJSON(await Store.instance().fetch(run))
+      const store = new Store()
+      this._job = Job.fromJSON(await store.fetch(run))
       if (!this._job) {
         throw new Error('BATCH INIT Could not find job to resume: ' + run)
       }

@@ -57,7 +57,7 @@ class Job {
    */
   static fromJSON (json) {
     const job = new Job(json.name, json.run, json.config)
-    Object.assign(job, json)
+    JSONUtil.fromJSON(job, json)
     // Loop through results and turn into objects
     const resultObjects = []
     for (const resultJSON of job._results) {

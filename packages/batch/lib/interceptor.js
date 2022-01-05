@@ -40,10 +40,11 @@ class Interceptor {
   /**
    * Allows for making changes to a result after it has an error
    * @param {Record} record
+   * @param {Result} result
    * @returns {Promise<void>} Void promise
    */
-  async interceptError (record) {
-    logger.debug('intercepting error: ' + record.utterance)
+  async interceptError (record, result) {
+    logger.debug('intercepting error: ' + record.utterance + ' for result: ' + result)
   }
 
   /**

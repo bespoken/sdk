@@ -4,6 +4,23 @@
 class JSONUtil {
   /**
    *
+   * @param {any} target
+   * @param {any} json
+   * @returns {any}
+   */
+   static fromJSON (target, json) {
+    for (const key of Object.keys(json)) {
+      if (target[`_${key}`] !== undefined) {
+        target[`_${key}`] = json[key]
+      } else {
+        target[`${key}`] = json[key]
+      }
+    }
+    return json
+  }
+
+  /**
+   *
    * @param {any} o
    * @returns {any}
    */
