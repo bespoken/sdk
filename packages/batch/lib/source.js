@@ -12,7 +12,7 @@ class Source {
    * @returns {Source}
    */
   static instance () {
-    return Config.instance('source', './csv-source')
+    return Config.instance('source', '@bespoken-sdk/batch/lib/csv-source')
   }
 
   /**

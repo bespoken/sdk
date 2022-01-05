@@ -1,8 +1,8 @@
 const Config = require('@bespoken-sdk/shared/lib/config')
 const fs = require('fs')
 const parse = require('csv-parse/lib/sync')
-const Record = require('./source').Record
-const Source = require('./source').Source
+const Record = require('./record')
+const Source = require('./source')
 
 /**
  *
