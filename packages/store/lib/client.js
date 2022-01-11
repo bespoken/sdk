@@ -12,7 +12,7 @@ class Client  {
    * @returns {string}
    */
   static accessURL () {
-    return process.env.STORE_URL ? process.env.STORE_URL : 'https://batch.bespoken.io/batch'
+    return process.env.STORE_URL ? process.env.STORE_URL : 'https://store.bespoken.io/store'
   }
 
   /**
