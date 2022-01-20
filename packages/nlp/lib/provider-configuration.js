@@ -1,11 +1,11 @@
 
 const _ = require('lodash')
-const DTO = require('@bespoken-sdk/shared/lib/dto')
+const JSONWrapper = require('@bespoken-sdk/shared/lib/json-wrapper')
 
 /**
  *
  */
-class ProviderConfiguration extends DTO {
+class ProviderConfiguration extends JSONWrapper {
   /**
    * @param {any} json
    */
@@ -38,52 +38,6 @@ class ProviderConfiguration extends DTO {
    */
   set recognitionHints (array) {
     this.json.recognitionHints = array
-  }
-
-  /**
-   * @param {string} key
-   * @returns {number | undefined}
-   */
-  number (key) {
-    const value = this.json[key]
-    if (value) {
-      return parseFloat(value)
-    }
-    return undefined
-  }
-
-  /**
-   * @param {string} key
-   * @param {number} [defaultValue]
-   * @returns {number}
-   */
-   requiredNumber (key, defaultValue) {
-    const value = this.json[key] ? this.json[key] : defaultValue
-    if (!value) {
-      throw new Error('No value found for configuration setting: ' + key + ' for provider: ' + this.class)
-    }
-    return value
-  }
-
-  /**
-   * @param {string} key
-   * @param {string} [defaultValue]
-   * @returns {string}
-   */
-  requiredString (key, defaultValue) {
-    const value = this.json[key] ? this.json[key] : defaultValue
-    if (!value) {
-      throw new Error('No value found for configuration setting: ' + key + ' for provider: ' + this.class)
-    }
-    return value
-  }
-
-  /**
-   * @param {string} key
-   * @returns {string | undefined}
-   */
-  string (key) {
-    return this.json[key]
   }
 }
 
