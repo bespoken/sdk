@@ -1,5 +1,5 @@
 # **Bespoken Batch Tester**
-[<p align="center"><a href="#installation">Installation</a> | <a href="#running-the-tester">Execution</a> | <a href="#gitlab-configuration">GitLab</a> | <a href="#datadog-configuration">DataDog</a> | <a href="https://bespoken.gitlab.io/batch-tester">API Docs</a></p>]() 
+[<p align="center"><a href="#installation">Installation</a> | <a href="#running-the-tester">Execution</a> | <a href="#gitlab-configuration">GitLab</a> | <a href="#datadog-configuration">DataDog</a> | <a href="https://bespoken.github.io/sdk/api/batch/">API Docs</a></p>]() 
 This project enables batch testing of utterances for voice experiences.
 
 It leverages Bespoken's Virtual Devices to run large sets of utterances through Alexa, Google Assistant, and other voice platforms.
@@ -43,7 +43,7 @@ If you want to use multiple tokens, potentially for different purposes, leverage
 }
 ```
 
-The tags can then be assigned to a record with [record.addDeviceTag](https://bespoken.gitlab.io/batch-tester/Record.html#addDeviceTag):
+The tags can then be assigned to a record with [record.addDeviceTag](https://bespoken.github.io/sdk/api/batch/Record.html#addDeviceTag):
 ```
 record.addDeviceTag('USAccount')
 ```
@@ -192,9 +192,9 @@ There are six main methods:
 * interceptPostProcess - Called after all the records have been executed
 * interceptRequest - Called before the request is sent to a virtual device
 
-Using [interceptRecord](https://bespoken.gitlab.io/batch-tester/Interceptor.html#interceptRecord), changes can be made to the utterance or the meta data of a record before it is used in a test.
+Using [interceptRecord](https://bespoken.github.io/sdk/api/batch/Interceptor.html#interceptRecord), changes can be made to the utterance or the meta data of a record before it is used in a test.
 
-Using [interceptResult](https://bespoken.gitlab.io/batch-tester/Interceptor.html#interceptResult), changes can be made to the result of processing. This can involve:
+Using [interceptResult](https://bespoken.github.io/sdk/api/batch/Interceptor.html#interceptResult), changes can be made to the result of processing. This can involve:
 * Adding tags to the result (for use in metrics displays)
 * Changing the `success` flag based on custom validation logic
 * Adding output fields to the CSV output to provide additional information to report readers
@@ -216,7 +216,7 @@ Using `interceptRequest` the request can be modified before calling the virtual 
 * Doing operations related to the virtual device about to be used
 
 You can read all about the Interceptor class here:
-https://bespoken.gitlab.io/batch-tester/Interceptor.html
+https://bespoken.github.io/sdk/api/batch/Interceptor.html
 
 ### **`saveInterval`**
 Time interval where the batch job is saved. It's represented in seconds.
@@ -238,7 +238,7 @@ We have builtin two classes for metrics: `datadog-metrics` and `cloudwatch-metri
 This dictates where metrics on the results of the tests are sent.
 
 Additionally, new metric providers can be used by implementing this base class:  
-https://bespoken.gitlab.io/batch-tester/Metrics.html
+https://bespoken.github.io/sdk/api/batch/Metrics.html
 
 ### **`sequence`**
 For tests in which there are multiple steps required before we do the "official" utterance that is being tested, we can specify them here.
@@ -260,7 +260,7 @@ For the `csv-source`, the source file defaults to `input/records.csv`. This can 
 }
 ```
 
-To implement your own custom source, [read the API docs](https://bespoken.gitlab.io/batch-tester/Source.html).
+To implement your own custom source, [read the API docs](https://bespoken.github.io/sdk/api/batch/Source.html).
 
 ### **`transcript`**
 If set to false, speech-to-text is not performed on the audio response from the device

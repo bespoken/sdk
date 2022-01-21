@@ -1,3 +1,7 @@
+# 0.13.3
+## Infrastructure
+* Added back docs, updated links to point to GitHub hosted version
+
 # 0.13.0
 ## New Stuff
 * First usable version incorporated into @bespoken-sdk
