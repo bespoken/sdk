@@ -71,15 +71,17 @@ class Client  {
   }
 
   /**
-   * @param {any} job
+   * @param {string} key
+   * @param {any} json
    * @returns {Promise<string>} The UUID assigned to the job
    */
-  async save (job) {
+  async save (key, json) {
     logger.time('SAVE')
-    const url = `${Client.accessURL()}/save?run=${job.run}`
+    const url = `${Client.accessURL()}/save?key=${key}`
 
+    const jsonString = JSON.stringify(json)
     // Create a stream from the JSON
-    const jsonStream = Readable.from(JSON.stringify(job))
+    const jsonStream = Readable.from(jsonString)
     const gzipStream = jsonStream.pipe(zlib.createGzip())
     const response = await axios.post(url, gzipStream, {
       headers: {
@@ -90,7 +92,6 @@ class Client  {
     })
 
     logger.timeEnd('SAVE')
-    job.key = response.data.key
     return response.data.key
   }
 
@@ -100,6 +101,7 @@ class Client  {
    */
   async decrypt (key) {
     const url = `${Client.accessURL()}/decrypt?key=${key}`
+    logger.info('decrypt: ' + url)
     const response = await axios.get(url)
     return response.data.decryptedKey
   }

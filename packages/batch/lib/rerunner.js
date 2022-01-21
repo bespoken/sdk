@@ -3,6 +3,7 @@ const BespokenStore = require('@bespoken-sdk/store/lib/client')
 const Config = require('@bespoken-sdk/shared/lib/config')
 const { Device, DevicePool } = require('./device')
 const Job = require('./job')
+const logger = require('@bespoken-sdk/shared/lib/logger')('RERUN')
 const Record = require('./record')
 const Runner = require('./batch-runner')
 const Source = require('./source')
@@ -65,9 +66,11 @@ class Rerunner {
     const runner = new Runner(undefined, this.outputPath)
 
     runner.originalJob = job
+    originalJob = job
     await runner.process()
   }
 }
+let originalJob
 
 /**
  *
@@ -85,12 +88,13 @@ class RerunSource extends Source {
    * @returns {Promise<Record[]>}
    */
   async loadAll () {
-    console.info('RERUN-SOURCE LOADALL records: ' + this.job.results.length)
+    console.info('RERUN-SOURCE LOADALL records: ' + this.job)
     // Take the results, and turn them back into records
     // Set the response from the assistant on the record
-    const records = this.job.results.map((result) => {
+    const records = originalJob.results.map((result) => {
       const record = result.record
       record.rerun = true
+      console.info('load all result: ' + JSON.stringify(result, null, 2))
       // @ts-ignore
       record.responses = result.responses
       return record
@@ -121,9 +125,9 @@ class RerunDevicePool extends DevicePool {
   }
 
   /**
-   * @returns {void}
+   * @returns {Promise<void>}
    */
-  free () {
+  async free () {
     this.inUse = false
   }
 }
@@ -136,15 +140,18 @@ class RerunDevice extends Device {
    * @param {Record} record
    */
   constructor (record) {
-    super('rerun-device', undefined, undefined, undefined)
+    super('rerun-device', undefined, {}, undefined)
     this.record = record
   }
 
   /**
-   * @param {string} message
-   * @returns {Promise<Response[]>}
+   * @param {Record} record
+   * @param {string[]} messages
+   * @param {number} [attempt=1]
+   * @returns {Promise<any[]>}
    */
-  async message (message) {
+   async message (record, messages, attempt = 1) {
+    console.info('reun responses: ' + JSON.stringify(this.record.responses, null, 2) + ' for message: ' + messages + ' attempt: ' + attempt)
     return this.record.responses
   }
 }

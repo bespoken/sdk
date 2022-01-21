@@ -59,7 +59,7 @@ Here is a bare minimum configuration file:
 {
   "job": "utterance-tester",
   "sequence": ["open my audio player"],
-  "source": "csv-source",
+  "source": "@bespoken-sdk/batch/lib/csv-source",
   "sourceFile": "path/to/my/file.csv",
   "virtualDevices": {
     "myVirtualDevice": { "tags": ["my-optional-tags"]}
@@ -151,7 +151,7 @@ An example file:
   "metrics": "datadog-metrics",
   "sequence": ["open my audio player"],
   "sequential": false,
-  "source": "csv-source",
+  "source": "@bespoken-sdk/batch/lib/csv-source",
   "sourceFile": "path/to/my/file.csv",
   "transcript": true,
   "virtualDevices": {
@@ -251,7 +251,7 @@ Setting this to true forces records to be processed one after another and not in
 This defaults to false.
 
 ### **`source`**
-The source for records. Defaults to `csv-source`. Additional builtin option is `s3-source`.
+The source for records. Defaults to `csv-source`.
 
 For the `csv-source`, the source file defaults to `input/records.csv`. This can be overridden by setting the `sourceFile` property:  
 ```
@@ -259,8 +259,6 @@ For the `csv-source`, the source file defaults to `input/records.csv`. This can 
   "sourceFile
 }
 ```
-
-For the `s3-source`, a sourceBucket must be set. Additionally, AWS credentials must be set in the environment that can access this bucket.
 
 To implement your own custom source, [read the API docs](https://bespoken.gitlab.io/batch-tester/Source.html).
 

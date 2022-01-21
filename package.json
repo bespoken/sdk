@@ -1,6 +1,6 @@
 {
   "author": "Bespoken",
-  "description": "This project tests utterances in batch - supporting a variety of data sources and reporting formats",
+  "description": "This project is the monorepo for the Bespoken SDK",
   "devDependencies": {
     "@types/node": "^16.9.2",
     "@typesafejs/eslint-config": "^0.2.2",
@@ -20,7 +20,7 @@
     "bin/*.js",
     "src/*.js"
   ],
-  "homepage": "https://gitlab.com/bespoken/batch-tester.git",
+  "homepage": "https://github.com/bespoken/sdk.git",
   "license": "ISC",
   "jest": {
     "collectCoverage": true,
@@ -29,7 +29,6 @@
     ],
     "testResultsProcessor": "./node_modules/jest-junit-reporter"
   },
-  "main": "index.js",
   "name": "bespoken-sdk",
   "scripts": {
     "codecov": "codecov",

@@ -57,7 +57,7 @@ class Interceptor {
   }
 
   /**
-   * Allows for making changes to a result after it has been processed
+   * Allows for making changes to a job after it has been processed
    * @param {Job} job
    * @returns {Promise<void>} Void promise
    */

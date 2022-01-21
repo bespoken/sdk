@@ -1,6 +1,6 @@
 const _ = require('lodash')
 const Job = require('./job')
-const logger = require('@bespoken-sdk/shared/lib/logger')('SQLPRINT')
+const logger = require('@bespoken-sdk/shared/lib/logger')('SQLPRNT')
 const mysql = require('mysql')
 /**
  * Sends results of tests to SQLite database
@@ -31,13 +31,13 @@ class SQLPrinter {
     try {
       return await this.printImpl(job, true)
     } catch (e) {
-      console.error('MYSQL-PRINTER PRINT print error: ' + e.toString())
+      logger.error('PRINT print error: ' + e.toString())
       throw e
     } finally {
       try {
         await this._close()
       } catch (e) {
-        console.error('MYSQL-PRINTER PRINT close error: ' + e.toString())
+        logger.error('PRINT close error: ' + e.toString())
       }
     }
   }
@@ -62,7 +62,7 @@ class SQLPrinter {
     }
 
     const insertSQL = `INSERT INTO ${this.tableName} (${this.fields.map(f => f.name).join(',\n')}) values (${this.fields.map(() => '?').join(', ')})`
-    logger.debug('SQLLITE PRINT insert-sql: ' + insertSQL)
+    logger.debug('PRINT insert-sql: ' + insertSQL)
     const statement = this._prepare(insertSQL)
 
     let index = 0
@@ -97,7 +97,7 @@ class SQLPrinter {
 
       // Print out how many records we have printed every 100 records
       if (index % 100 === 0) {
-        console.info(`SQL-PRINTER PRINT records: ${index}/${job.results.length}`)
+        logger.info(`SQL-PRINTER PRINT records: ${index}/${job.results.length}`)
       }
     }
 
@@ -190,7 +190,7 @@ class SQLPrinter {
       // Loop through all the fields, and see that they are all on the table
       for (const field of this.fields) {
         if (!await this._hasColumn(field.name)) {
-          console.info('SQLPRINTER SETUP add column: ' + field.name)
+          logger.info('SQLPRINTER SETUP add column: ' + field.name)
           const sql = `ALTER TABLE ${this.tableName} ADD ${field.name} ${field.type}`
           await this._run(sql)
         }
@@ -208,7 +208,7 @@ class SQLPrinter {
       if (params) {
         params = params.map(param => this._value(param))
       }
-      // console.info('SQL: ' + sql)
+      logger.debug('SQL: ' + sql)
       const options = {
         sql: sql,
         timeout: 40000
@@ -224,9 +224,9 @@ class SQLPrinter {
         // fields will contain information about the returned results fields (if any)
         if (error) {
           if (!sql.includes('CREATE TABLE')) {
-            console.error('MYSQL QUERY error on sql: ' + sql)
+            logger.error('QUERY error on sql: ' + sql)
             if (params) {
-              console.error('MYSQL QUERY error on params:' + params.join(',\n'))
+              logger.error('QUERY error on params:' + params.join(',\n'))
             }
           }
           reject(error)
@@ -244,7 +244,7 @@ class SQLPrinter {
    async _hasColumn (columnName) {
     if (!this.columnNames) {
       const rows = await this._query(`SHOW COLUMNS FROM ${this.tableName};`)
-      // console.info('ROWS: ' + JSON.stringify(rows, null, 2))
+      // logger.info('ROWS: ' + JSON.stringify(rows, null, 2))
       this.columnNames = rows.map(r => r.Field)
     }
 

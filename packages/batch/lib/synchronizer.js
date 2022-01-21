@@ -31,7 +31,8 @@ class Synchronizer {
       logger.time(`BATCH ${logMessage} SAVE`)
 
       const client = new Client()
-      await client.save(this.job)
+      const encryptedKey = await client.save(this.job.run, this.job)
+      this.job.key = encryptedKey
       logger.timeEnd(`BATCH ${logMessage} SAVE`)
       logger.info(`BATCH ${logMessage} SAVE completed key: ${this.job.key}`)
     } catch (e) {

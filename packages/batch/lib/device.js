@@ -190,6 +190,7 @@ class Device {
   }
 
   /**
+   * @private
    * @param {any} error
    * @param {string[]} messages
    * @param {Record} record
@@ -210,6 +211,7 @@ class Device {
   }
 
   /**
+   * @private
    * @param {any} error
    * @returns {any}
    */
@@ -325,6 +327,7 @@ class DevicePool {
   }
 
   /**
+   * @private
    * @param {Record} record
    * @returns {Device[]}
    */
@@ -339,6 +342,7 @@ class DevicePool {
   }
 
   /**
+   * @private
    * @returns {number}
    */
   _freeCount () {
@@ -347,6 +351,7 @@ class DevicePool {
 
   // Filter to the devices that have tags that match the record
   /**
+   * @private
    * @param {Record} record
    * @returns {Device[]}
    */

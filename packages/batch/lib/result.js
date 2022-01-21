@@ -2,13 +2,27 @@ const _ = require('lodash')
 const Config = require('@bespoken-sdk/shared/lib/config')
 const JSONUtil = require('@bespoken-sdk/shared/lib/json-util')
 
-/** @typedef {import('./record')} Record */
+/** 
+ * // Add private so that we do not get an error on generating docs
+ * @private @typedef {import('./record')} Record 
+ */
 
 
 /**
  * The result for a particular record
  */
  class Result {
+  /**
+   * @param {Record} record
+   * @param {any} o
+   * @returns {Result}
+   */
+  static fromJSON (record, o) {
+    const result = new Result(record, o.voiceId, o.responses)
+    JSONUtil.fromJSON(result, o)
+    result._record = record
+    return result
+  }
   /**
    *
    * @param {Record} record
@@ -226,6 +240,19 @@ const JSONUtil = require('@bespoken-sdk/shared/lib/json-util')
    */
   get voiceId() {
     return this._voiceId
+  }
+
+  /**
+   * @returns {string}
+   */
+  toString() {
+    return JSON.stringify(this, (key, value) => {
+      if (key === 'ocrGrid') {
+        return '[SKIPPED]'
+      } else {
+        return value
+      }
+    }, 2)
   }
 }
 

@@ -39,13 +39,15 @@ class Job {
     }
 
     let jobJSON
-    if (fs.existsSync(dataFile)) {
+    if (process.env.FORCE_RELOAD === undefined && fs.existsSync(dataFile)) {
       jobJSON = JSON.parse(fs.readFileSync(dataFile, 'utf-8'))
     } else {
       jobJSON = await store.fetch(key)
       fs.writeFileSync(dataFile, JSON.stringify(jobJSON, null, 2))
     }
 
+    console.info('Job JSON: ' + JSON.stringify(jobJSON, null, 2))
+    
     const job = Job.fromJSON(jobJSON)
     return job
   }
@@ -58,15 +60,14 @@ class Job {
   static fromJSON (json) {
     const job = new Job(json.name, json.run, json.config)
     JSONUtil.fromJSON(job, json)
+    console.info('job.results: ' + job.results.length + ' job._results: ' + job._results.length)
     // Loop through results and turn into objects
     const resultObjects = []
-    for (const resultJSON of job._results) {
+    for (const resultJSON of job.results) {
       const record = Record.fromJSON(resultJSON.record)
       
-      const result = new Result(record)
-
-      // We update our new result using defaults because we do not want to overwrite propertie
-      _.defaults(result, resultJSON)
+      const result = Result.fromJSON(record, resultJSON)
+      
       // Make the record property back into a record object - I know, we do similar stuff below :-)
       resultObjects.push(result)
     }
@@ -259,7 +260,7 @@ class Job {
       return 'N/A'
     }
 
-    return `${Client.accessURL()}/log?run=${this.key}&index=${index}`
+    return `https://store.bespoken.io/store/json/batch-runner/${this.key}?path=$..results[${index}].responses[-1:]`
   }
 
   /**
@@ -280,6 +281,7 @@ class Job {
   }
 
   /**
+   * @private
    * @param {Object[]} recordArray
    * @param {string} resultProperty
    * @returns {string[]}

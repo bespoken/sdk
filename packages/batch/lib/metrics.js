@@ -26,7 +26,7 @@ class Metrics {
    * @returns {Promise<void>}
    */
   async initialize (job) {
-    logger.info('no-op published: ' + job)
+    logger.debug('no-op published: ' + job)
     return Promise.resolve()
   }
 
@@ -39,7 +39,7 @@ class Metrics {
    * @returns {Promise<void>}
    */
   async publish (job, result) {
-    logger.info('no-op published: ' + job + ' result: ' + result)
+    logger.debug('no-op published: ' + job + ' result: ' + result)
     return Promise.resolve()
   }
 }
