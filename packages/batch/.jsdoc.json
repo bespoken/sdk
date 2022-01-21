@@ -1,6 +1,6 @@
 {
   "opts": {
-    "destination": "public",
+    "destination": "../../docs/api/batch",
     "readme": "README.md",
     "template": "docs/minami"
   },

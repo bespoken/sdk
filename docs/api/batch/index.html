@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Home - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Device.html">Device</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Device.html#addTag">addTag</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Device.html#hasTags">hasTags</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Device.html#message">message</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="DevicePool.html">DevicePool</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="DevicePool.html#.instance">instance</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="DevicePool.html#free">free</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="DevicePool.html#initialize">initialize</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="DevicePool.html#lock">lock</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Evaluator.html">Evaluator</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Evaluator.html#.evaluate">evaluate</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Evaluator.html#.evaluateExpectedField">evaluateExpectedField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Evaluator.html#.jsonQuery">jsonQuery</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Interceptor.html">Interceptor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Interceptor.html#.instance">instance</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Interceptor.html#interceptError">interceptError</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Interceptor.html#interceptPostProcess">interceptPostProcess</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Interceptor.html#interceptPreProcess">interceptPreProcess</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Interceptor.html#interceptRecord">interceptRecord</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Interceptor.html#interceptRequest">interceptRequest</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Interceptor.html#interceptResult">interceptResult</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Job.html">Job</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Job.html#.fromJSON">fromJSON</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Job.html#.lazyFetchJobForKey">lazyFetchJobForKey</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Job.html#addProcessedCount">addProcessedCount</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Job.html#addResult">addResult</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Job.html#expectedFieldNames">expectedFieldNames</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Job.html#logURL">logURL</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Job.html#outputFieldNames">outputFieldNames</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Job.html#toJSON">toJSON</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Metrics.html">Metrics</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Metrics.html#.instance">instance</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Metrics.html#initialize">initialize</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Metrics.html#publish">publish</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Printer.html">Printer</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Printer.html#.instance">instance</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Printer.html#print">print</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Record.html">Record</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Record.html#.fromJSON">fromJSON</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Record.html#addDeviceTag">addDeviceTag</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Record.html#addExpectedField">addExpectedField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Record.html#addOutputField">addOutputField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Record.html#addSetting">addSetting</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Record.html#outputField">outputField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Record.html#toJSON">toJSON</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Result.html">Result</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Result.html#.fromJSON">fromJSON</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Result.html#actualField">actualField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Result.html#addActualField">addActualField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Result.html#addOutputField">addOutputField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Result.html#addTag">addTag</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Result.html#outputField">outputField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Result.html#toJSON">toJSON</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Result.html#toString">toString</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Source.html">Source</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Source.html#.instance">instance</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Source.html#filter">filter</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Source.html#loadAll">loadAll</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Source.html#loadRecord">loadRecord</a></span></li>
+</nav>
+
+<div id="main">
+    
+
+    
+
+
+
+    
+
+
+
+
+
+
+
+
+
+    
+
+
+    <section class="readme">
+        <article><h1><strong>Bespoken Batch Tester</strong></h1>
+<p><a href=""><p align="center"><a href="#installation">Installation</a> | <a href="#running-the-tester">Execution</a> | <a href="#gitlab-configuration">GitLab</a> | <a href="#datadog-configuration">DataDog</a> | <a href="https://bespoken.gitlab.io/batch-tester">API Docs</a></p></a>
+This project enables batch testing of utterances for voice experiences.</p>
+<p>It leverages Bespoken's Virtual Devices to run large sets of utterances through Alexa, Google Assistant, and other voice platforms.</p>
+<h2><strong>Getting Started</strong></h2>
+<h3><strong>Installation</strong></h3>
+<p><strong>This package requires Node.js 10 or greater.</strong></p>
+<p>To install the Bespoken Batch Tester, just run:</p>
+<pre class="prettyprint source"><code>npm install @bespoken-sdk/batch --save
+</code></pre>
+<p>We recommend creating a new project to store artifacts related to the tester, such as the testing configuration file, CI configuration, and custom source code.</p>
+<h3><strong>Environment Management</strong></h3>
+<p>We use dotenv when running locally, which takes environment variables from a local <code>.env</code> file.</p>
+<p>To set this up, just make a copy of <code>example.env</code> and name it <code>.env</code>. Replace the values inside there with the correct values for your configuration.</p>
+<p>For running with continuous integration (such as Jenkins, Circle CI or Gitlab), these values should instead be set as actual values within the CI environment.</p>
+<h3><strong>Virtual Device Setup</strong></h3>
+<ul>
+<li>Create a virtual device with our <a href="https://read.bespoken.io/end-to-end/setup/#creating-a-virtual-device">easy-to-follow guide here</a>.</li>
+<li>Add them the configuration file, as described below</li>
+</ul>
+<p>If you want to use multiple tokens, potentially for different purposes, leverage tags:</p>
+<pre class="prettyprint source lang-json"><code>{
+  &quot;virtualDevices&quot;: {
+    &quot;myToken&quot;: {
+      &quot;tags&quot;: [&quot;USAccount&quot;]
+    },
+    &quot;myOtherToken&quot;: {
+      &quot;tags&quot;: [&quot;UKAccount&quot;],
+      &quot;settings&quot;: {
+        &quot;listener.maxDuration&quot;: 5
+      }
+    }
+  }
+}
+</code></pre>
+<p>The tags can then be assigned to a record with <a href="https://bespoken.gitlab.io/batch-tester/Record.html#addDeviceTag">record.addDeviceTag</a>:</p>
+<pre class="prettyprint source"><code>record.addDeviceTag('USAccount')
+</code></pre>
+<p>Only tokens that have that tag (or tags) will be used to process it.</p>
+<p>Additionally, per device settings can be set via the <code>settings</code> property. This allows for overriding the behavior of the device as needed.</p>
+<p>For more information on the best practices for virtual device management, <a href="%5Bdocs/ACCOUNT_SETUP.md%5D">read our guide here</a>.</p>
+<h3><strong>Create a Configuration File</strong></h3>
+<p>Here is a bare minimum configuration file:</p>
+<pre class="prettyprint source lang-json"><code>{
+  &quot;job&quot;: &quot;utterance-tester&quot;,
+  &quot;sequence&quot;: [&quot;open my audio player&quot;],
+  &quot;source&quot;: &quot;@bespoken-sdk/batch/lib/csv-source&quot;,
+  &quot;sourceFile&quot;: &quot;path/to/my/file.csv&quot;,
+  &quot;virtualDevices&quot;: {
+    &quot;myVirtualDevice&quot;: { &quot;tags&quot;: [&quot;my-optional-tags&quot;]}
+  }
+}
+</code></pre>
+<p>To get started, cut and paste those settings into a new file, such as <code>batch-test.json</code>.</p>
+<p>More information on configuring the batch test is below.</p>
+<h3><strong>Source Data</strong></h3>
+<p>Source data by default comes from a CSV file (by default, we look at <code>input/records.csv</code>).</p>
+<p>The structure of the file is:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>utterance</td>
+<td>Yes</td>
+<td>The utterance to be said to the device</td>
+</tr>
+<tr>
+<td>device</td>
+<td>No</td>
+<td>The device value corresponds to the tag set on the device. If this value matches a tag, that device will be eligible to process this utterance.</td>
+</tr>
+<tr>
+<td>locale</td>
+<td>No</td>
+<td>The locale to use for this record. If not set, defaults to 'en-US'</td>
+</tr>
+<tr>
+<td>voiceID</td>
+<td>No</td>
+<td>The voice ID to use for this record. If not set, defaults to 'en-US-Wavenet-D'</td>
+</tr>
+<tr>
+<td>[expected values]</td>
+<td>No</td>
+<td>There can zero-to-many expected fields defined - these will automatically be compared to fields on the JSON output</td>
+</tr>
+</tbody>
+</table>
+<h4><em>device</em> column</h4>
+<p>With regard to the <code>device</code> column, if we have two devices, like so:</p>
+<pre class="prettyprint source"><code>  &quot;virtualDevices&quot;: {
+    &quot;device1&quot;: { &quot;tags&quot;: [&quot;google&quot;]},
+    &quot;device2&quot;: { &quot;tags&quot;: [&quot;alexa&quot;]}
+  }
+</code></pre>
+<p>If our record looks like this:</p>
+<pre class="prettyprint source lang-csv"><code>utterance,device,transcript
+play despacito,alexa,playing the song you requested
+</code></pre>
+<p>The record will only be run with the device2, as it has the tag <code>alexa</code> that corresponds to our DEVICE value.</p>
+<h4><em>expected value</em> columns</h4>
+<p>The expected field values will automatically be compared to the actual value on the response from the device.</p>
+<p>For example, if we have a record like this:</p>
+<pre class="prettyprint source lang-csv"><code>utterance,transcript
+play despacito,playing the song you requested
+</code></pre>
+<p>Our response from the virtual device may look like this:</p>
+<pre class="prettyprint source"><code>{
+  &quot;transcript&quot;: &quot;I don't know that one&quot;
+}
+</code></pre>
+<p>The actual transcript value will be compared to the expected one, and the test will be marked a failure or success based on a partial match comparison (i.e., the actual value must include the expected value though they do not need to be an exact match).</p>
+<p>More complex field expressions can be handled with the <code>fields</code> configuration property, <a href="#fields">described below</a>.</p>
+<h3><strong>Running the Tester</strong></h3>
+<p>Once the configuration file is created, just enter:</p>
+<pre class="prettyprint source"><code>bbt process batch-test.json
+</code></pre>
+<p>And it will be off and running. In practice, we recommend this not be run locally but in a CI environment.</p>
+<p>The tester will create a results.csv file, as well as publish metrics to the configured metrics provider.</p>
+<h2><strong>In-Depth Configuration</strong></h2>
+<p>The environment variables store sensitive credentials.</p>
+<p>Our configuration file stores information particular to how the tests should run, but of a non-sensitive nature.</p>
+<p>An example file:</p>
+<pre class="prettyprint source lang-json"><code>{
+  &quot;fields&quot;: {
+    &quot;imageURL&quot;: &quot;$.raw.messageBody.directives[1].payload.content.art.sources[0].url&quot;
+  },
+  &quot;interceptor&quot;: &quot;./src/my-interceptor&quot;,
+  &quot;job&quot;: &quot;utterance-tester&quot;,
+  &quot;saveInterval&quot;: 300,
+  &quot;limit&quot;: 5,
+  &quot;maxAttempts&quot;: 3,
+  &quot;backoffTime&quot;: 10,
+  &quot;metrics&quot;: &quot;datadog-metrics&quot;,
+  &quot;sequence&quot;: [&quot;open my audio player&quot;],
+  &quot;sequential&quot;: false,
+  &quot;source&quot;: &quot;@bespoken-sdk/batch/lib/csv-source&quot;,
+  &quot;sourceFile&quot;: &quot;path/to/my/file.csv&quot;,
+  &quot;transcript&quot;: true,
+  &quot;virtualDevices&quot;: {
+    &quot;VIRTUAL_DEVICE_1&quot;: {
+      &quot;tags&quot;: [&quot;tag1&quot;, &quot;tag2&quot;]
+    }
+  },
+  &quot;virtualDeviceConfig&quot;: {
+    &quot;phoneNumber&quot;: &quot;+1 XXX XXX XXX&quot;,
+    &quot;twilio_speech_timeout&quot;: 2,
+    &quot;twilio_timeout&quot;: 10,
+    &quot;waitTimeInterval&quot;: 2000,
+    &quot;maxWaitTime&quot;: 300000 
+  }
+}
+</code></pre>
+<p>Each of the properties is explained below:</p>
+<h3><strong><code>fields</code></strong></h3>
+<p>Each field represents a value in the JSON response. It will be added to the result output.</p>
+<p>If the field also is a column in the CSV file, then the value in the CSV is compared to the value in the actual response.</p>
+<p>The fields can be mapped to complex JSON path values, such as:
+<code>&quot;imageURL&quot;: &quot;$.raw.messageBody.directives[1].payload.content.art.sources[0].url&quot;</code></p>
+<p>The JSON path will be applied to the actual result from the response. If more than one value matches the JSON path expression,
+then if ANY of the actual values matches the expected the test will pass.</p>
+<h3><strong><code>interceptor</code></strong></h3>
+<p>The interceptor allows for the core behavior of the batch runner to be modified.</p>
+<p>There are six main methods:</p>
+<ul>
+<li>interceptRecord - Called before the record is processed</li>
+<li>interceptResult - Called before the result is finalized</li>
+<li>interceptError - Called when the process has an error after the max attempts</li>
+<li>interceptPreProcess - Called after the records have been loaded but before any of them is processed</li>
+<li>interceptPostProcess - Called after all the records have been executed</li>
+<li>interceptRequest - Called before the request is sent to a virtual device</li>
+</ul>
+<p>Using <a href="https://bespoken.gitlab.io/batch-tester/Interceptor.html#interceptRecord">interceptRecord</a>, changes can be made to the utterance or the meta data of a record before it is used in a test.</p>
+<p>Using <a href="https://bespoken.gitlab.io/batch-tester/Interceptor.html#interceptResult">interceptResult</a>, changes can be made to the result of processing. This can involve:</p>
+<ul>
+<li>Adding tags to the result (for use in metrics displays)</li>
+<li>Changing the <code>success</code> flag based on custom validation logic</li>
+<li>Adding output fields to the CSV output to provide additional information to report readers</li>
+</ul>
+<p>Using <code>interceptError</code> custom code can be called after the max attempts were executed.</p>
+<p>Using <code>interceptPreProcess</code> custom code can be called before starting the execution of the records. This can involve:</p>
+<ul>
+<li>Setting up a local storage</li>
+<li>Calling an API
+Be aware that this function will be called when resuming too.</li>
+</ul>
+<p>Using <code>interceptPostProcess</code> custom code can be called after the execution of the records. This can involve:</p>
+<ul>
+<li>Calling an API</li>
+<li>Saving objects to a local storage.</li>
+</ul>
+<p>Using <code>interceptRequest</code> the request can be modified before calling the virtual device. This can involve:</p>
+<ul>
+<li>Adding more messages (before or after the main one)</li>
+<li>Adding phrases for better speech recognition</li>
+<li>Doing operations related to the virtual device about to be used</li>
+</ul>
+<p>You can read all about the Interceptor class here:
+https://bespoken.gitlab.io/batch-tester/Interceptor.html</p>
+<h3><strong><code>saveInterval</code></strong></h3>
+<p>Time interval where the batch job is saved. It's represented in seconds.</p>
+<p>This defaults to 300.</p>
+<h3><strong><code>limit</code></strong></h3>
+<p>The numbers of records to test during test execution. Very useful when you want to try just a small subset of utterances.</p>
+<h3><strong><code>maxAttempts</code></strong></h3>
+<p>The number of attempts to try if a request has errors. Defaults to 3.</p>
+<h3><strong><code>backoffTime</code></strong></h3>
+<p>The time in seconds to wait before trying again. Defaults to 10.</p>
+<h3><strong><code>metrics</code></strong></h3>
+<p>We have builtin two classes for metrics: <code>datadog-metrics</code> and <code>cloudwatch-metrics</code>.</p>
+<p>This dictates where metrics on the results of the tests are sent.</p>
+<p>Additionally, new metric providers can be used by implementing this base class:<br>
+https://bespoken.gitlab.io/batch-tester/Metrics.html</p>
+<h3><strong><code>sequence</code></strong></h3>
+<p>For tests in which there are multiple steps required before we do the &quot;official&quot; utterance that is being tested, we can specify them here.</p>
+<p>Typically, this would involve launching a skill before saying the specific utterance we want to test, but more complex sequences are possible.</p>
+<h3><strong><code>sequential</code></strong></h3>
+<p>Setting this to true forces records to be processed one after another and not in parallel, regardless of the number of virtual devices that are configured.</p>
+<p>This defaults to false.</p>
+<h3><strong><code>source</code></strong></h3>
+<p>The source for records. Defaults to <code>csv-source</code>.</p>
+<p>For the <code>csv-source</code>, the source file defaults to <code>input/records.csv</code>. This can be overridden by setting the <code>sourceFile</code> property:</p>
+<pre class="prettyprint source"><code>{ 
+  &quot;sourceFile
+}
+</code></pre>
+<p>To implement your own custom source, <a href="https://bespoken.gitlab.io/batch-tester/Source.html">read the API docs</a>.</p>
+<h3><strong><code>transcript</code></strong></h3>
+<p>If set to false, speech-to-text is not performed on the audio response from the device</p>
+<h3><strong><code>virtualDevices</code></strong></h3>
+<p>See the section above for information on <a href="#virtual-device-setup">configuring virtual devices</a>.</p>
+<h3><strong><code>virtualDeviceBaseURL</code></strong></h3>
+<p>For values other than the default (<code>https://virtual-device.bespoken.io</code>), set this property.</p>
+<h3><strong><code>virtualDeviceConfig</code></strong></h3>
+<p>Allows setting properties to all virtual devices. For example, when using Twilio Virtual Devices, setting the <code>phone_number</code> to call.</p>
+<h2>Advanced Execution</h2>
+<h3>Resuming A Job</h3>
+<p>To resume a job that did not complete, due to errors or timeout, simply set the <code>RUN_KEY</code> environment variable.</p>
+<p>The run key can be found in the logs for any run - it will appear like this:</p>
+<pre class="prettyprint source"><code>BATCH SAVE completed key: 7f6113df3e2af093f095d2d3b2505770d9af1c057b93d0dff378d83c0434ec61
+</code></pre>
+<p>The environment variable can be set locally with:</p>
+<pre class="prettyprint source"><code>export RUN_KEY=&lt;RUN_KEY>
+</code></pre>
+<p>It can also be set in Gitlab on the <code>Run Pipeline</code> screen.</p>
+<h3>Re-printing A Job</h3>
+<p>CSV reports can be reprinted at any time by running:</p>
+<pre class="prettyprint source"><code>bbt reprint &lt;RUN_KEY>
+</code></pre>
+<p>The run key can be found in the logs for any run - it will appear like this:</p>
+<pre class="prettyprint source"><code>BATCH SAVE completed key: 7f6113df3e2af093f095d2d3b2505770d9af1c057b93d0dff378d83c0434ec61
+</code></pre>
+<h3>Re-processing A Job</h3>
+<p>Similar to reprinting the CSV results for a job, we can also run a job again applying different tests to the results.</p>
+<p>This does NOT call the voice platforms again. Instead, it takes the responses from the platform and pushes them back through the post-processing logic.</p>
+<p>This is useful to examine fields that were previously ignored or to change success/failure logic. It allows for fixing errors in the initial analysis without re-doing all the virtual assistant calls.</p>
+<p>To use it, enter the following:</p>
+<pre class="prettyprint source"><code>bbt reprocess &lt;TEST_FILE> &lt;RUN_KEY>
+</code></pre>
+<p>The TEST_FILE is a the path to the test configuration.
+The RUN_KEY is the key, shown in the test output, that identifies the job in our storage.</p>
+<p>An example call:</p>
+<pre class="prettyprint source"><code>bbt reprocess input/bespoken-utterances.json 7f6113df3e2af093f095d2d3b2505770d9af1c057b93d0dff378d83c0434ec61
+</code></pre>
+<p>The run key can be found in the logs for any run - it will appear like this:</p>
+<pre class="prettyprint source"><code>BATCH SAVE completed key: 7f6113df3e2af093f095d2d3b2505770d9af1c057b93d0dff378d83c0434ec61
+</code></pre>
+<h3>Merge csv results</h3>
+<p>We take 2 csv files and combine them into one csv file. The result will be located in <code>output/merged.csv</code> by default.</p>
+<pre class="prettyprint source"><code>bbt merge [ORIGINAL_RESULTS_PATH] [RERUN_RESULTS_PATH]
+</code></pre>
+<p>The 2 arguments are optionals, they are by default:</p>
+<ul>
+<li>ORIGINAL_RESULTS_PATH = ./output/results.csv</li>
+<li>RERUN_RESULTS_PATH = ./output/rerun.csv</li>
+</ul>
+<h3>Select output file</h3>
+<p>You can set the output filename using a flag in any of the commands above</p>
+<pre class="prettyprint source"><code>bbt process batch-test.json --output_file your_custom_name
+</code></pre>
+<p>You will find the results in <code>/output/your_custom_name.csv</code></p>
+<h3>Output logging</h3>
+<p>We use overwritten versions of console log, debug, warn and info functions in conjunction with <a href="https://github.com/pinojs/pino">pino.js</a> for logging. This allows us to change the verbosity of our logs (as well as the logs of projects that use the bespoken batch tester) by using the following log levels:</p>
+<pre class="prettyprint source"><code>- trace
+- debug
+- info
+- warn
+- error
+- fatal
+</code></pre>
+<p>On this project, calling <code>console.log</code> is equivalent to calling <code>console.debug</code>, while <code>trace</code> and <code>fatal</code> are not in use. Here's how a typical log looks:</p>
+<img src="docs/images/pinoJs.png" width="50%">
+<p>To set a log level, simply set the following env variable: <code>export LOG_LEVEL=debug</code>. If not set, <code>info</code> is assumed.</p>
+<p>We can also colorize the outputs by setting the env variable <code>COLORIZE</code>.</p>
+<img src="docs/images/pinoJsColorized.png" width="50%">
+<p>Timestamps can be added to the outputs by setting the env variable <code>DISPLAY_LOG_TIME</code>.</p>
+<img src="docs/images/pinoJsTimestamp.png" width="70%">
+<p>Finally, logs can be saved to a file by setting the env variable <code>SAVE_LOG_FILE</code>. The file will be placed in the <code>output</code> folder and named <code>batch-tester.log</code>. It uses pino.js default format.</p>
+<h2>Type of Utterances</h2>
+<p>The record class accepts three types of utterances: text, URL and local audio files.</p>
+<table>
+<thead>
+<tr>
+<th>Device</th>
+<th>Support</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Alexa</td>
+<td>Text, URL, Local Audio File</td>
+</tr>
+<tr>
+<td>Google Assistant</td>
+<td>Text, URL, Local Audio File</td>
+</tr>
+<tr>
+<td>Test Robot</td>
+<td>Text, URL, Local Audio File</td>
+</tr>
+<tr>
+<td>IVR</td>
+<td>Text, URL</td>
+</tr>
+</tbody>
+</table>
+<h3>Text</h3>
+<pre class="prettyprint source lang-javascript"><code>  const record = new Record('play a radio station')
+</code></pre>
+<h3>URL</h3>
+<pre class="prettyprint source lang-javascript"><code>  const record = new Record('https://play.radio.com/1234.wav')
+</code></pre>
+<h3>Local audio file</h3>
+<p>The audio file path should start from the root path of your project</p>
+<pre class="prettyprint source"><code>project/
+|-subfolder/
+  |- audios/
+    |- radio123.wav
+|- src/
+  |- source.js
+</code></pre>
+<pre class="prettyprint source lang-javascript"><code>  const record = new Record('./subfolder/audio/radio123.wav')
+</code></pre>
+<h2><strong>DataDog Configuration</strong></h2>
+<p>Follow <a href="./docs/datadog#how-to-signup-and-get-an-api-key">this guide</a> to get started.</p>
+<h2><strong>Gitlab Configuration</strong></h2>
+<p>The gitlab configuration is defined by the file <code>.gitlab-ci.yml</code>. The file looks like this:</p>
+<pre class="prettyprint source lang-yaml"><code>image: node:10
+
+cache:
+  paths:
+  - node_modules/
+
+utterance-tests:
+  script:
+   - npm install
+   - npm test
+  artifacts:
+    when: always
+    paths:
+      - test_output/report/index.inline.html
+      - test-report.xml
+    reports:
+      junit: test-report.xml
+  only: 
+    - schedules
+    - web
+</code></pre>
+<p>When the GitLab Runner is executed, it takes this file and creates a Linux instance with Node.js, executes the commands under the <code>script</code> element, and saves the reports as artifacts.</p>
+<h4><strong>Setting a schedule</strong></h4>
+<p>It is very easy to run your end-to-end tests regularly using GitLab. Once your CI file (<code>.gitlab-ci.yml</code>) has been uploaded to the repository just go to &quot;CI/CD =&gt; Schedules&quot; from the left menu. Creating a new schedule looks like this:</p>
+<p><a href="docs/images/GitLabCISchedule-1.png"><img src="docs/images/GitLabCISchedule-1.png" width="50%"></a></p>
+<p><a href="docs/images/GitLabCISchedule-2.png"><img src="docs/images/GitLabCISchedule-2.png" width="50%"></a></p>
+<h2><strong>Test Reporting</strong></h2>
+<p>We have setup this project to make use of a few different types of reporting to show off what is possible.</p>
+<p>The reporting comes in these forms:</p>
+<ul>
+<li>CSV File that summarizes results of utterance tests</li>
+<li>Reporting via DataDog</li>
+<li>Reporting via SQLite and Metabase</li>
+</ul>
+<p>Each is discussed in more detail below.</p>
+<h3><strong>CSV File</strong></h3>
+<p>The CSV File contains the following output:</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>The name of the receipt to ask for</td>
+</tr>
+<tr>
+<td>transcript</td>
+<td>The actual response back from Alexa</td>
+</tr>
+<tr>
+<td>success</td>
+<td>Whether or not the test was successful</td>
+</tr>
+<tr>
+<td>expectedResponses</td>
+<td>The possible expected response back from the utterance</td>
+</tr>
+</tbody>
+</table>
+<h3><strong>DataDog</strong></h3>
+<p>DataDog captures metrics related to how all the tests have performed. Each time we run the tests, and when <code>datadog</code> has been set as the <code>metric</code> mechanism to use in the <code>config.json</code> file, we push the result of each test to DataDog.</p>
+<p>In general, we are using next metrics:</p>
+<ul>
+<li><code>utterance.success</code></li>
+<li><code>utterance.failure</code></li>
+</ul>
+<p>The metrics can be easily reported on through a DataDog Dashboard. They also can be used to setup notifcations when certain conditions are triggered.</p>
+<p>Read more about configuring DataDog in our <a href="./docs/datadog.md">walkthrough</a>.</p>
+<h3><strong>MySQL and Metabase</strong></h3>
+<p>MySQL allows for reporting and querying via SQL. It can be combined with Metabase for easy exploration and visualization of the data.</p>
+<p>Read more about using these tools in our <a href="./docs/SQL.md">walkthrough</a>.</p>
+<h2><strong>Additional Topics</strong></h2>
+<ul>
+<li><a href="./docs/cloudwatch.md">Working With CloudWatch</a></li>
+<li>Working With Circle CI - TBC</li>
+<li>Working With PagerDuty - TBC</li>
+</ul></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Fri Jan 21 2022 15:06:16 GMT-0500 (Eastern Standard Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

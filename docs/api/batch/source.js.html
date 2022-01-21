@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>source.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Device.html">Device</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Device.html#addTag">addTag</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Device.html#hasTags">hasTags</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Device.html#message">message</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="DevicePool.html">DevicePool</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="DevicePool.html#.instance">instance</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="DevicePool.html#free">free</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="DevicePool.html#initialize">initialize</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="DevicePool.html#lock">lock</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Evaluator.html">Evaluator</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Evaluator.html#.evaluate">evaluate</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Evaluator.html#.evaluateExpectedField">evaluateExpectedField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Evaluator.html#.jsonQuery">jsonQuery</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Interceptor.html">Interceptor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Interceptor.html#.instance">instance</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Interceptor.html#interceptError">interceptError</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Interceptor.html#interceptPostProcess">interceptPostProcess</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Interceptor.html#interceptPreProcess">interceptPreProcess</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Interceptor.html#interceptRecord">interceptRecord</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Interceptor.html#interceptRequest">interceptRequest</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Interceptor.html#interceptResult">interceptResult</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Job.html">Job</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Job.html#.fromJSON">fromJSON</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Job.html#.lazyFetchJobForKey">lazyFetchJobForKey</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Job.html#addProcessedCount">addProcessedCount</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Job.html#addResult">addResult</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Job.html#expectedFieldNames">expectedFieldNames</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Job.html#logURL">logURL</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Job.html#outputFieldNames">outputFieldNames</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Job.html#toJSON">toJSON</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Metrics.html">Metrics</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Metrics.html#.instance">instance</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Metrics.html#initialize">initialize</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Metrics.html#publish">publish</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Printer.html">Printer</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Printer.html#.instance">instance</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Printer.html#print">print</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Record.html">Record</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Record.html#.fromJSON">fromJSON</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Record.html#addDeviceTag">addDeviceTag</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Record.html#addExpectedField">addExpectedField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Record.html#addOutputField">addOutputField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Record.html#addSetting">addSetting</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Record.html#outputField">outputField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Record.html#toJSON">toJSON</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Result.html">Result</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Result.html#.fromJSON">fromJSON</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Result.html#actualField">actualField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Result.html#addActualField">addActualField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Result.html#addOutputField">addOutputField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Result.html#addTag">addTag</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Result.html#outputField">outputField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Result.html#toJSON">toJSON</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Result.html#toString">toString</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Source.html">Source</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Source.html#.instance">instance</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Source.html#filter">filter</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Source.html#loadAll">loadAll</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Source.html#loadRecord">loadRecord</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">source.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const _ = require('lodash')
+const Config = require('@bespoken-sdk/shared/lib/config')
+const logger = require('@bespoken-sdk/shared/lib/logger')('SOURCE')
+const Record = require('./record')
+
+/**
+ * Abstract class that defines contract for record sources
+ */
+class Source {
+  /**
+   * Gets the source singleton
+   * @returns {Source}
+   */
+  static instance () {
+    return Config.instance('source', '@bespoken-sdk/batch/lib/csv-source')
+  }
+
+  /**
+   * Filters records based on configuration
+   * The filters are set in the config as a key and set of values, such as:
+   * ```
+   * filters: {
+   *   property: ['value1', 'value2'],
+   * }
+   * ```
+   * The property is taken from the `meta` attribute of the record
+   * @param {Record[]} records
+   * @returns {Record[]} The records after the filter is applied
+   */
+  filter (records) {
+    if (Config.has('filters')) {
+      const filteredRecords = []
+      const filters = Config.get('filters')
+      logger.info(`FILTER properties: ${Object.keys(filters)}`)
+
+      // Apply the filter to the records
+      for (const record of records) {
+        let match = true
+        for (const filterProperty of Object.keys(filters)) {
+          let values = filters[filterProperty]
+          // If the values element is not an array, make it into one
+          if (!Array.isArray(values)) {
+            values = [values]
+          }
+
+          let value = _.get(record.meta, filterProperty)
+          if (!value) {
+            console.log(`FILTER skipping: ${record.utterance} reason: ${filterProperty} is undefined`)
+            match = false
+            break
+          }
+
+          value += '' // Turn everything into a string for ease of comparison
+          match = values.find(v => {
+            v += ''
+            return v.trim().toLowerCase() === value.trim().toLowerCase()
+          })
+
+          if (!match) {
+            console.log(`FILTER skipping: ${record.utterance} reason: ${filterProperty} = ${value}`)
+            break
+          }
+        }
+
+        if (match) {
+          filteredRecords.push(record)
+        }
+      }
+      return filteredRecords
+    } else {
+      return records
+    }
+  }
+
+  /**
+   * Loads all records - this function must be implemented by subclasses
+   * @returns {Promise&lt;Record[]>} The records to be processed
+   */
+  async loadAll () {
+    throw new Error('No-op - must be implemented by subclass')
+  }
+
+  /**
+   * Called just before the record is processed - for last minute operations
+   * @abstract
+   * @param {Record} record
+   * @returns {Promise&lt;void>}
+   */
+  async loadRecord (record) {
+    logger.debug('loading record - noop for record: ' + record.utterance)
+    return Promise.resolve()
+  }
+}
+
+module.exports = Source
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Fri Jan 21 2022 15:06:16 GMT-0500 (Eastern Standard Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
