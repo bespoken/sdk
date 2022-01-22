@@ -9,8 +9,8 @@
     "bbt": "bin/bbt.js"
   },
   "dependencies": {
-    "@bespoken-sdk/shared": "^0.13.2",
-    "@bespoken-sdk/store": "^0.13.2",
+    "@bespoken-sdk/shared": "^0.13.3",
+    "@bespoken-sdk/store": "^0.13.3",
     "axios": "^0.19.0",
     "bespoken-tools": "^2.5.3",
     "commander": "^5.1.0",
@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@types/node": "^16.10.1",
-    "jsdoc": "^3.6.7"    
+    "jsdoc": "^3.6.7"
   },
   "name": "@bespoken-sdk/batch",
   "publishConfig": {
@@ -41,5 +41,5 @@
     "test": "ava"
   },
   "types": "types/index.d.ts",
-  "version": "0.13.2"
+  "version": "0.13.3"
 }
