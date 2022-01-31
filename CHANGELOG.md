@@ -1,3 +1,7 @@
+# 0.13.4
+## Infrastructure
+* Made JSONWrapper class - generic JSON helper utilities for configuration objects
+
 # 0.13.3
 ## Infrastructure
 * Added back docs, updated links to point to GitHub hosted version

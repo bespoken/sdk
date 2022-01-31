@@ -99,7 +99,9 @@ class Mutex {
    */
   release() {
     delete Mutex.Locks[this.name]
-    this.onRelease(this)
+    if (this.onRelease) {
+      this.onRelease(this)
+    }
   }
 
   /**
