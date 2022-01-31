@@ -1,7 +1,7 @@
 const Config = require('@bespoken-sdk/shared/lib/config')
-const debug = require('debug')('PRINTER')
 const fs = require('fs')
 const Job = require('./job')
+const logger = require('@bespoken-sdk/shared/lib/logger')('PRINTER')
 const path = require('path')
 const stringify = require('csv-stringify')
 
@@ -99,7 +99,7 @@ class Printer {
       resultsArray.push(resultArray)
     })
 
-    debug(`PRINT Success: ${successCount} Ignore: ${ignoreCount} Total: ${job.results.length}`)
+    logger.info(`PRINT Success: ${successCount} Ignore: ${ignoreCount} Total: ${job.results.length}`)
     // Create the CSV and the output file asynchronously
     return new Promise((resolve, reject) => {
       stringify(resultsArray, {
@@ -111,6 +111,7 @@ class Printer {
           reject(error)
         } else {
           fs.writeFile(this.outputPath, output, (error) => {
+            logger.info('writing output file: ' + this.outputPath + ' error: ' + error)
             if (error) {
               reject(error)
             } else {

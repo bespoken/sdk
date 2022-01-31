@@ -2,9 +2,8 @@
 /** @typedef {import('./reply')} Reply */
 const _ = require('lodash')
 const Persistable = require('./persistable')
-const Settings = require('./settings')
 
-/** @typedef {('DIRECT' | 'TWILIO')} ChannelType */
+/** @typedef {('DIRECT' | 'TELNYX' | 'TWILIO')} ChannelType */
 
 /**
  * Manages the conversation between a user and a bot
@@ -36,9 +35,6 @@ class Conversation extends Persistable {
     
     /** @type {string | undefined} */
     this.phoneNumber = undefined
-
-    /** @type {Settings} */
-    this.settings = new Settings({})
 
     /** @type {Reply[]} */
     this.replies = []

@@ -39,7 +39,7 @@ class Metrics {
    * @returns {Promise<void>}
    */
   async publish (job, result) {
-    logger.debug('no-op published: ' + job + ' result: ' + result)
+    logger.debug('no-op published: ' + job.run + ' result: ' + result.record.utterance)
     return Promise.resolve()
   }
 }

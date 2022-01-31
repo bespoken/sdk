@@ -5,7 +5,20 @@ const Path = require('path')
  * Utility methods
  */
 class Util {
+/**
+   *
+   * @param {string} file
+   * @param {Buffer} buffer
+   * @returns {Promise<void>}
+   */
+ static async appendFile (file, buffer) {
+  const directory = Path.dirname(file)
+  if (!FS.existsSync(directory)) {
+    FS.mkdirSync(directory)
+  }
 
+  return FS.promises.appendFile(file, buffer)
+}
   /**
    * @param {string} name
    * @returns {Promise<Mutex>}

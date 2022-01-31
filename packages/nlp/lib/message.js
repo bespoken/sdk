@@ -144,6 +144,7 @@ class Message extends Persistable {
    */
   constructor(conversation, inputSettings) {
     super()
+    /** @private */
     this._conversation = conversation
     
     /** @private @type {Audio | undefined} */
@@ -155,7 +156,7 @@ class Message extends Persistable {
     /** @private @type {string | undefined} */
     this._text = undefined
 
-    /** @type {InputSettings} */
+    /** @private @type {InputSettings} */
     this._inputSettings = inputSettings
 
     /** @type {Message | undefined} */

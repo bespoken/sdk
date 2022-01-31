@@ -46,7 +46,7 @@ class Job {
       fs.writeFileSync(dataFile, JSON.stringify(jobJSON, null, 2))
     }
 
-    console.info('Job JSON: ' + JSON.stringify(jobJSON, null, 2))
+    //console.info('Job JSON: ' + JSON.stringify(jobJSON, null, 2))
     
     const job = Job.fromJSON(jobJSON)
     return job
@@ -60,7 +60,6 @@ class Job {
   static fromJSON (json) {
     const job = new Job(json.name, json.run, json.config)
     JSONUtil.fromJSON(job, json)
-    console.info('job.results: ' + job.results.length + ' job._results: ' + job._results.length)
     // Loop through results and turn into objects
     const resultObjects = []
     for (const resultJSON of job.results) {

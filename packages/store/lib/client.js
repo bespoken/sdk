@@ -78,7 +78,7 @@ class Client  {
   async save (key, json) {
     logger.time('SAVE')
     const url = `${Client.accessURL()}/save?key=${key}`
-
+    logger.info('URL for saving: ' + url)
     const jsonString = JSON.stringify(json)
     // Create a stream from the JSON
     const jsonStream = Readable.from(jsonString)

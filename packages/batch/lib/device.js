@@ -100,7 +100,6 @@ class Device {
         while (result.status === 'IN_PROGRESS' && totalTimeWaited < maxWaitTime) {
           try {
             result = await virtualDevice.getConversationResults(response.conversation_id)
-            logger.debug('message result: ' + JSON.stringify(result, null, 2))
             totalTimeWaited += waitTimeInterval
           } catch (e) {
             const error = this._parseError(e)
@@ -120,7 +119,7 @@ class Device {
           return this._retry(errorMessage, messages, record, attempt)
         }
 
-        logger.debug('DEVICE MESSAGE final transcript: ' + _.get(_.nth(_.get(result, 'results'), -1), 'transcript'))
+        logger.trace('message result: ' + JSON.stringify(result, null, 2))
         return result.results
       } else {
         return response.results

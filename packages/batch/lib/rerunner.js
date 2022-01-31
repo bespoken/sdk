@@ -94,7 +94,7 @@ class RerunSource extends Source {
     const records = originalJob.results.map((result) => {
       const record = result.record
       record.rerun = true
-      console.info('load all result: ' + JSON.stringify(result, null, 2))
+      //console.info('load all result: ' + JSON.stringify(result, null, 2))
       // @ts-ignore
       record.responses = result.responses
       return record
@@ -151,7 +151,7 @@ class RerunDevice extends Device {
    * @returns {Promise<any[]>}
    */
    async message (record, messages, attempt = 1) {
-    console.info('reun responses: ' + JSON.stringify(this.record.responses, null, 2) + ' for message: ' + messages + ' attempt: ' + attempt)
+    logger.debug('rerun responses: ' + JSON.stringify(this.record.responses, null, 2) + ' for message: ' + messages + ' attempt: ' + attempt)
     return this.record.responses
   }
 }

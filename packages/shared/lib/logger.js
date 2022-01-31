@@ -26,6 +26,18 @@ class Logger {
   }
 
   /**
+   * If debug is enabled, writes the specified file 
+   * @param {string} fileName 
+   * @param {Buffer} buffer 
+   * @returns {Promise<void>}
+   */
+   async appendFile(fileName, buffer) {
+    if (this.isDebugEnabled()) {
+      return Util.appendFile(fileName, buffer)
+    }
+  }
+
+  /**
    * @param {boolean} condition
    * @param {string} description
    * @returns {void}
