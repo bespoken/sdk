@@ -1,5 +1,5 @@
 const _ = require('lodash')
-const Fuse = require('fuse.js').default
+const Fuse = require('fuse.js')
 
 /**
  *
@@ -18,14 +18,12 @@ class Helper {
     }
     const fuse = new Fuse(textToSearch, { ignoreLocation: true, includeScore: true})
     const matches = fuse.search(patternToMatch)
+
     if (matches.length === 0) {
       return false
     }
 
     const closestMatch = matches[0]
-    if (!closestMatch.score) {
-      return false
-    }
     return closestMatch.score <= threshold
   }
 }
