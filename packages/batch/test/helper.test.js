@@ -1,5 +1,5 @@
 /* eslint-env jest */
-const Helper = require('../src/helper')
+const Helper = require('../lib/helper')
 
 describe('Fuzzy matching', () => {
   let textToSearch = 'Z100 Radio'
