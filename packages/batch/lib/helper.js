@@ -24,10 +24,6 @@ class Helper {
     }
 
     const closestMatch = matches[0]
-    // perfect match has a score of O, this is wrong !closestMatch.score
-    if (!closestMatch.hasOwnProperty('score')) {
-      return false
-    }
     return closestMatch.score <= threshold
   }
 }
