@@ -3,6 +3,7 @@
  */
 const InputType = {
   DTMF: 'DTMF',
+  EMAIL: 'TEXT',
   TEXT: 'TEXT',
   VOICE: 'VOICE'
 } 
@@ -56,6 +57,18 @@ class InputSettings {
     
     /** @type {number | undefined} */
     this.timeout = undefined
+
+    /** @type {Object<string, string>} */
+    this.parameters = {}
+  }
+
+  /**
+   * 
+   * @param {string} key 
+   * @returns {string | undefined}
+   */
+  parameter(key) {
+    return this.parameters[key]
   }
 
   /**
@@ -82,6 +95,16 @@ class InputSettings {
    */
   setMinimumDigits (digits) {
     this.minimumDigits = digits
+    return this
+  }
+
+  /**
+   * @param {string} key
+   * @param {string} value
+   * @returns {InputSettings}
+   */
+  setParameter(key, value) {
+    this.parameters[key] = value
     return this
   }
 
