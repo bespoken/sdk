@@ -60,6 +60,9 @@ class InputSettings {
 
     /** @type {Object<string, string>} */
     this.parameters = {}
+
+    /** @type {number | undefined} */
+    this.endSilenceTimeout = undefined
   }
 
   /**
@@ -77,6 +80,15 @@ class InputSettings {
    */
   setDialogState(state) {
     this.dialogState = state
+    return this
+  }
+  
+  /**
+   * @param {number} timeoutInMilliseconds
+   * @returns {InputSettings}
+   */
+  setEndSilenceTimeout (timeoutInMilliseconds) {
+    this.endSilenceTimeout = timeoutInMilliseconds
     return this
   }
   

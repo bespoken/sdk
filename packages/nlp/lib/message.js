@@ -118,13 +118,14 @@ class Message extends Persistable {
   /**
    * 
    * @param {Conversation} conversation
-   * @param {number} dtmfInput
-   * @param {InputSettings} inputSettings
+   * @param {string} dtmfInput
    * @returns {Message} 
    */
-   static fromDTMF(conversation, dtmfInput, inputSettings) {
+  static fromDTMF(conversation, dtmfInput) {
+    const inputSettings = new InputSettings('DTMF')
     const message = new Message(conversation, inputSettings)
-    message._text = dtmfInput + ''
+    logger.info('dtmf: ' + dtmfInput)
+    message._text = dtmfInput
     return message
   }
 
