@@ -9,8 +9,8 @@
     "bbt": "bin/bbt.js"
   },
   "dependencies": {
-    "@bespoken-sdk/shared": "^0.13.5",
-    "@bespoken-sdk/store": "^0.13.5",
+    "@bespoken-sdk/shared": "^0.13.6",
+    "@bespoken-sdk/store": "^0.13.6",
     "axios": "^0.19.0",
     "bespoken-tools": "^2.5.3",
     "commander": "^5.1.0",
@@ -41,5 +41,6 @@
     "test": "ava"
   },
   "types": "types/index.d.ts",
-  "version": "0.13.5"
+  "version": "0.13.6",
+  "gitHead": "1358c13969466dc2ca725041f046cceafb2122af"
 }
