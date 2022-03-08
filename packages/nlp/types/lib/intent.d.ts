@@ -11,4 +11,5 @@ declare class Intent {
     constructor(name: string, confidence?: number | undefined);
     name: string;
     confidence: number;
+    finalized: boolean;
 }

@@ -13,9 +13,9 @@ class Message extends Persistable {
   /**
    * @param {Conversation} conversation
    * @param {InputSettings} inputSettings
-   * @returns {Message} 
+   * @returns {Message}
    */
-  static fromAudioStream(conversation, inputSettings) {
+  static fromAudioStream (conversation, inputSettings) {
     const message = new Message(conversation, inputSettings)
     message._audio = new Audio()
     return message
@@ -24,9 +24,9 @@ class Message extends Persistable {
   /**
    * @param {Conversation} conversation
    * @param {string} audio
-   * @returns {Message} 
+   * @returns {Message}
    */
-  static fromAudioBase64(conversation, audio) {
+  static fromAudioBase64 (conversation, audio) {
     const message = new Message(conversation, new InputSettings('VOICE'))
     const audioBuffer = Buffer.from(audio, 'base64')
     message._audio = new Audio(audioBuffer)
@@ -36,24 +36,25 @@ class Message extends Persistable {
   /**
    * @param {Conversation} conversation
    * @param {Buffer} audio
-   * @returns {Message} 
+   * @returns {Message}
    */
-  static fromAudioBuffer(conversation, audio) {
+  static fromAudioBuffer (conversation, audio) {
     const message = new Message(conversation, new InputSettings('VOICE'))
     message._audio = new Audio(audio)
     return message
   }
 
   /**
-   * 
+   *
    * @param {Conversation} conversation
    * @param {Buffer} buffer
-   * @returns {Message} 
+   * @returns {Message}
    */
-  static fromBufferAsStream(conversation, buffer) {
+  static fromBufferAsStream (conversation, buffer) {
     const message = new Message(conversation, new InputSettings('VOICE'))
     message._audio = new Audio()
     const chunkSize = 3000
+    // eslint-disable-next-line no-async-promise-executor
     new Promise(async (resolve) => {
       while (buffer.length > 0) {
         let bytesToRead = chunkSize
@@ -64,7 +65,7 @@ class Message extends Persistable {
         buffer = buffer.slice(bytesToRead)
         message.audio?.push(newBuffer)
         await Util.sleep(100)
-        //console.info('pushed data')
+        // console.info('pushed data')
       }
       resolve(undefined)
     }).then(() => {
@@ -74,10 +75,24 @@ class Message extends Persistable {
   }
 
   /**
+   *
+   * @param {Conversation} conversation
+   * @param {string} dtmfInput
+   * @returns {Message}
+   */
+  static fromDTMF (conversation, dtmfInput) {
+    const inputSettings = new InputSettings('DTMF')
+    const message = new Message(conversation, inputSettings)
+    logger.info('dtmf: ' + dtmfInput)
+    message._text = dtmfInput
+    return message
+  }
+
+  /**
    * @param {any} o
    * @returns {Message}
    */
-  static fromJSON(o) {
+  static fromJSON (o) {
     const conversation = Conversation.fromJSON(o.conversation)
     const message = new Message(conversation, InputSettings.fromJSON(o.inputSettings))
     if (o.audio) {
@@ -93,15 +108,15 @@ class Message extends Persistable {
     message._locale = o.locale
     return message
   }
-  
+
   /**
-   * 
+   *
    * @param {Conversation} conversation
    * @param {string} text
    * @param {Message} [originalMessage]
-   * @returns {Message} 
+   * @returns {Message}
    */
-  static fromText(conversation, text, originalMessage) {
+  static fromText (conversation, text, originalMessage) {
     let inputSettings
     if (originalMessage?.inputSettings) {
       // Make a copy of the input settings if we are pulling it off the original message
@@ -116,25 +131,11 @@ class Message extends Persistable {
   }
 
   /**
-   * 
+   *
    * @param {Conversation} conversation
-   * @param {string} dtmfInput
-   * @returns {Message} 
+   * @returns {Message}
    */
-  static fromDTMF(conversation, dtmfInput) {
-    const inputSettings = new InputSettings('DTMF')
-    const message = new Message(conversation, inputSettings)
-    logger.info('dtmf: ' + dtmfInput)
-    message._text = dtmfInput
-    return message
-  }
-
-  /**
-   * 
-   * @param {Conversation} conversation
-   * @returns {Message} 
-   */
-  static emptyMessage(conversation) {
+  static emptyMessage (conversation) {
     const message = new Message(conversation, new InputSettings('VOICE'))
     return message
   }
@@ -143,17 +144,17 @@ class Message extends Persistable {
    * @param {Conversation} conversation
    * @param {InputSettings} inputSettings
    */
-  constructor(conversation, inputSettings) {
+  constructor (conversation, inputSettings) {
     super()
     /** @private */
     this._conversation = conversation
-    
+
     /** @private @type {Audio | undefined} */
     this._audio = undefined
 
     /** @private */
     this._locale = 'en-US'
-    
+
     /** @private @type {string | undefined} */
     this._text = undefined
 
@@ -169,44 +170,44 @@ class Message extends Persistable {
   /**
    * @returns {Audio | undefined}
    */
-  get audio() {
+  get audio () {
     return this._audio
   }
 
   /**
    * @returns {Conversation}
    */
-  get conversation() {
+  get conversation () {
     return this._conversation
   }
 
   /**
    * @returns {InputSettings}
    */
-  get inputSettings() {
+  get inputSettings () {
     return this._inputSettings
   }
 
   /**
    * @returns {string}
    */
-  get locale() {
-    return this._locale;
+  get locale () {
+    return this._locale
   }
-  
+
   /**
    * @returns {string | undefined}
    */
-  get text() {
+  get text () {
     return this._text
   }
 
   /**
    * @returns {Audio}
    */
-  audioRequired() {
+  audioRequired () {
     if (!this._audio) {
-      throw new Error("This should not happen - audio is not defined")
+      throw new Error('This should not happen - audio is not defined')
     }
     return this._audio
   }
@@ -215,7 +216,7 @@ class Message extends Persistable {
    * Clones the message object
    * @returns {Message}
    */
-  clone() {
+  clone () {
     const message = new Message(this.conversation, this.inputSettings)
     Object.assign(message, this)
     message.originalMessage = this
@@ -225,21 +226,21 @@ class Message extends Persistable {
   /**
    * @returns {boolean}
    */
-  isEmpty() {
+  isEmpty () {
     return this.text === undefined && this.audio === undefined
   }
 
   /**
    * @returns {any}
    */
-  toJSON() {
+  toJSON () {
     /** @type {any} */
     const clone = _.defaultsDeep({}, this)
     clone.audio = clone._audio
     clone.conversation = clone._conversation
     clone.inputSettings = clone._inputSettings
     clone.locale = clone._locale
-    clone.text = clone._text 
+    clone.text = clone._text
 
     delete clone._audio
     delete clone._conversation
@@ -253,7 +254,7 @@ class Message extends Persistable {
    * @param {number} [indent]
    * @returns {string}
    */
-  toStringAsJSON(indent=2) {
+  toStringAsJSON (indent = 2) {
     const o = this.toJSON()
     return JSON.stringify(o, (p, value) => {
       if (p === 'audio') {
@@ -267,7 +268,7 @@ class Message extends Persistable {
   /**
    * @returns {string}
    */
-  toString() {
+  toString () {
     if (this.text) {
       return 'message: ' + this.text
     } else if (this.audio) {

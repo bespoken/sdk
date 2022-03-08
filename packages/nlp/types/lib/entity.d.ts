@@ -7,9 +7,9 @@ declare class Entity {
      * @param {string} name
      * @param {string} value
      * @param {string} transcription
-     * @param {number} confidence
+     * @param {number} [confidence]
      */
-    constructor(name: string, value: string, transcription: string, confidence: number);
+    constructor(name: string, value: string, transcription: string, confidence?: number);
     name: string;
     value: string;
     transcription: string;
