@@ -6,7 +6,7 @@
     ]
   },
   "dependencies": {
-    "@bespoken-sdk/shared": "^0.13.6",
+    "@bespoken-sdk/shared": "^0.13.7",
     "axios": "^0.21.4",
     "lodash": "^4.17.21",
     "memorystream": "^0.3.1",
@@ -27,6 +27,6 @@
     "test": "ava"
   },
   "types": "types/index.d.ts",
-  "version": "0.13.6",
+  "version": "0.13.7",
   "gitHead": "1358c13969466dc2ca725041f046cceafb2122af"
 }
