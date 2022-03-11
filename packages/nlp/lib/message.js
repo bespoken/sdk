@@ -165,6 +165,9 @@ class Message extends Persistable {
     this.originalMessage = undefined
 
     this.timedOut = false
+
+    /** @private @type {{ [key: string]: string }} */
+    this._parameters = {}
   }
 
   /**
@@ -276,6 +279,27 @@ class Message extends Persistable {
     } else {
       return 'message: text and audio undefined'
     }
+  }
+
+  /**
+   * @param {string} key
+   * @returns {string}
+   */
+   parameter(key) {
+    return this._parameters[key]
+  }
+
+  /**
+   * @param {string} key
+   * @param {string} value
+   * @returns {Message}
+   */
+  setParameter(key, value) {
+    if (!this._parameters) {
+      this._parameters = {}
+    }
+    this._parameters[key] = value
+    return this
   }
 }
 
