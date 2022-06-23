@@ -19,8 +19,9 @@ const JSONUtil = require('@bespoken-sdk/shared/lib/json-util')
    * @param {string} utterance The utterance to be sent to the voice experience being tested
    * @param {Object.<string, string>} [expectedFields = {}] The expected values for the record
    * @param {Object} [meta] Additional info about the record to be used in processing
+   * @param {Object} [config] configuration to override to device when needed
    */
-  constructor (utterance, expectedFields = {}, meta) {
+  constructor (utterance, expectedFields = {}, meta, config) {
     this._utterance = utterance
     this._utteranceRaw = utterance // Save off the original utterance in case we change it during processing
     this._expectedFields = expectedFields
@@ -31,6 +32,7 @@ const JSONUtil = require('@bespoken-sdk/shared/lib/json-util')
     this._locale = undefined
     this._voiceID = undefined
     this._rerun = false
+    this._configuration = config
 
     /** @type {Object<string, any>} */
     this._settings = {}

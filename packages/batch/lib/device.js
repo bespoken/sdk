@@ -44,6 +44,7 @@ class Device {
     }
 
     if (this._configuration) { config = _.assign(config, this._configuration) }
+    if (record._configuration) { config = _.assign(config, record._configuration) }
 
     const virtualDevice = new vdk.VirtualDevice(config)
 
