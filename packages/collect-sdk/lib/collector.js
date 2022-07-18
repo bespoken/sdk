@@ -8,6 +8,10 @@ const Reply = require('@bespoken-api/nlp-sdk/lib/reply')
  *
  */
 class Collector {
+  constructor () {
+
+  }
+
   /**
    * @param {Message} message
    * @returns {Promise<Message>}
