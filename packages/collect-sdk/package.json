@@ -1,0 +1,28 @@
+{
+  "ava": {
+    "files": [
+      "test/**/*.test.js"
+    ]
+  },
+  "dependencies": {
+    "@bespoken-api/nlp-sdk": "workspace:^0.5.0",
+    "@bespoken-api/shared": "^0.5.0",
+    "axios": "^0.21.4"
+  },
+  "devDependencies": {
+    "@types/node": "^16.11.1",
+    "@typesafejs/eslint-config": "^0.3.1",
+    "ava": "^3.15.0"
+  },
+  "name": "@bespoken-api/collect-sdk",
+  "private": false,
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "scripts": {
+    "test": "ava"
+  },
+  "types": "types/index.d.ts",
+  "version": "0.5.0",
+  "gitHead": "95dcc6e258335485d123b8e235c99f05d78eaa06"
+}
