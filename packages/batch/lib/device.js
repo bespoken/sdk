@@ -31,7 +31,14 @@ class Device {
    * @returns {Promise<any[]>}
    */
   async message (record, messages, attempt = 1) {
-    logger.info('MESSAGE ' + messages.toString() + ' locale: ' + record.locale + ' voice: ' + record.voiceID)
+    messages.forEach(msg=>{
+      if(msg.includes("{")){
+        logger.info('MESSAGE ' + JSON.parse(msg).UTTERANCE + ' locale: ' + record.locale + ' voice: ' + record.voiceID)
+      } else {
+        logger.info('MESSAGE ' + messages.toString() + ' locale: ' + record.locale + ' voice: ' + record.voiceID)
+      }
+    })
+
     const voiceID = record.voiceID || Config.get('virtualDeviceConfig.voiceID', false, 'en-US-Wavenet-D')
     const locale = record.locale || Config.get('virtualDeviceConfig.locale', false, 'en-US')
     let config = {
