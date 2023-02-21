@@ -1,0 +1,32 @@
+{
+  "dependencies": {
+    "@bespoken-api/shared": "workspace:^0.5.1",
+    "axios": "^1.3.3"
+  },
+  "devDependencies": {
+    "@typesafejs/eslint-config": "^0.3.1",
+    "ava": "^5.2.0"
+  },
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "homepage": "",
+  "license": "ISC",
+  "main": "lib/source.js",
+  "name": "@bespoken-api/test-sdk",
+  "private": true,
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "scripts": {
+    "start": "node bin/start.js",
+    "start:debug": "node --inspect=15003 bin/start.js",
+    "start:watch": "nodemon -w ./lib -w ../reporting/lib -w ../user/lib -w ../user/public/index.html  -w ../shared/lib -w ../server/lib  bin/start.js",
+    "test": "ava"
+  },
+  "version": "0.5.2"
+}
