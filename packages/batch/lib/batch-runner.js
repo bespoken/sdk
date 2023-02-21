@@ -225,7 +225,11 @@ class BatchRunner {
    * @returns {Promise<void>}
    */
   async _processRecord (device, record) {
-    logger.info(`RUNNER PROCESS-RECORD run: ${this.job.run} utterance: ${record.utterance}`)
+    if (record.utterance.includes("{")) {
+      logger.info(`RUNNER PROCESS-RECORD run: ${this.job.run} utterance: ${JSON.parse(record.utterance).UTTERANCE}`)
+    } else {
+      logger.info(`RUNNER PROCESS-RECORD run: ${this.job.run} utterance: ${record.utterance}`)
+    }
     // Do just-in-time processing on the record
     await Source.instance().loadRecord(record)
 
