@@ -85,7 +85,8 @@ class Client  {
     const gzipStream = jsonStream.pipe(zlib.createGzip())
     const response = await axios.post(url, gzipStream, {
       headers: {
-        'Content-Encoding': 'gzip'
+        'Content-Encoding': 'application/gzip',
+        'Content-Type': 'application/gzip'
       },
       maxContentLength: (200 * 1024 * 1024), // up to 200 mb - biggest file so far is 57 MB
       responseType: 'json'

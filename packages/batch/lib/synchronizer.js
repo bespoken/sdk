@@ -13,13 +13,14 @@ class Synchronizer {
   constructor (job) {
     this.job = job
 
-    const {...configFeilds} = job.config
-    const tokens = Object.keys(configFeilds.virtualDevices)
+    const jobFields=JSON.parse(JSON.stringify(job) )
+
+    const tokens = Object.keys(jobFields.config.virtualDevices)
     tokens.forEach(token => {
-      configFeilds.virtualDevices[token].settings.serverInterceptor = 'Generated on the fly'
+      jobFields.config.virtualDevices[token].settings.serverInterceptor = 'Generated on the fly'
     })
 
-    this.jobPureFields = {...job, config: configFeilds}
+    this.jobPureFields = jobFields
     this.interval = Config.get('saveInterval', true, 300) * 1000
     this.periodicSave = undefined
   }
