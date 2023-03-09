@@ -12,6 +12,14 @@ class Synchronizer {
    */
   constructor (job) {
     this.job = job
+
+    const {...configFeilds} = job.config
+    const tokens = Object.keys(configFeilds.virtualDevices)
+    tokens.forEach(token => {
+      configFeilds.virtualDevices[token].settings.serverInterceptor = 'Generated on the fly'
+    })
+
+    this.jobPureFields = {...job, config: configFeilds}
     this.interval = Config.get('saveInterval', true, 300) * 1000
     this.periodicSave = undefined
   }
@@ -31,7 +39,7 @@ class Synchronizer {
       logger.time(`BATCH ${logMessage} SAVE`)
 
       const client = new Client()
-      const encryptedKey = await client.save(this.job.run, this.job)
+      const encryptedKey = await client.save(this.job.run, this.jobPureFields)
       this.job.key = encryptedKey
       logger.timeEnd(`BATCH ${logMessage} SAVE`)
       logger.info(`BATCH ${logMessage} SAVE completed key: ${this.job.key}`)
