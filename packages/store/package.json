@@ -6,7 +6,7 @@
     ]
   },
   "dependencies": {
-    "@bespoken-sdk/shared": "^0.13.7",
+    "@bespoken-sdk/shared": "^0.13.8-alpha.15",
     "axios": "^0.21.4",
     "lodash": "^4.17.21"
   },
@@ -17,7 +17,7 @@
   "scripts": {
     "test": "ava"
   },
-  "version": "0.13.7",
+  "version": "0.13.8-alpha.15",
   "gitHead": "1358c13969466dc2ca725041f046cceafb2122af",
   "devDependencies": {
     "@types/node": "^16.10.1"
