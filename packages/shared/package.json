@@ -19,7 +19,7 @@
   "scripts": {
     "test": "ava"
   },
-  "version": "0.13.8-alpha.13",
+  "version": "0.13.8-alpha.14",
   "devDependencies": {
     "@types/node": "^16.10.1"
   },

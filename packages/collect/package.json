@@ -6,8 +6,8 @@
     ]
   },
   "dependencies": {
-    "@bespoken-sdk/nlp": "^0.13.8-alpha.13",
-    "@bespoken-sdk/shared": "^0.13.8-alpha.13",
+    "@bespoken-sdk/nlp": "^0.13.8-alpha.14",
+    "@bespoken-sdk/shared": "^0.13.8-alpha.14",
     "axios": "^0.21.4",
     "lodash": "^4.17.21"
   },
@@ -23,6 +23,6 @@
     "test": "ava"
   },
   "types": "types/index.d.ts",
-  "version": "0.13.8-alpha.13",
+  "version": "0.13.8-alpha.14",
   "gitHead": "1358c13969466dc2ca725041f046cceafb2122af"
 }
