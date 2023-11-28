@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@bespoken-sdk/shared": "^0.13.8",
-    "@bespoken-sdk/store": "^0.13.8",
+    "@bespoken-sdk/store": "^0.13.9",
     "aws-sdk": "^2.1360.0",
     "axios": "^0.21.4",
     "commander": "^5.1.0",
@@ -41,6 +41,6 @@
     "test": "ava"
   },
   "types": "types/index.d.ts",
-  "version": "0.13.8",
+  "version": "0.13.9",
   "gitHead": "1358c13969466dc2ca725041f046cceafb2122af"
 }

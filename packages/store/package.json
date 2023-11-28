@@ -17,7 +17,7 @@
   "scripts": {
     "test": "ava"
   },
-  "version": "0.13.8",
+  "version": "0.13.9",
   "gitHead": "1358c13969466dc2ca725041f046cceafb2122af",
   "devDependencies": {
     "@types/node": "^16.10.1"
