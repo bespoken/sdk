@@ -80,12 +80,9 @@ class Client  {
     const url = `${Client.accessURL()}/save?key=${key}`
     logger.info('URL for saving: ' + url)
     const jsonString = JSON.stringify(json)
-    // Create a stream from the JSON
-    const jsonStream = Readable.from(jsonString)
-    const gzipStream = jsonStream.pipe(zlib.createGzip())
-    const response = await axios.post(url, gzipStream, {
+    const response = await axios.post(url, jsonString, {
       headers: {
-        'Content-Encoding': 'gzip'
+        'Content-Type': 'application/json',
       },
       maxContentLength: (200 * 1024 * 1024), // up to 200 mb - biggest file so far is 57 MB
       responseType: 'json'
