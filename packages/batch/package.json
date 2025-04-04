@@ -9,10 +9,10 @@
     "bbt": "bin/bbt.js"
   },
   "dependencies": {
-    "@bespoken-sdk/shared": "^0.13.8",
-    "@bespoken-sdk/store": "^0.13.9",
+    "@bespoken-sdk/shared": "^0.13.10-alpha.0",
+    "@bespoken-sdk/store": "^0.13.10-alpha.0",
     "aws-sdk": "^2.1360.0",
-    "axios": "^0.21.4",
+    "axios": "^1.8.4",
     "commander": "^5.1.0",
     "csv": "^5.3.2",
     "datadog-metrics": "^0.9.3",
@@ -25,7 +25,7 @@
     "pino": "~6.3.2",
     "pino-multi-stream": "^5.1.1",
     "pino-pretty": "^4.1.0",
-    "sqlite3": "^5.0.0",
+    "sqlite3": "^5.1.7",
     "virtual-device-sdk": "1.7.2-0"
   },
   "devDependencies": {
@@ -41,6 +41,6 @@
     "test": "ava"
   },
   "types": "types/index.d.ts",
-  "version": "0.13.9",
+  "version": "0.13.10-alpha.0",
   "gitHead": "1358c13969466dc2ca725041f046cceafb2122af"
 }

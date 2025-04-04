@@ -1,5 +1,5 @@
 const _ = require('lodash')
-const axios = require('axios').default
+const axios = require('axios')
 const logger = require('@bespoken-sdk/shared/lib/logger')('STORE')
 const Readable = require('stream').Readable
 const zlib = require('zlib')
@@ -7,7 +7,7 @@ const zlib = require('zlib')
 /**
  *
  */
-class Client  {
+class Client {
   /**
    * @returns {string}
    */
@@ -82,7 +82,7 @@ class Client  {
     const jsonString = JSON.stringify(json)
     const response = await axios.post(url, jsonString, {
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       maxContentLength: (200 * 1024 * 1024), // up to 200 mb - biggest file so far is 57 MB
       responseType: 'json'
