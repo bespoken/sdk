@@ -18,7 +18,7 @@
   },
   "types": "types/index.d.ts",
   "version": "0.13.10-alpha.0",
-  "gitHead": "1358c13969466dc2ca725041f046cceafb2122af",
+  "gitHead": "2551ea767c143b05fac922367517ce6560e61905",
   "devDependencies": {
     "@types/node": "^16.10.1"
   }
