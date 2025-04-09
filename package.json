@@ -42,5 +42,8 @@
     "test": "jest",
     "types": "lerna exec --no-bail -- tsc --allowJS --declaration --outDir types --emitDeclarationOnly index.js"
   },
-  "standard": {}
+  "standard": {},
+  "dependencies": {
+    "axios": "^1.8.4"
+  }
 }

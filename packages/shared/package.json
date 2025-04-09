@@ -6,6 +6,7 @@
     ]
   },
   "dependencies": {
+    "axios": "^1.8.4",
     "chalk": "^4.1.2",
     "dotenv": "^8.6.0",
     "lodash": "^4.17.21",
@@ -19,9 +20,9 @@
   "scripts": {
     "test": "ava"
   },
-  "version": "0.13.8",
+  "version": "0.13.10-alpha.0",
   "devDependencies": {
     "@types/node": "^16.10.1"
   },
-  "gitHead": "1358c13969466dc2ca725041f046cceafb2122af"
+  "gitHead": "2551ea767c143b05fac922367517ce6560e61905"
 }
