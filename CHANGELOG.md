@@ -1,3 +1,6 @@
+# 0.13.10
+* Updated axios across the different packages to remove vulnerabilities
+
 # 0.13.4
 ## Infrastructure
 * Made JSONWrapper class - generic JSON helper utilities for configuration objects
